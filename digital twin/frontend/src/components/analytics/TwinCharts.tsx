@@ -86,15 +86,15 @@ export const WaterEvolutionChart: React.FC<{ height?: number }> = ({ height = 22
           markLine:
             tMeta !== null && tMeta <= (ts[ts.length - 1]?.time_h || 72)
               ? {
-                  symbol: "none",
-                  label: {
-                    formatter: `Agua limpia (${tMeta.toFixed(0)}h)`,
-                    color: "#93C5FD",
-                    fontSize: 10,
-                  },
-                  lineStyle: { color: "#60A5FA", type: "dashed", width: 1.5 },
-                  data: [{ xAxis: `${Math.round(tMeta)}h` }],
-                }
+                symbol: "none",
+                label: {
+                  formatter: `Agua limpia (${tMeta.toFixed(0)}h)`,
+                  color: "#93C5FD",
+                  fontSize: 10,
+                },
+                lineStyle: { color: "#60A5FA", type: "dashed", width: 1.5 },
+                data: [{ xAxis: `${Math.round(tMeta)}h` }],
+              }
               : undefined,
         },
         {

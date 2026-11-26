@@ -2,76 +2,93 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Variables de Tema de Color fuera de @layer para evitar purge y garantizar reactividad total */
+:root,
+[data-theme="blue_purple"],
+.theme-blue_purple {
+  color-scheme: dark;
+  --dt-bg: #0b0e16;
+  --dt-bg-glow-1: rgba(79, 112, 242, 0.16);
+  --dt-bg-glow-2: rgba(98, 69, 200, 0.14);
+  --dt-header: rgba(14, 18, 29, 0.95);
+  --dt-card-top: #151a28;
+  --dt-card-bot: #111522;
+  --dt-subcard: #101420;
+  --dt-well: #0c0f19;
+  --dt-border: #252e45;
+  --dt-accent-top: #4f70f2;
+  --dt-accent-mid: #5859de;
+  --dt-accent-bot: #6245c8;
+  --dt-accent-text: #818cf8;
+  --dt-accent-light: #a5b4fc;
+  --dt-accent-rgb: 88, 89, 222;
+  --dt-btn-radius: 9999px;
+}
+
+[data-theme="cad_slate"],
+.theme-cad_slate {
+  color-scheme: dark;
+  --dt-bg: #0a1018;
+  --dt-bg-glow-1: rgba(59, 130, 246, 0.16);
+  --dt-bg-glow-2: rgba(29, 78, 216, 0.12);
+  --dt-header: rgba(13, 20, 30, 0.96);
+  --dt-card-top: #15202e;
+  --dt-card-bot: #101925;
+  --dt-subcard: #0e1621;
+  --dt-well: #090f17;
+  --dt-border: #23354b;
+  --dt-accent-top: #3b82f6;
+  --dt-accent-mid: #2c6de8;
+  --dt-accent-bot: #1d4ed8;
+  --dt-accent-text: #60a5fa;
+  --dt-accent-light: #93c5fd;
+  --dt-accent-rgb: 59, 130, 246;
+  --dt-btn-radius: 9999px;
+}
+
+[data-theme="copper_gold"],
+.theme-copper_gold {
+  color-scheme: dark;
+  --dt-bg: #090807;
+  --dt-bg-glow-1: rgba(217, 138, 60, 0.16);
+  --dt-bg-glow-2: rgba(166, 89, 30, 0.12);
+  --dt-header: rgba(15, 13, 12, 0.96);
+  --dt-card-top: #1a1613;
+  --dt-card-bot: #120f0d;
+  --dt-subcard: #14110e;
+  --dt-well: #0b0908;
+  --dt-border: #332920;
+  --dt-accent-top: #d98a3c;
+  --dt-accent-mid: #c4732b;
+  --dt-accent-bot: #a6591e;
+  --dt-accent-text: #e7b06b;
+  --dt-accent-light: #f3d7a4;
+  --dt-accent-rgb: 217, 138, 60;
+  --dt-btn-radius: 9999px;
+}
+
+[data-theme="cenote_emerald"],
+.theme-cenote_emerald {
+  color-scheme: dark;
+  --dt-bg: #061114;
+  --dt-bg-glow-1: rgba(20, 184, 166, 0.17);
+  --dt-bg-glow-2: rgba(15, 118, 110, 0.13);
+  --dt-header: rgba(9, 22, 26, 0.96);
+  --dt-card-top: #10242a;
+  --dt-card-bot: #0b1a1f;
+  --dt-subcard: #0c1d22;
+  --dt-well: #071215;
+  --dt-border: #1e3f49;
+  --dt-accent-top: #14b8a6;
+  --dt-accent-mid: #0d9488;
+  --dt-accent-bot: #0f766e;
+  --dt-accent-text: #2dd4bf;
+  --dt-accent-light: #99f6e4;
+  --dt-accent-rgb: 20, 184, 166;
+  --dt-btn-radius: 9999px;
+}
+
 @layer base {
-  :root,
-  .theme-blue_purple {
-    color-scheme: dark;
-    --dt-bg: #0b0e14;
-    --dt-header: rgba(14, 18, 27, 0.95);
-    --dt-card-top: #141925;
-    --dt-card-bot: #111520;
-    --dt-well: #0d1018;
-    --dt-border: #22293a;
-    --dt-accent-top: #4f70f2;
-    --dt-accent-mid: #5859de;
-    --dt-accent-bot: #6245c8;
-    --dt-accent-text: #818cf8;
-    --dt-accent-light: #a5b4fc;
-    --dt-accent-rgb: 88, 89, 222;
-    --dt-btn-radius: 9999px;
-  }
-
-  .theme-cad_slate {
-    color-scheme: dark;
-    --dt-bg: #0c1017;
-    --dt-header: rgba(15, 20, 28, 0.96);
-    --dt-card-top: #151c27;
-    --dt-card-bot: #111720;
-    --dt-well: #0b0f15;
-    --dt-border: #232e3f;
-    --dt-accent-top: #3b82f6;
-    --dt-accent-mid: #2f6ee5;
-    --dt-accent-bot: #255AD0;
-    --dt-accent-text: #60a5fa;
-    --dt-accent-light: #93c5fd;
-    --dt-accent-rgb: 59, 130, 246;
-    --dt-btn-radius: 9999px;
-  }
-
-  .theme-copper_gold {
-    color-scheme: dark;
-    --dt-bg: #08080a;
-    --dt-header: rgba(12, 12, 15, 0.96);
-    --dt-card-top: #141316;
-    --dt-card-bot: #0e0e11;
-    --dt-well: #09090b;
-    --dt-border: #272320;
-    --dt-accent-top: #d98a3c;
-    --dt-accent-mid: #c4732b;
-    --dt-accent-bot: #a6591e;
-    --dt-accent-text: #e7b06b;
-    --dt-accent-light: #f3d7a4;
-    --dt-accent-rgb: 217, 138, 60;
-    --dt-btn-radius: 9999px;
-  }
-
-  .theme-cenote_emerald {
-    color-scheme: dark;
-    --dt-bg: #071013;
-    --dt-header: rgba(10, 20, 24, 0.96);
-    --dt-card-top: #102026;
-    --dt-card-bot: #0c181d;
-    --dt-well: #071114;
-    --dt-border: #1d353d;
-    --dt-accent-top: #14b8a6;
-    --dt-accent-mid: #0d9488;
-    --dt-accent-bot: #0f766e;
-    --dt-accent-text: #2dd4bf;
-    --dt-accent-light: #99f6e4;
-    --dt-accent-rgb: 20, 184, 166;
-    --dt-btn-radius: 9999px;
-  }
-
   html,
   body {
     height: 100%;
@@ -83,6 +100,7 @@
     overflow-x: hidden;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    transition: background-color 0.22s ease;
   }
 
   html::-webkit-scrollbar,
@@ -93,7 +111,7 @@
   }
 }
 
-/* En escritorio la app entera cabe en 100vh sin scroll de página (como en desarrollo-nacar-pag.html) */
+/* En escritorio la app entera cabe en 100vh sin scroll de página */
 @media (min-width: 1024px) {
   html,
   body,
@@ -108,13 +126,14 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
+
 .no-native-scroll::-webkit-scrollbar {
   display: none;
   width: 0 !important;
   height: 0 !important;
 }
 
-/* Botón flotante de arrastre integrado dentro de la UI (idéntico en espíritu al .c-thumb de la página NÁCAR) */
+/* Botón flotante de arrastre integrado dentro de la UI sincronizado con la paleta activa */
 .nacar-drag-rail {
   position: absolute;
   top: 10px;
@@ -132,8 +151,8 @@
   width: 5px;
   height: 44px;
   border-radius: 999px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(147, 197, 253, 0.9) 48%, rgba(37, 99, 235, 0.88) 100%);
-  box-shadow: 0 0 10px rgba(59, 130, 246, 0.65), 0 0 22px rgba(37, 99, 235, 0.35);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, var(--dt-accent-light) 48%, var(--dt-accent-top) 100%);
+  box-shadow: 0 0 10px rgba(var(--dt-accent-rgb), 0.65), 0 0 22px rgba(var(--dt-accent-rgb), 0.35);
   pointer-events: auto;
   cursor: grab;
   touch-action: none;
@@ -148,111 +167,136 @@
   border-radius: 999px;
   z-index: -1;
   pointer-events: none;
-  background: radial-gradient(ellipse at center, rgba(96, 165, 250, 0.45) 0%, rgba(37, 99, 235, 0.18) 55%, rgba(37, 99, 235, 0) 100%);
+  background: radial-gradient(ellipse at center, rgba(var(--dt-accent-rgb), 0.45) 0%, rgba(var(--dt-accent-rgb), 0.18) 55%, rgba(var(--dt-accent-rgb), 0) 100%);
   filter: blur(4px);
 }
 
 .nacar-drag-thumb:hover,
 .nacar-drag-thumb.dragging {
   width: 7px;
-  box-shadow: 0 0 14px rgba(255, 255, 255, 0.85), 0 0 26px rgba(59, 130, 246, 0.8);
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.85), 0 0 26px rgba(var(--dt-accent-rgb), 0.8);
 }
 
 .nacar-drag-thumb.dragging {
   cursor: grabbing;
 }
 
-/* Componentes adaptables al Estilo y Paleta activa */
-@layer components {
-  .modo-card {
-    background: linear-gradient(180deg, var(--dt-card-top) 0%, var(--dt-card-bot) 100%);
-    border: 1px solid var(--dt-border);
-    border-radius: 14px;
-    box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.72), inset 0 1px 0 0 rgba(255, 255, 255, 0.04);
-  }
+/* Componentes principales sincronizados con la paleta activa */
+.modo-card {
+  background: linear-gradient(180deg, var(--dt-card-top) 0%, var(--dt-card-bot) 100%);
+  border: 1px solid var(--dt-border);
+  border-radius: 14px;
+  box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.72), inset 0 1px 0 0 rgba(255, 255, 255, 0.04);
+  transition: background 0.22s ease, border-color 0.22s ease;
+}
 
-  .modo-well {
-    background: var(--dt-well);
-    border: 1px solid var(--dt-border);
-    border-radius: 10px;
-    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.45);
-  }
+.dt-subcard {
+  background-color: var(--dt-subcard);
+  border: 1px solid var(--dt-border);
+  transition: background-color 0.22s ease, border-color 0.22s ease;
+}
 
-  .modo-input {
-    background: linear-gradient(180deg, var(--dt-card-top) 0%, var(--dt-well) 100%);
-    border: 1px solid var(--dt-border);
-    border-radius: 9px;
-    color: #f3f6fc;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
-    transition: border-color 0.18s ease, box-shadow 0.18s ease;
-  }
+.modo-well {
+  background: var(--dt-well);
+  border: 1px solid var(--dt-border);
+  border-radius: 10px;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.45);
+  transition: background-color 0.22s ease, border-color 0.22s ease;
+}
 
-  .modo-input:hover {
-    border-color: rgba(var(--dt-accent-rgb), 0.45);
-  }
+.modo-input {
+  background: linear-gradient(180deg, var(--dt-card-top) 0%, var(--dt-well) 100%);
+  border: 1px solid var(--dt-border);
+  border-radius: 9px;
+  color: #f3f6fc;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.22s ease;
+}
 
-  .modo-input:focus {
-    outline: none;
-    border-color: var(--dt-accent-top);
-    box-shadow: 0 0 0 2px rgba(var(--dt-accent-rgb), 0.2);
-  }
+.modo-input:hover {
+  border-color: rgba(var(--dt-accent-rgb), 0.5);
+}
 
-  .modo-btn-primary {
-    background: linear-gradient(180deg, var(--dt-accent-top) 0%, var(--dt-accent-mid) 52%, var(--dt-accent-bot) 100%);
-    border: none;
-    border-radius: var(--dt-btn-radius, 9999px);
-    color: #ffffff;
-    font-weight: 600;
-    box-shadow: none;
-    transition: transform 0.15s ease, filter 0.18s ease;
-  }
+.modo-input:focus {
+  outline: none;
+  border-color: var(--dt-accent-top);
+  box-shadow: 0 0 0 2px rgba(var(--dt-accent-rgb), 0.22);
+}
 
-  .modo-btn-primary:hover {
-    filter: brightness(1.08);
-    box-shadow: none;
-  }
+.modo-btn-primary {
+  background: linear-gradient(180deg, var(--dt-accent-top) 0%, var(--dt-accent-mid) 52%, var(--dt-accent-bot) 100%) !important;
+  border: none !important;
+  border-radius: var(--dt-btn-radius, 9999px) !important;
+  color: #ffffff !important;
+  font-weight: 600;
+  box-shadow: none !important;
+  transition: transform 0.15s ease, filter 0.18s ease, background 0.22s ease;
+}
 
-  .modo-btn-primary:active {
-    transform: translateY(1px);
-  }
+.modo-btn-primary:hover {
+  filter: brightness(1.08);
+  box-shadow: none !important;
+}
 
-  .modo-btn-dark {
-    background: linear-gradient(180deg, var(--dt-card-top) 0%, var(--dt-well) 100%);
-    border: 1px solid var(--dt-border);
-    border-radius: var(--dt-btn-radius, 9999px);
-    color: #dce3f4;
-    font-weight: 500;
-    box-shadow: none;
-    transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.12s ease;
-  }
+.modo-btn-primary:active {
+  transform: translateY(1px);
+}
 
-  .modo-btn-dark:hover {
-    border-color: rgba(var(--dt-accent-rgb), 0.5);
-    box-shadow: none;
-    color: #ffffff;
-  }
+.modo-btn-dark {
+  background: linear-gradient(180deg, var(--dt-card-top) 0%, var(--dt-well) 100%);
+  border: 1px solid var(--dt-border);
+  border-radius: var(--dt-btn-radius, 9999px);
+  color: #dce3f4;
+  font-weight: 500;
+  box-shadow: none !important;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.18s ease, transform 0.12s ease;
+}
 
-  .modo-btn-dark:active {
-    transform: translateY(1px);
-  }
+.modo-btn-dark:hover {
+  border-color: rgba(var(--dt-accent-rgb), 0.55);
+  box-shadow: none !important;
+  color: #ffffff;
+}
 
-  /* Retícula técnica estilo Plant Viewer CAD (Imagen 1) */
-  .cad-blueprint-grid {
-    background-color: var(--dt-well);
-    background-image:
-      linear-gradient(to right, rgba(var(--dt-accent-rgb), 0.06) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(var(--dt-accent-rgb), 0.06) 1px, transparent 1px),
-      linear-gradient(to right, rgba(255, 255, 255, 0.022) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
-    background-size: 96px 96px, 96px 96px, 16px 16px, 16px 16px;
-  }
+.modo-btn-dark:active {
+  transform: translateY(1px);
+}
 
-  /* Paneles HUD estilo Spectra (Imágenes 2 y 3) */
-  .spectra-hud-panel {
-    background: linear-gradient(180deg, rgba(20, 19, 22, 0.88) 0%, rgba(11, 11, 14, 0.94) 100%);
-    border: 1px solid var(--dt-border);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  }
+.dt-accent-text {
+  color: var(--dt-accent-text) !important;
+}
+
+.dt-accent-light {
+  color: var(--dt-accent-light) !important;
+}
+
+.dt-badge {
+  background-color: rgba(var(--dt-accent-rgb), 0.15);
+  border: 1px solid rgba(var(--dt-accent-rgb), 0.38);
+  color: var(--dt-accent-light);
+}
+
+.dt-progress-fill {
+  background: linear-gradient(90deg, var(--dt-accent-top) 0%, var(--dt-accent-bot) 100%);
+}
+
+/* Retícula técnica estilo Plant Viewer CAD (Imagen 1) */
+.cad-blueprint-grid {
+  background-color: var(--dt-well);
+  background-image:
+    linear-gradient(to right, rgba(var(--dt-accent-rgb), 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(var(--dt-accent-rgb), 0.08) 1px, transparent 1px),
+    linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 96px 96px, 96px 96px, 16px 16px, 16px 16px;
+}
+
+/* Paneles HUD estilo Spectra (Imágenes 2 y 3) */
+.spectra-hud-panel {
+  background: linear-gradient(180deg, var(--dt-card-top) 0%, var(--dt-card-bot) 100%);
+  border: 1px solid var(--dt-border);
+  box-shadow: 0 14px 32px -12px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition: background 0.22s ease, border-color 0.22s ease;
 }
 
 /* Slider estilo Modo UI armonizado con la paleta activa */

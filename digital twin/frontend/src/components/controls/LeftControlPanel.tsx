@@ -123,11 +123,10 @@ export const LeftControlPanel: React.FC = () => {
         <button
           type="button"
           onClick={() => setControlTab("space")}
-          className={`py-1.5 px-2.5 rounded-full text-[11px] font-medium flex items-center justify-center gap-1 transition ${
-            controlTab === "space"
-              ? "modo-btn-primary"
-              : "text-[#8B95A7] hover:text-white hover:bg-[#161C2A]"
-          }`}
+          className={`py-1.5 px-2.5 rounded-full text-[11px] font-medium flex items-center justify-center gap-1 transition ${controlTab === "space"
+            ? "modo-btn-primary"
+            : "text-[#8B95A7] hover:text-white hover:bg-[#161C2A]"
+            }`}
         >
           <Layers className="w-3 h-3" />
           <span>Espacio</span>
@@ -135,11 +134,10 @@ export const LeftControlPanel: React.FC = () => {
         <button
           type="button"
           onClick={() => setControlTab("water")}
-          className={`py-1.5 px-2.5 rounded-full text-[11px] font-medium flex items-center justify-center gap-1 transition ${
-            controlTab === "water"
-              ? "modo-btn-primary"
-              : "text-[#8B95A7] hover:text-white hover:bg-[#161C2A]"
-          }`}
+          className={`py-1.5 px-2.5 rounded-full text-[11px] font-medium flex items-center justify-center gap-1 transition ${controlTab === "water"
+            ? "modo-btn-primary"
+            : "text-[#8B95A7] hover:text-white hover:bg-[#161C2A]"
+            }`}
         >
           <Droplets className="w-3 h-3" />
           <span>Agua Inicial</span>
@@ -147,11 +145,10 @@ export const LeftControlPanel: React.FC = () => {
         <button
           type="button"
           onClick={() => setControlTab("targets")}
-          className={`py-1.5 px-2.5 rounded-full text-[11px] font-medium flex items-center justify-center gap-1 transition ${
-            controlTab === "targets"
-              ? "modo-btn-primary"
-              : "text-[#8B95A7] hover:text-white hover:bg-[#161C2A]"
-          }`}
+          className={`py-1.5 px-2.5 rounded-full text-[11px] font-medium flex items-center justify-center gap-1 transition ${controlTab === "targets"
+            ? "modo-btn-primary"
+            : "text-[#8B95A7] hover:text-white hover:bg-[#161C2A]"
+            }`}
         >
           <Target className="w-3 h-3" />
           <span>Metas</span>
@@ -196,11 +193,10 @@ export const LeftControlPanel: React.FC = () => {
                       key={p}
                       type="button"
                       onClick={() => updateDesign({ trays_per_module: p })}
-                      className={`w-6 h-6 rounded-full text-[11px] font-semibold transition ${
-                        design.trays_per_module === p
-                          ? "modo-btn-primary"
-                          : "modo-btn-dark"
-                      }`}
+                      className={`w-6 h-6 rounded-full text-[11px] font-semibold transition ${design.trays_per_module === p
+                        ? "modo-btn-primary"
+                        : "modo-btn-dark"
+                        }`}
                     >
                       {p}
                     </button>
