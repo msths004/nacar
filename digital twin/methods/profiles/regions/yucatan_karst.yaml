@@ -1,0 +1,219 @@
+region_id: "yucatan_karst"
+display_name: "Karst de Yucatán (Gran Acuífero Maya — Fase 1 Piloto)"
+status: "active_phase1"
+latitude_deg: 20.97
+longitude_deg: -89.62
+hydrogeochemistry_type: "tropical_carbonate_karst"
+notes: >
+  Perfil hidrogeoquímico basal y de extremos regionales del karst yucateco (Tabla 1 del
+  reporte técnico). Actúa como cartucho activo de la Fase 1 y referencia para calibración
+  de campo. Las constantes pueden sobrescribirse en tiempo real con sensores IoT.
+
+water_baseline:
+  temp_c:
+    value: 27.5
+    range: [22.0, 34.0]
+    unit: "degC"
+    evidence_level: "B"
+    source: "Tabla 1 - Monitoreo comparativo cenotes Yucatán (X'batun, Kankirixche)"
+  ph:
+    value: 7.45
+    range: [6.73, 8.10]
+    unit: "pH"
+    evidence_level: "B"
+    source: "Tabla 1 - Monitoreo cenotes Yucatán (Yokdzonot / extremos regionales)"
+  calcium_mg_L:
+    value: 210.0
+    range: [180.0, 235.0]
+    unit: "mg Ca/L"
+    evidence_level: "B"
+    source: "Dureza cálcica regional ~573-587 mg CaCO3/L (Reporte Sec. 1.1)"
+  bicarbonate_mg_L:
+    value: 360.0
+    range: [302.0, 438.0]
+    unit: "mg HCO3-/L"
+    evidence_level: "B"
+    source: "Alcalinidad bicarbonatada regional (Reporte Sec. 1.1)"
+  par_light_umol_m2_s:
+    value: 180.0
+    range: [0.0, 450.0]
+    unit: "umol/m2/s"
+    evidence_level: "B"
+    source: "Radiación PAR tropical media diurna (>110 umol/m2/s, Reporte Sec. 1.1)"
+  ntu_to_tss_factor:
+    value: 1.45
+    range: [1.10, 2.00]
+    unit: "(mg/L)/NTU"
+    evidence_level: "C"
+    source: "Correlación nefelométrica preliminar NTU -> TSS/SPM (pendiente calibración local)"
+  kLa_reaeration_h:
+    value: 0.085
+    range: [0.03, 0.25]
+    unit: "1/h"
+    evidence_level: "C"
+    source: "Coeficiente de transferencia superficial de oxígeno en cuerpos lénticos cálidos"
+
+karst_calcita:
+  k_calc_precip:
+    value: 0.00018
+    range: [0.00005, 0.00050]
+    unit: "g Ca/(L*h)"
+    evidence_level: "C"
+    source: "Cinética efectiva de coprecipitación calcita-fósforo (Ec. 4.1)"
+  y_p_per_ca_coeff:
+    value: 10.9
+    range: [8.0, 14.0]
+    unit: "mg P / (g Ca * (mg P/L))"
+    evidence_level: "C"
+    source: "Ley empírica Y = 10.9 * X_SRP en aguas duras calcáreas (Reporte p. 17)"
+
+macrophytes:
+  dominant_species: "Typha domingensis / Pontederia cordata"
+  rho_root_kg_m2:
+    value: 0.80
+    range: [0.60, 1.20]
+    unit: "kg MS/m2"
+    evidence_level: "C"
+    source: "Biomasa seca activa de raíces sumergidas en humedales flotantes tropicales"
+  mu_SG_N_mg_g_h:
+    value: 0.00171
+    range: [0.0010, 0.0030]
+    unit: "mg N / (g MS * h)"
+    evidence_level: "C"
+    source: "Tasa específica radicular derivada de Bailey et al. / Reporte p. 16"
+  mu_SG_P_mg_g_h:
+    value: 0.00024
+    range: [0.00012, 0.00045]
+    unit: "mg P / (g MS * h)"
+    evidence_level: "C"
+    source: "Tasa específica radicular de fósforo (estequiometría N:P vegetal)"
+  k_SG_N_mg_L:
+    value: 0.18
+    range: [0.10, 0.35]
+    unit: "mg N/L"
+    evidence_level: "C"
+    source: "Constante de semi-saturación radicular de alta afinidad (Reporte p. 16)"
+  k_SG_P_mg_L:
+    value: 0.04
+    range: [0.02, 0.10]
+    unit: "mg P/L"
+    evidence_level: "C"
+    source: "Constante de semi-saturación radicular para ortofosfatos"
+  k_light_half_sat:
+    value: 100.0
+    range: [60.0, 150.0]
+    unit: "umol/m2/s"
+    evidence_level: "C"
+    source: "Semi-saturación lumínica fotosintética de macrófitas emergentes"
+  r_O2_root_mg_kg_h:
+    value: 18.0
+    range: [8.0, 35.0]
+    unit: "mg O2 / (kg MS * h)"
+    evidence_level: "C"
+    source: "Liberación radicular neta diurna de oxígeno (ROL) hacia la rizosfera"
+  k_riz_pat_L_kg_h:
+    value: 21.6
+    range: [10.0, 40.0]
+    unit: "L / (kg MS * h)"
+    evidence_level: "D"
+    source: "Retención y antagonismo de patógenos en zona radicular (semilla provisional)"
+
+cwm1_bacteria:
+  mu_max_A_25C_h:
+    value: 0.032
+    range: [0.015, 0.065]
+    unit: "1/h"
+    evidence_level: "C"
+    source: "Tasa máxima nitrificante autótrofa CWM1 corregida a clima cálido"
+  f_XA_active:
+    value: 0.0112
+    range: [0.005, 0.05]
+    unit: "adimensional"
+    evidence_level: "D"
+    source: "Fracción activa nitrificante en biopelícula total X_A (R_bact,NH(0.25) ~ 8.95 mg N/h en Cap. 6)"
+  k_SC_N_mg_L:
+    value: 3.0
+    range: [1.5, 4.5]
+    unit: "mg N/L"
+    evidence_level: "C"
+    source: "Constante de semi-saturación bacteriana CWM1/Bailey (Reporte p. 16)"
+  K_O_A_mg_L:
+    value: 0.50
+    range: [0.25, 1.00]
+    unit: "mg O2/L"
+    evidence_level: "C"
+    source: "Constante de inhibición/saturación por oxígeno para nitrificantes X_A"
+  nu_N_exudate:
+    value: 1.85
+    range: [0.8, 3.0]
+    unit: "adimensional"
+    evidence_level: "C"
+    source: "Factor de amplificación metabólica por exudados de raíces (Ec. 3.3)"
+  rho_ex_mg_kg:
+    value: 12.0
+    range: [5.0, 25.0]
+    unit: "mg DQO / kg MS"
+    evidence_level: "C"
+    source: "Exudación específica de carbono lábil radicular"
+  k_GN_mg_L:
+    value: 0.002
+    range: [0.0005, 0.005]
+    unit: "mg DQO/L"
+    evidence_level: "C"
+    source: "Semi-saturación de exudado rizosférico en Phi_rizosfera"
+  k_uv_par_coeff:
+    value: 0.0000667
+    range: [0.00002, 0.00015]
+    unit: "(m2*s)/(umol*h)"
+    evidence_level: "C"
+    source: "Inactivación solar UV-PAR de coliformes fecales"
+  k_d_nat_25C_h:
+    value: 0.0068
+    range: [0.003, 0.015]
+    unit: "1/h"
+    evidence_level: "C"
+    source: "Mortalidad basal natural de E. coli en aguas tropicales"
+
+hydraulics_and_clogging:
+  v_sed_m_h:
+    value: 0.0045
+    range: [0.001, 0.015]
+    unit: "m/h"
+    evidence_level: "D"
+    source: "Velocidad media de sedimentación abiótica de finos en humedal léntico"
+  phi_0_bed:
+    value: 0.85
+    range: [0.40, 0.90]
+    unit: "adimensional"
+    evidence_level: "D"
+    source: "Porosidad inicial efectiva de malla polimérica de bandeja circular"
+  beta_ret_tray:
+    value: 0.35
+    range: [0.15, 0.65]
+    unit: "adimensional"
+    evidence_level: "D"
+    source: "Fracción de biodepósitos retenida sobre la malla de la bandeja"
+  k_hidr_dep_h:
+    value: 0.012
+    range: [0.005, 0.030]
+    unit: "1/h"
+    evidence_level: "D"
+    source: "Tasa de hidrólisis/desprendimiento de biodepósitos en bandeja"
+  rho_dep_mg_L:
+    value: 145000.0
+    range: [90000.0, 220000.0]
+    unit: "mg MS/L"
+    evidence_level: "C"
+    source: "Densidad aparente seca de matriz de biodepósitos orgánicos/minerales"
+  V_poroso_L:
+    value: 250.0
+    range: [80.0, 600.0]
+    unit: "L"
+    evidence_level: "D"
+    source: "Volumen poroso efectivo de retención asociado al conjunto de mallas y zona bajo linternas"
+  biofilm_clog_rate_h:
+    value: 0.000015
+    range: [0.000005, 0.0001]
+    unit: "1/h"
+    evidence_level: "D"
+    source: "Tasa de crecimiento volumétrico de biopelícula sobre malla Delta_n_bio(t) (Ec. 7.1)"

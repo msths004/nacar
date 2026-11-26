@@ -1,0 +1,1716 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Proyecto Nácar: Regenerando el agua de Yucatán mediante biofiltración natural y tecnología de digital twin para proteger el acuífero kárstico.">
+<meta property="og:title" content="Proyecto Nácar · Regenerando el agua de Yucatán">
+<meta property="og:description" content="Biofiltración natural y tecnología de digital twin para proteger el acuífero kárstico de la península de Yucatán.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#050D14">
+<title>Proyecto Nácar · Regenerando el agua de Yucatán</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050D14; --alt:rgba(6,16,26,.38); --card:rgba(12,28,42,.58); --ink:#FFFFFF; --muted:#D8ECF6; --line:rgba(184,236,255,.16);
+  --accent:#7CE0F4; --accent-ink:#041018; --bar:#7CE0F4; --bar-bg:rgba(184,236,255,.14); --ph:rgba(10,25,38,.56);
+  --nacar:linear-gradient(90deg,#FFFFFF 0%,#B8ECFF 52%,#56C8E0 100%);
+  --glass-shadow:0 28px 64px -16px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.12);
+  color-scheme:dark; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+:root[data-theme="light"]{
+  --bg:#F4F9FB; --alt:rgba(255,255,255,.55); --card:rgba(255,255,255,.72); --ink:#0E2A3B; --muted:#4E6375; --line:rgba(11,110,120,.16);
+  --accent:#0B6E78; --accent-ink:#FFFFFF; --bar:#0B6E78; --bar-bg:rgba(11,110,120,.12); --ph:rgba(235,244,248,.65);
+  --glass-shadow:0 20px 45px -15px rgba(14,42,59,.1),inset 0 1px 0 rgba(255,255,255,.8);
+  color-scheme:light;
+}
+html{scroll-behavior:smooth;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 76px);scrollbar-width:none;-ms-overflow-style:none}
+html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0!important;height:0!important}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 .97rem/1.68 "Inter",system-ui,-apple-system,sans-serif;letter-spacing:-.008em;overflow-x:hidden;position:relative;-webkit-font-smoothing:antialiased;scrollbar-width:none;-ms-overflow-style:none}
+/* Botón flotante de arrastre integrado dentro de la página (sin barra/carril que robe espacio ni descentre) */
+.c-scroll{position:fixed;top:18px;bottom:18px;right:10px;width:14px;z-index:85;pointer-events:none}
+.c-thumb{
+  position:absolute;top:0;right:2px;width:6px;height:54px;border-radius:999px;
+  background:linear-gradient(180deg,rgba(255,255,255,.92) 0%,rgba(184,236,255,.9) 48%,rgba(86,200,224,.82) 100%);
+  box-shadow:0 0 12px rgba(124,224,244,.65),0 0 26px rgba(86,200,224,.35);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  pointer-events:auto;cursor:grab;touch-action:none;user-select:none;
+  transition:width .25s ease,box-shadow .25s ease,opacity .25s ease;
+}
+/* Halo difuminado que mezcla el brillo azul claro de la barrita con el fondo */
+.c-thumb::before{
+  content:"";position:absolute;inset:-7px -6px;border-radius:999px;z-index:-1;pointer-events:none;
+  background:radial-gradient(ellipse at center,rgba(184,236,255,.55) 0%,rgba(86,200,224,.24) 55%,rgba(86,200,224,0) 100%);
+  filter:blur(5px);transition:transform .25s ease,opacity .25s ease;
+}
+.c-thumb:hover,.c-thumb.dragging{
+  width:8px;box-shadow:0 0 16px rgba(255,255,255,.85),0 0 32px rgba(124,224,244,.75);
+}
+.c-thumb.dragging{cursor:grabbing}
+.c-thumb:hover::before,.c-thumb.dragging::before{transform:scale(1.25,1.12)}
+/* Capa 1 (abajo): Fondo de agua de cenote y cáusticas azules, separada de la mezcla de texto */
+.bg-stage{position:fixed;inset:0;z-index:-2;pointer-events:none;overflow:hidden;background:#03090F}
+:root[data-theme="light"] .bg-stage{background:linear-gradient(180deg,#EEF6F9 0%,#E3F0F5 50%,#F4F9FB 100%)}
+#bg-water{position:absolute;inset:0;width:100%;height:100%;display:block}
+.bg-aurora{position:absolute;inset:-15%;filter:blur(115px);opacity:.42;background:radial-gradient(circle at 78% 28%,rgba(255,255,255,.16) 0%,transparent 38%),radial-gradient(circle at 22% 68%,rgba(184,236,255,.22) 0%,transparent 36%),radial-gradient(circle at 55% 85%,rgba(86,200,224,.18) 0%,transparent 32%);animation:auroraMove 22s ease-in-out infinite alternate}
+@keyframes auroraMove{0%{transform:translate3d(0,0,0) scale(1)}100%{transform:translate3d(-3%,4%,0) scale(1.08)}}
+.bg-grid{position:absolute;inset:0;background-image:linear-gradient(to right,rgba(184,236,255,.038) 1px,transparent 1px),linear-gradient(to bottom,rgba(184,236,255,.038) 1px,transparent 1px);background-size:64px 64px;-webkit-mask-image:radial-gradient(ellipse 75% 70% at 50% 45%,#000 15%,transparent 85%);mask-image:radial-gradient(ellipse 75% 70% at 50% 45%,#000 15%,transparent 85%)}
+.bg-noise{position:absolute;inset:0;opacity:.035;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+/* Capa 2 (aislada): Concha/anillos/burbujas en blanco acromático + textos blancos con mix-blend-mode:difference (cero tono naranja) */
+.blend-stage{position:relative;isolation:isolate;z-index:1}
+#bg-webgl{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:-1;pointer-events:none}
+main{position:static}
+footer{position:relative;z-index:1}
+h1,h2,h3{font-family:"Plus Jakarta Sans","Inter",system-ui,sans-serif;margin:0;color:#FFFFFF}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.wrap{max-width:1100px;width:100%;margin:0 auto;padding:0 28px}
+/* Barra superior con panel de opciones centrado y efecto de inflado/mezcla orgánica */
+header.top{position:fixed;inset:env(safe-area-inset-top,0px) 0 auto 0;z-index:50;padding:14px 0;transition:padding .35s ease,opacity .6s ease,filter .6s ease}
+header.top .wrap{position:relative;display:flex;justify-content:center;align-items:center;min-height:54px}
+nav{
+  display:inline-flex;align-items:center;gap:12px;padding:7px 14px;
+  background:rgba(2,8,14,.54);
+  backdrop-filter:blur(22px) saturate(165%);-webkit-backdrop-filter:blur(22px) saturate(165%);
+  border:1px solid rgba(184,236,255,.14);border-radius:14px;
+  box-shadow:0 14px 36px -10px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.08);
+  position:relative;overflow:visible;
+  transition:opacity .7s ease,filter .7s ease,transform .7s cubic-bezier(.16,1,.3,1);
+}
+.brand-nav{
+  font:700 .88rem/1 "Plus Jakarta Sans",sans-serif;letter-spacing:.14em;text-decoration:none;
+  color:#FFFFFF!important;padding:9px 16px 9px 12px!important;margin-right:2px!important;
+  border-right:1px solid rgba(184,236,255,.16);border-radius:10px 0 0 10px!important;
+}
+/* Pantalla portal de entrada estilo Awwwards (NACAR en grande + Almeja 3D central interactiva) */
+.intro-portal{
+  position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  pointer-events:auto;user-select:none;
+}
+.intro-portal.done{pointer-events:none;visibility:hidden}
+.intro-top-tag{
+  position:absolute;top:32px;font:500 .74rem "JetBrains Mono",monospace;letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(184,236,255,.72);transition:opacity .6s ease,filter .6s ease;
+}
+.intro-title{
+  font:700 clamp(4.2rem,11.5vw,9.2rem)/.92 "Plus Jakarta Sans",sans-serif;letter-spacing:.18em;
+  color:#FFFFFF;margin:0 0 230px;padding-left:.18em;text-align:center;
+  mix-blend-mode:difference;will-change:transform,filter,opacity;pointer-events:none;
+}
+.clam-hit{
+  position:absolute;top:52%;left:50%;transform:translate(-50%,-50%);
+  width:290px;height:290px;border-radius:50%;cursor:pointer;
+  display:flex;align-items:flex-end;justify-content:center;padding-bottom:14px;
+  border:1px solid rgba(184,236,255,.14);
+  background:radial-gradient(circle,rgba(184,236,255,.05) 0%,transparent 70%);
+  transition:transform .5s cubic-bezier(.16,1,.3,1),border-color .4s ease,box-shadow .4s ease,opacity .5s ease,filter .5s ease;
+}
+.clam-hit::before{
+  content:"";position:absolute;inset:-14px;border-radius:50%;
+  border:1px dashed rgba(184,236,255,.22);animation:spinSlow 26s linear infinite;pointer-events:none;
+}
+@keyframes spinSlow{to{transform:rotate(360deg)}}
+.clam-hit:hover{
+  transform:translate(-50%,-50%) scale(1.06);
+  border-color:rgba(255,255,255,.45);
+  box-shadow:0 0 50px rgba(124,224,244,.22),inset 0 0 30px rgba(255,255,255,.06);
+}
+.intro-cta{
+  position:absolute;bottom:54px;display:flex;flex-direction:column;align-items:center;gap:10px;
+  font:500 .76rem "JetBrains Mono",monospace;letter-spacing:.16em;text-transform:uppercase;color:#EAF6FC;
+  pointer-events:none;transition:opacity .5s ease,filter .5s ease,transform .5s ease;
+}
+.intro-cta span{opacity:.78}
+.intro-cta i{display:block;width:1px;height:28px;background:linear-gradient(180deg,#FFFFFF,transparent);animation:cue 2s ease-in-out infinite}
+/* Velo de inmersión difuminado al sumergirse al agua */
+.dive-veil{
+  position:fixed;inset:0;z-index:45;pointer-events:none;opacity:0;
+  backdrop-filter:blur(0px);-webkit-backdrop-filter:blur(0px);
+  background:radial-gradient(circle at 50% 50%,rgba(124,224,244,.14),rgba(3,9,15,.45));
+}
+/* Estado mientras la pantalla intro está activa: ocultar contenido principal con blur */
+body.intro-lock{overflow:hidden!important}
+body.intro-lock header.top nav{opacity:0;filter:blur(14px);transform:translateY(-14px);pointer-events:none}
+body.intro-lock main,body.intro-lock .c-scroll,body.intro-lock .aww-hud{opacity:0;filter:blur(18px);pointer-events:none}
+main,header.top nav,.c-scroll,.aww-hud{transition:opacity .9s ease,filter .9s ease}
+/* Cursor magnético y HUD estilo Awwwards */
+.aww-cursor{
+  position:fixed;top:0;left:0;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.55);pointer-events:none;z-index:100;
+  mix-blend-mode:difference;display:flex;align-items:center;justify-content:center;
+  font:500 .58rem "JetBrains Mono",monospace;letter-spacing:.1em;color:#000;
+  transition:width .32s cubic-bezier(.16,1,.3,1),height .32s cubic-bezier(.16,1,.3,1),margin .32s cubic-bezier(.16,1,.3,1),background .32s ease,border-color .32s ease;
+}
+.aww-cursor span{opacity:0;transition:opacity .25s ease;white-space:nowrap}
+.aww-cursor.expand{width:86px;height:86px;margin:-43px 0 0 -43px;background:#FFFFFF;border-color:#FFFFFF}
+.aww-cursor.expand span{opacity:1}
+.aww-hud{
+  position:fixed;left:28px;right:28px;bottom:18px;z-index:40;pointer-events:none;
+  display:flex;justify-content:space-between;align-items:center;
+  font:500 .72rem "JetBrains Mono",monospace;letter-spacing:.1em;color:rgba(216,236,246,.55);
+  mix-blend-mode:difference;
+}
+@media (max-width:899px),(hover:none){.aww-cursor,.aww-hud{display:none}}
+header.top.solid nav{background:rgba(2,7,12,.68);border-color:rgba(184,236,255,.18)}
+:root[data-theme="light"] nav{background:rgba(220,234,242,.62);border-color:rgba(11,110,120,.15)}
+nav a{
+  text-decoration:none;color:var(--muted);white-space:nowrap;
+  font:500 .85rem/1 "Plus Jakarta Sans","Inter",sans-serif;letter-spacing:-.005em;
+  position:relative;z-index:1;padding:9px 15px;margin:0 1px;border-radius:11px;
+  transition:color .32s ease,transform .38s cubic-bezier(.22,1,.36,1),padding .38s cubic-bezier(.22,1,.36,1),margin .38s cubic-bezier(.22,1,.36,1);
+}
+/* Capa exterior difuminada que funde/mezcla la parte inflada con el color del rectángulo principal */
+nav a::before{
+  content:"";position:absolute;inset:-6px -10px;border-radius:16px;z-index:-2;pointer-events:none;
+  background:radial-gradient(ellipse 76% 82% at 50% 50%,rgba(1,4,8,.82) 0%,rgba(2,8,14,.54) 58%,rgba(2,8,14,0) 100%);
+  filter:blur(6px);opacity:0;transform:scale(.76,.65);
+  transition:opacity .38s cubic-bezier(.22,1,.36,1),transform .38s cubic-bezier(.22,1,.36,1);
+}
+/* Núcleo inflado ligeramente más oscuro y difuminado */
+nav a::after{
+  content:"";position:absolute;inset:-4px -3px;border-radius:12px;z-index:-1;pointer-events:none;
+  background:radial-gradient(ellipse 92% 95% at 50% 50%,rgba(1,5,10,.72) 0%,rgba(2,8,14,.42) 72%,rgba(2,8,14,.06) 100%);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(184,236,255,.14);
+  box-shadow:0 8px 22px -6px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.08);
+  opacity:0;transform:scale(.84,.72);
+  transition:opacity .38s cubic-bezier(.22,1,.36,1),transform .38s cubic-bezier(.22,1,.36,1);
+}
+nav a:hover,nav a:focus-visible{
+  color:#FFFFFF;transform:scale(1.06);padding-inline:19px;margin-inline:3px;
+}
+nav a:hover::before,nav a:focus-visible::before{
+  opacity:1;transform:scale(1.08,1.18);
+}
+nav a:hover::after,nav a:focus-visible::after{
+  opacity:1;transform:scale(1,1.14);
+}
+nav a.active{color:var(--accent)}
+nav a.active::after{
+  opacity:.65;transform:scale(.98,1);
+}
+nav a.active:hover::after{
+  opacity:1;transform:scale(1,1.14);
+}
+section{min-height:100svh;padding:92px 0 56px;position:relative;display:flex;align-items:center}
+section.alt::before,.journey::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--alt);border-block:1px solid var(--line);pointer-events:none}
+h2{font-size:clamp(1.65rem,2.7vw,2.3rem);font-weight:600;line-height:1.18;letter-spacing:-.026em;max-width:24ch;margin-bottom:14px;color:#FFFFFF;mix-blend-mode:difference}
+.w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.1em}
+.w.done{overflow:visible}
+.w>span{display:inline-block}
+.rule{width:56px;height:3px;background:var(--nacar);border-radius:2px;margin:0 0 28px;transform-origin:left;box-shadow:0 0 16px rgba(184,236,255,.35)}
+h3{font-size:1.08rem;font-weight:600;line-height:1.3;letter-spacing:-.015em;margin-bottom:8px}
+p{margin:0 0 16px;max-width:60ch;color:var(--muted)}
+section>.wrap>p,.cols>div>p{color:#E6F4FA;mix-blend-mode:difference}
+p strong{color:#FFFFFF;font-weight:600}
+.cols{display:grid;grid-template-columns:1.08fr 1fr;gap:64px;align-items:center}
+.btns{display:flex;flex-wrap:wrap;gap:12px}
+.btn{display:inline-block;padding:12px 24px;border-radius:8px;font:600 .9rem/1.2 "Plus Jakarta Sans","Inter",sans-serif;letter-spacing:-.01em;text-decoration:none;border:1.5px solid var(--accent);transition:background .3s,color .3s,transform .3s,box-shadow .3s}
+.btn:hover{transform:translateY(-2px)}
+.btn.primary{background:var(--nacar);color:#041018;border-color:transparent;box-shadow:0 8px 26px -6px rgba(184,236,255,.45)}
+.btn.primary:hover{background:transparent;color:#FFFFFF;border-color:#FFFFFF;box-shadow:0 12px 30px -4px rgba(184,236,255,.6)}
+.btn.ghost{color:#FFFFFF;border-color:rgba(184,236,255,.5);background:rgba(184,236,255,.06);backdrop-filter:blur(8px)}
+.btn.ghost:hover{background:#FFFFFF;color:#041018;border-color:#FFFFFF;box-shadow:0 8px 26px -6px rgba(255,255,255,.4)}
+/* hero: sin text-shadow y con mix-blend-mode:difference para que las letras se vuelvan negras donde tocan la concha/anillos/burbujas blancas */
+.hero{position:relative;min-height:100svh;padding:0;display:flex;align-items:center}
+#sea{position:absolute;left:0;right:0;bottom:0;width:100%;height:58%;pointer-events:none;opacity:.45;z-index:-1}
+.hero .wrap{position:relative;padding-top:104px;padding-bottom:120px}
+.hero h1{font-size:clamp(2.35rem,4.4vw,3.85rem);font-weight:600;line-height:1.08;letter-spacing:-.032em;max-width:16ch;margin-bottom:20px;color:#FFFFFF;text-shadow:none;mix-blend-mode:difference}
+.hero .lead{font-size:1.05rem;line-height:1.66;color:#EAF6FC;max-width:48ch;margin-bottom:28px;mix-blend-mode:difference}
+.cue{position:absolute;left:28px;bottom:22px;font:500 .78rem "JetBrains Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:#FFFFFF;mix-blend-mode:difference;display:flex;align-items:center;gap:10px;z-index:2}
+.cue i{display:block;width:1.5px;height:34px;background:#FFFFFF;transform-origin:top;animation:cue 2.2s ease-in-out infinite}
+@keyframes cue{0%{transform:scaleY(0)}50%{transform:scaleY(1)}100%{transform:scaleY(1);opacity:0}}
+/* facts */
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));border-top:1px solid var(--line);margin-top:36px;gap:16px;padding-top:24px}
+.fact{padding:22px;background:var(--card);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:12px;box-shadow:var(--glass-shadow)}
+.fact+.fact{padding-left:22px;border-left:1px solid var(--line)}
+.fact b{display:block;font:600 clamp(1.85rem,3vw,2.5rem)/1.05 "Plus Jakarta Sans",sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;background:var(--nacar);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:8px}
+.fact span{color:var(--muted);font-size:.88rem;line-height:1.5;display:block;max-width:26ch}
+/* journey */
+.journey{padding:0;min-height:100svh;display:flex;align-items:center;position:relative}
+.stage{display:grid;grid-template-columns:1fr 1.12fr;gap:60px;align-items:center;padding-top:92px;padding-bottom:56px}
+.journey h2{margin-bottom:20px}
+.sts{position:relative}
+.st{padding-bottom:24px}
+.js-ready .sts{display:grid;align-items:center}
+.js-ready .st{grid-area:1/1;min-height:190px;padding-bottom:8px;opacity:0;pointer-events:none;transform:translateY(20px);transition:opacity .45s cubic-bezier(.16,1,.3,1),transform .45s cubic-bezier(.16,1,.3,1)}
+.js-ready .st.on{opacity:1;pointer-events:auto;transform:none;mix-blend-mode:difference}
+.st small{display:block;color:#B8ECFF;font:500 .76rem "JetBrains Mono",monospace;margin-bottom:8px;letter-spacing:.08em;text-transform:uppercase}
+.st h3{font-size:clamp(1.3rem,2vw,1.68rem);line-height:1.2;letter-spacing:-.02em;margin-bottom:10px;color:#FFFFFF}
+.st p{color:#E6F4FA;font-size:.95rem}
+.dots{display:flex;gap:10px;margin-top:20px}
+.dots span{width:34px;height:4px;border-radius:3px;background:var(--bar-bg);cursor:pointer;transition:background .3s,transform .3s,box-shadow .3s}
+.dots span:hover{background:rgba(82,195,205,.45)}
+.dots span.on{background:var(--nacar);box-shadow:0 0 12px rgba(82,195,205,.55);transform:scaleY(1.25)}
+.tankbox{position:relative;background:rgba(7,18,28,.66);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:var(--glass-shadow);overflow:hidden;user-select:none}
+#tank-3d{display:block;width:100%;height:420px;border-radius:10px;cursor:grab;touch-action:none}
+#tank-3d:active{cursor:grabbing}
+.tank-ui{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px;padding:0 4px;font:500 .76rem "JetBrains Mono",monospace;color:var(--muted)}
+.tank-ctrls{display:flex;gap:6px}
+.tank-ctrls button{background:rgba(2,8,14,.55);color:#FFFFFF;border:1px solid var(--line);border-radius:6px;padding:4px 10px;font:500 .75rem "JetBrains Mono",monospace;cursor:pointer;transition:background .25s,border-color .25s,transform .2s}
+.tank-ctrls button:hover{background:rgba(184,236,255,.15);border-color:var(--accent);transform:translateY(-1px)}
+/* media slots */
+figure{margin:0}
+.ph{background:var(--ph);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--line);border-radius:14px;min-height:290px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;color:var(--muted);font-size:.88rem;overflow:hidden;box-shadow:var(--glass-shadow);position:relative;gap:12px}
+#impacto .ph{min-height:225px}
+.ph::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 20%,rgba(143,227,232,.1),transparent 65%);pointer-events:none}
+.ph svg{width:100%;max-width:340px;height:auto;opacity:.9}
+figure img,figure video{width:100%;display:block;border-radius:10px}
+/* data */
+.row{display:grid;grid-template-columns:170px 1fr 1fr;gap:20px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:.92rem}
+.row strong{color:var(--ink);font-weight:500}
+.row.head{color:var(--muted);font:500 .78rem "JetBrains Mono",monospace;text-transform:uppercase;letter-spacing:.06em;padding-top:0;border-bottom:1.5px solid var(--accent)}
+.row .cell-lbl{display:none;font:500 .74rem "JetBrains Mono",monospace;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:4px}
+.row .bt{height:10px;background:var(--bar-bg);border-radius:5px;overflow:hidden}
+.row .bf{height:100%;width:0;background:var(--nacar);border-radius:5px;transition:width 1.8s cubic-bezier(.16,1,.3,1)}
+.row .val{font-weight:500;font-size:.88rem;display:block;margin-top:5px;color:var(--ink)}
+.pend{color:var(--muted);font-style:normal;font-family:"JetBrains Mono",monospace;font-size:.8rem;opacity:.8}
+.note{color:var(--muted);font-size:.86rem}
+.panel{border-left:3px solid var(--accent);background:var(--card);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);padding:20px 24px;border-radius:0 12px 12px 0;border-block:1px solid var(--line);border-right:1px solid var(--line);box-shadow:var(--glass-shadow)}
+.panel p:last-child{margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chips span{border:1px solid var(--line);background:var(--card);backdrop-filter:blur(12px);border-radius:8px;padding:6px 14px;font:500 .8rem "JetBrains Mono",monospace;color:var(--ink);transition:border-color .3s,transform .3s,box-shadow .3s}
+.chips span:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 6px 20px -4px rgba(82,195,205,.3)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.step{background:var(--card);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--line);border-top:2.5px solid var(--accent);border-radius:12px;padding:24px;box-shadow:var(--glass-shadow)}
+.step em{font:500 .76rem "JetBrains Mono",monospace;font-style:normal;color:var(--accent);display:block;margin-bottom:8px;letter-spacing:.08em;text-transform:uppercase}
+.step p{color:var(--muted);margin:0;font-size:.92rem}
+.big{font-size:clamp(1.9rem,3.6vw,2.85rem);line-height:1.12;letter-spacing:-.028em;max-width:18ch;margin-bottom:32px}
+.help{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px;margin-bottom:32px}
+.help div{background:var(--card);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--line);border-top:2.5px solid var(--accent);border-radius:12px;padding:24px;box-shadow:var(--glass-shadow)}
+.help p{margin:0;color:var(--muted);font-size:.92rem}
+footer{border-top:1px solid var(--line);padding:26px 0;color:var(--muted);font-size:.85rem;background:rgba(4,10,16,.65);backdrop-filter:blur(12px)}
+@media (max-width:980px){
+  header.top .wrap{justify-content:space-between}
+  .brand{position:static}
+}
+@media (max-width:899px){
+  header.top{padding:8px 0}
+  header.top .wrap{flex-direction:column;gap:8px;padding:0 16px}
+  nav{width:100%;justify-content:flex-start;gap:8px;padding:6px 10px;overflow-x:auto}
+  nav a{padding:7px 12px;font-size:.8rem}
+  section,.journey{min-height:0;padding:70px 0;display:block}
+  .cols,.stage{grid-template-columns:1fr;gap:34px}.stage{min-height:0;padding-top:80px;padding-bottom:70px}
+  .steps,.js-ready .sts{grid-template-columns:1fr;display:block;gap:24px}.js-ready .st{min-height:0;opacity:1;pointer-events:auto;transform:none;padding-bottom:24px}.tankbox{position:static}
+  #tank-3d{height:340px}
+  .dots{display:none}
+  .fact+.fact{padding-left:22px;border-left:1px solid var(--line)}.fact{padding-right:22px}
+  .row{grid-template-columns:1fr 1fr;gap:12px}.row strong{grid-column:1/-1}.row.head{display:none}.row .cell-lbl{display:block}
+  .hero .wrap{padding-top:124px;padding-bottom:100px}
+}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}.cue i,.bg-aurora{animation:none}.btn,.row .bf{transition:none}
+}
+</style>
+</head>
+<body class="intro-lock">
+<div class="bg-stage" aria-hidden="true">
+  <div class="bg-aurora"></div>
+  <div class="bg-grid"></div>
+  <canvas id="bg-water"></canvas>
+  <div class="bg-noise"></div>
+</div>
+<div class="dive-veil" id="dive-veil" aria-hidden="true"></div>
+<div class="aww-cursor" id="aww-cursor" aria-hidden="true"><span id="aww-lbl"></span></div>
+<div class="c-scroll" id="c-scroll" aria-hidden="true"><div class="c-thumb" id="c-thumb" title="Arrastra para desplazarte"></div></div>
+<header class="top" id="top">
+  <div class="wrap">
+    <nav id="main-nav" aria-label="Secciones">
+      <a class="brand-nav" id="brand-nav" href="#inicio">NÁCAR</a>
+      <a href="#problema">Problema</a><a href="#viaje">El recorrido</a><a href="#nosotros">Nosotros</a>
+      <a href="#impacto">Impacto</a><a href="#gemelo">Digital twin</a><a href="#ruta">Ruta</a><a href="#apoyo">Apoyo</a>
+    </nav>
+  </div>
+</header>
+
+<div class="blend-stage">
+<canvas id="bg-webgl" aria-hidden="true"></canvas>
+<div class="intro-portal" id="intro-portal" role="dialog" aria-label="Bienvenida a Proyecto Nácar">
+  <div class="intro-top-tag" id="intro-tag">BIOINGENIERÍA ACUÁTICA · DIGITAL TWIN · YUCATÁN</div>
+  <div class="intro-title" id="intro-nacar">NÁCAR</div>
+  <button type="button" class="clam-hit" id="clam-trigger" aria-label="Presiona la almeja para sumergirte al proyecto"></button>
+  <div class="intro-cta" id="intro-cta"><span>Presiona la almeja para sumergirte</span><i></i></div>
+</div>
+<div class="aww-hud" aria-hidden="true"><span>20°58'N 89°37'W · ACUÍFERO KÁRSTICO</span><span id="hud-step">FASE 01 / 12</span></div>
+<main id="inicio">
+  <section class="hero">
+    <!-- Espacio para foto o video de fondo: se coloca aquí, detrás del canvas -->
+    <canvas id="sea" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <h1 id="h1">Regenerando el agua de Yucatán</h1>
+      <p class="lead">Biofiltración natural y tecnología de digital twin para proteger el acuífero kárstico de la península.</p>
+      <div class="btns"><a class="btn primary" href="#apoyo">Apoyar el proyecto</a><a class="btn ghost" href="#viaje">Ver cómo funciona</a></div>
+    </div>
+    <div class="cue" aria-hidden="true"><i></i>Desliza</div>
+  </section>
+
+  <section id="problema">
+    <div class="wrap">
+      <h2 class="sp">¿Qué hay bajo el agua que bebemos?</h2>
+      <div class="rule"></div>
+      <p>La península de Yucatán enfrenta una crisis hídrica y de salud pública. El acuífero kárstico tiene un suelo hiperpermeable que impide la filtración natural, y las comunidades quedan expuestas a agua con patógenos fecales, metales pesados y nitratos.</p>
+      <div class="facts">
+        <div class="fact"><b data-n="2400" data-s="%">0</b><span>por encima de los límites de la OMS en patógenos fecales</span></div>
+        <div class="fact"><b data-p="&lt; " data-n="25" data-s=" cm">0</b><span>de suelo (leptosoles): no hay filtración natural</span></div>
+        <div class="fact"><b data-n="1.5" data-s=" mm" data-d="1">0</b><span>de geomembrana que aísla el biofiltro del manto freático</span></div>
+        <div class="fact"><b data-n="4" data-s=" días">0</b><span>para una reducción drástica de la turbidez</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="journey" id="viaje">
+    <div class="wrap stage">
+      <div>
+        <h2 class="sp">El agua se aclara a medida que bajas</h2>
+        <div class="sts">
+          <div class="st on"><small>1 de 5</small><h3>El suelo no filtra</h3><p>En Yucatán el suelo mide menos de 25 cm y deja pasar todo al acuífero. Los patógenos fecales llegan a superar hasta 2400% los límites de la OMS.</p></div>
+          <div class="st"><small>2 de 5</small><h3>Aislamos el agua</h3><p>Una geomembrana de polietileno de alta densidad de 1.5 mm confina el biofiltro y evita filtraciones al manto freático.</p></div>
+          <div class="st"><small>3 de 5</small><h3>Tres aliados vivos</h3><p>Almejas nativas filtran partículas y bacterias. Macrófitas como <i>Nymphaea ampla</i> absorben nutrientes y metales pesados, mientras una biopelícula microbiana realiza la nitrificación.</p></div>
+          <div class="st"><small>4 de 5</small><h3>Un digital twin que predice</h3><p>Sensores IoT y modelos matemáticos (Navier-Stokes, CWM1, DEB/SFG y PHREEQC) simulan el sistema para optimizarlo antes de construirlo.</p></div>
+          <div class="st"><small>5 de 5</small><h3>Agua cristalina en 4 días</h3><p>Reducción drástica de turbidez, casi total de coliformes fecales y crítica de fosfatos y nitratos. Los datos varían según el volumen de agua.</p></div>
+        </div>
+        <div class="dots" role="tablist" aria-label="Etapas del biofiltro"><span class="on" data-st="0" title="Etapa 1"></span><span data-st="1" title="Etapa 2"></span><span data-st="2" title="Etapa 3"></span><span data-st="3" title="Etapa 4"></span><span data-st="4" title="Etapa 5"></span></div>
+      </div>
+      <div class="tankbox" id="tankbox">
+        <canvas id="tank-3d" role="img" aria-label="Bloque 3D interactivo de agua y suelo kárstico"></canvas>
+        <div class="tank-ui">
+          <span>Arrastra para rotar · Rueda para zoom</span>
+          <div class="tank-ctrls">
+            <button type="button" id="z-in" title="Acercar zoom" aria-label="Acercar zoom">+</button>
+            <button type="button" id="z-out" title="Alejar zoom" aria-label="Alejar zoom">−</button>
+            <button type="button" id="z-rst" title="Restablecer vista">Reiniciar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="nosotros">
+    <div class="wrap">
+      <h2 class="sp">¿Quién está detrás del proyecto?</h2>
+      <div class="rule"></div>
+      <div class="cols">
+        <div>
+          <p>Somos una empresa social liderada por un equipo interdisciplinario juvenil: estudiantes de arquitectura (Universidad Marista) y de matemáticas (UADY), con el respaldo de asesores en ingeniería ambiental y derechos humanos titulados por la UADY.</p>
+          <p>Nuestro propósito es regenerar ecosistemas acuáticos, escalar a nivel global y llevar el proyecto al <i>World Summit of Nobel Peace Laureates</i>.</p>
+        </div>
+        <figure class="ph" data-slot="equipo">
+          <svg viewBox="0 0 320 160" aria-hidden="true">
+            <defs><linearGradient id="gEq" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="52%" stop-color="#B8ECFF"/><stop offset="100%" stop-color="#56C8E0"/></linearGradient></defs>
+            <circle cx="90" cy="80" r="46" fill="none" stroke="#52C3CD" stroke-width="1.5" opacity=".6"/>
+            <circle cx="160" cy="80" r="46" fill="none" stroke="url(#gEq)" stroke-width="2"/>
+            <circle cx="230" cy="80" r="46" fill="none" stroke="#B8ECFF" stroke-width="1.5" opacity=".6"/>
+            <text x="72" y="84" font-size="10" fill="#9AB0BE" text-anchor="middle">Arquitectura</text>
+            <text x="160" y="76" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">NÁCAR</text>
+            <text x="160" y="90" font-size="9" fill="#7CE0F4" text-anchor="middle">Ing. Ambiental</text>
+            <text x="248" y="84" font-size="10" fill="#9AB0BE" text-anchor="middle">Matemáticas</text>
+          </svg>
+          <span>Fotografía o video del equipo interdisciplinario (Marista · UADY)</span>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt" id="impacto">
+    <div class="wrap">
+      <h2 class="sp">Resultados que se pueden medir</h2>
+      <div class="rule"></div>
+      <div class="cols">
+        <figure class="ph" data-slot="antes-despues">
+          <svg viewBox="0 0 320 140" aria-hidden="true">
+            <rect x="10" y="15" width="142" height="110" rx="8" fill="#3B3324" stroke="rgba(255,255,255,.12)"/>
+            <circle cx="48" cy="58" r="8" fill="#7D6B48" opacity=".7"/><circle cx="95" cy="85" r="11" fill="#7D6B48" opacity=".6"/><circle cx="115" cy="45" r="6" fill="#7D6B48" opacity=".7"/>
+            <text x="81" y="112" font-size="11" font-weight="600" fill="#D5C6A9" text-anchor="middle">ANTES (Día 0)</text>
+            <rect x="168" y="15" width="142" height="110" rx="8" fill="#0F4C5C" stroke="#52C3CD"/>
+            <circle cx="215" cy="52" r="3" fill="#8FE3E8"/><circle cx="265" cy="68" r="3.5" fill="#FFFFFF"/><circle cx="238" cy="82" r="2.5" fill="#B8ECFF"/>
+            <text x="239" y="112" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">DESPUÉS (Día 4)</text>
+          </svg>
+          <span>Comparativa fotográfica antes y después del cuerpo de agua</span>
+        </figure>
+        <div>
+          <p><strong>Estrategia de operación.</strong> Iniciamos con un modelo B2B: mantenimiento ecológico de lagos y estanques corporativos. Ese sector financia el capital semilla para instalar después la tecnología en comunidades rurales vulnerables.</p>
+          <div class="panel"><h3>Impacto comprobado en 4 días</h3><p>Reducimos la turbidez, abatimos casi por completo los coliformes fecales y disminuimos fosfatos y nitratos: de ecosistemas eutrofizados a agua cristalina y segura.</p></div>
+        </div>
+      </div>
+      <h3 style="margin:32px 0 4px">Datos medidos</h3>
+      <p class="note">Publicamos las mediciones conforme las recogemos. Lo que falta aparece como pendiente.</p>
+      <div id="datos"><div class="row head"><span>Parámetro</span><span>Antes</span><span>Después</span></div></div>
+      <p class="note" id="upd" style="margin-top:14px"></p>
+    </div>
+  </section>
+
+  <section id="gemelo">
+    <div class="wrap">
+      <h2 class="sp">Un digital twin del biofiltro</h2>
+      <div class="rule"></div>
+      <div class="cols">
+        <div>
+          <p>Una plataforma predictiva en Python replica el biofiltro en digital, en lugar de trabajar por prueba y error. Sensores IoT envían datos de calidad del agua en tiempo real para alimentar los modelos y optimizar el rendimiento antes de construir.</p>
+          <div class="chips"><span>Navier-Stokes</span><span>CWM1</span><span>DEB/SFG</span><span>PHREEQC</span><span>Sensores IoT</span><span>Python</span></div>
+        </div>
+        <figure class="ph" data-slot="gemelo">
+          <svg viewBox="0 0 320 150" aria-hidden="true">
+            <rect x="12" y="10" width="296" height="130" rx="8" fill="rgba(5,15,24,.75)" stroke="rgba(82,195,205,.35)"/>
+            <path d="M32 110 Q85 40 140 85 T255 45 L288 38" fill="none" stroke="#52C3CD" stroke-width="2.5"/>
+            <path d="M32 120 Q95 75 155 95 T288 72" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="4 4"/>
+            <circle cx="85" cy="63" r="4" fill="#8FE3E8"/><circle cx="140" cy="85" r="4" fill="#8FE3E8"/><circle cx="255" cy="45" r="4" fill="#FFFFFF"/>
+            <text x="28" y="30" font-size="10" font-family="monospace" fill="#8FE3E8">SIMULACIÓN EN TIEMPO REAL · PYTHON + IoT</text>
+          </svg>
+          <span>Interfaz del digital twin</span>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt" id="ruta">
+    <div class="wrap">
+      <h2 class="sp">Hacia dónde vamos</h2>
+      <div class="rule"></div>
+      <div class="steps">
+        <div class="step"><em>Fase 1</em><h3>Empresas privadas</h3><p>Mantenimiento ecológico de lagos y estanques corporativos que financia el capital semilla.</p></div>
+        <div class="step"><em>Fase 2</em><h3>Comunidades rurales</h3><p>Biofiltros donde el agua contaminada afecta directamente la salud de las personas.</p></div>
+        <div class="step"><em>Fase 3</em><h3>Escala global</h3><p>Replicar el modelo en otros ecosistemas y presentarlo en el World Summit of Nobel Peace Laureates.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="apoyo">
+    <div class="wrap">
+      <h2 class="big sp">El agua de Yucatán también tiene futuro.</h2>
+      <div class="help">
+        <div><h3>Súmate como aliado</h3><p>Si tu empresa tiene un lago o estanque, trabajemos juntos en su regeneración.</p></div>
+        <div><h3>Difunde</h3><p>Comparte esta página con personas y organizaciones interesadas en el agua de Yucatán.</p></div>
+        <div><h3>Colabora</h3><p>Aporta conocimiento, contactos o recursos para llevar biofiltros a más comunidades.</p></div>
+      </div>
+      <div class="btns"><a class="btn primary" href="mailto:contacto@proyectonacar.org?subject=Quiero%20apoyar%20Proyecto%20N%C3%A1car">Escríbenos para apoyar</a></div>
+    </div>
+  </section>
+</main>
+</main>
+</div>
+<footer><div class="wrap">© 2026 Proyecto Nácar. Empresa social para la regeneración acuática en Yucatán.</div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+/* ===== EDITA AQUÍ: mediciones (null = pendiente) ===== */
+const MEDICIONES = {
+  actualizado: "12 de noviembre de 2026",
+  filas: [
+    { nombre: "Turbidez", unidad: "NTU", antes: null, despues: null },
+    { nombre: "Coliformes fecales", unidad: "NMP/100 ml", antes: null, despues: null },
+    { nombre: "Fosfatos", unidad: "mg/L", antes: null, despues: null },
+    { nombre: "Nitratos", unidad: "mg/L", antes: null, despues: null }
+  ]
+};
+/* ======================================================= */
+(function(){
+  document.documentElement.classList.add("js-ready");
+  const $ = s => document.querySelector(s), $$ = s => [].slice.call(document.querySelectorAll(s));
+  const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // encabezado sólido al bajar
+  const top = $("#top"); const onS = () => top.classList.toggle("solid", scrollY > 30);
+  addEventListener("scroll", onS, { passive: true }); onS();
+
+  // titulares: palabras que se revelan
+  const split = el => { if (el) el.innerHTML = el.textContent.trim().split(/\s+/).map(w => '<span class="w"><span>' + w + "</span></span>").join(" "); };
+  split($("#h1")); $$("h2.sp").forEach(split);
+
+  // olas del hero (canvas)
+  const cv = $("#sea"), cx = cv.getContext("2d"); let W, H, t = 0, vis = true;
+  const size = () => { const r = cv.getBoundingClientRect(), d = Math.min(devicePixelRatio || 1, 2); W = cv.width = r.width * d; H = cv.height = r.height * d; };
+  const cols = ["rgba(184,236,255,.22)", "rgba(124,224,244,.14)", "rgba(11,110,120,.1)"];
+  const draw = () => {
+    cx.clearRect(0, 0, W, H);
+    cols.forEach((c, i) => {
+      cx.beginPath(); cx.moveTo(0, H);
+      for (let x = 0; x <= W; x += 12) {
+        const y = H * (.5 + i * .13) + Math.sin(x / (W / (2.5 + i)) + t * (1 + i * .45) + i * 2) * H * .05 + Math.sin(x / (W / 8) - t * .8) * H * .015;
+        cx.lineTo(x, y);
+      }
+      cx.lineTo(W, H); cx.closePath(); cx.fillStyle = c; cx.fill();
+    });
+  };
+  size(); draw(); addEventListener("resize", () => { size(); draw(); });
+  if (!calm) {
+    new IntersectionObserver(e => vis = e[0].isIntersecting).observe(cv);
+    (function loop(){ if (vis) { t += .014; draw(); } requestAnimationFrame(loop); })();
+  }
+
+  // =========================================================================
+  // 1. FONDO DE AGUA (#bg-water, fuera de .blend-stage) + CONCHA 3D ACROMÁTICA A LA DERECHA (#bg-webgl, dentro de .blend-stage)
+  // =========================================================================
+  const waterCv = $("#bg-water"), bgCv = $("#bg-webgl");
+  if (bgCv && waterCv && window.THREE) {
+    // Renderer A: Fondo de cáusticas azules (separado para que las letras NUNCA se vean naranjas)
+    const wRenderer = new THREE.WebGLRenderer({ canvas: waterCv, alpha: false, antialias: false, powerPreference: "high-performance" });
+    wRenderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5));
+    wRenderer.setSize(innerWidth, innerHeight);
+    const wScene = new THREE.Scene();
+    const wCam = new THREE.Camera();
+
+    const causticsMat = new THREE.ShaderMaterial({
+      depthWrite: false,
+      uniforms: {
+        uTime: { value: 0 },
+        uScroll: { value: 0 },
+        uDive: { value: 0 },
+        uMouse: { value: new THREE.Vector2(0, 0) },
+        uRes: { value: new THREE.Vector2(innerWidth, innerHeight) }
+      },
+      vertexShader: `
+        varying vec2 vUv;
+        void main() { vUv = uv; gl_Position = vec4(position.xy, 0.999, 1.0); }
+      `,
+      fragmentShader: `
+        precision highp float;
+        varying vec2 vUv;
+        uniform float uTime;
+        uniform float uScroll;
+        uniform float uDive;
+        uniform vec2 uMouse;
+        uniform vec2 uRes;
+        float causticPattern(vec2 uv, float t) {
+          vec2 p = mod(uv * 6.2831853, 6.2831853) - 250.0;
+          vec2 i = vec2(p);
+          float c = 1.0, inten = 0.005;
+          for (int n = 0; n < 4; n++) {
+            float time = t * (1.0 - (3.2 / float(n + 1)));
+            i = p + vec2(cos(time - i.x) + sin(time + i.y), sin(time - i.y) + cos(time + i.x));
+            c += 1.0 / length(vec2(p.x / (sin(i.x + time) / inten), p.y / (cos(i.y + time) / inten)));
+          }
+          c /= 4.0;
+          c = 1.17 - pow(c, 1.4);
+          return pow(abs(c), 7.5);
+        }
+        void main() {
+          vec2 uv = vUv;
+          float aspect = uRes.x / max(uRes.y, 1.0);
+          vec2 p = (uv - 0.5) * vec2(aspect, 1.0);
+          vec2 m = uMouse * 0.1;
+
+          // Línea de superficie del agua que sube al sumergirse (uDive: 0 -> 1)
+          float waveSurf = sin(p.x * 4.5 + uTime * 2.2) * 0.025 + cos(p.x * 9.0 - uTime * 1.6) * 0.012;
+          float waterLine = -0.12 + uDive * 1.35 + waveSurf;
+          float underMask = smoothstep(waterLine + 0.08, waterLine - 0.08, uv.y);
+          float meniscus = exp(-pow((uv.y - waterLine) * 28.0, 2.0)) * smoothstep(0.02, 0.2, uDive) * smoothstep(0.99, 0.75, uDive);
+
+          // Escena subacuática de cenote
+          float rays = (sin((p.x * 3.5 + p.y * 1.2) + uTime * 0.35) * 0.5 + 0.5) * (sin((p.x * 7.0 - p.y * 2.0) - uTime * 0.22) * 0.5 + 0.5) * smoothstep(-0.4, 0.65, uv.y);
+          vec2 cUv = p * 0.85 + m + vec2(0.0, uScroll * 0.35 - (1.0 - uDive) * 0.45);
+          float c1 = causticPattern(cUv, uTime * 0.45);
+          float c2 = causticPattern(cUv + vec2(0.016, -0.012), uTime * 0.45 + 0.4);
+          vec3 abyss = vec3(0.012, 0.034, 0.058);
+          vec3 cenoteTeal = vec3(0.032, 0.17, 0.24);
+          vec3 cyanCaustic = vec3(0.45, 0.85, 0.95);
+          vec3 pureWhite = vec3(1.0, 1.0, 1.0);
+          vec3 lightBlue = vec3(0.72, 0.93, 1.0);
+
+          vec3 underCol = mix(abyss, cenoteTeal, smoothstep(0.0, 1.0, uv.y * 0.85 + 0.15));
+          underCol += cyanCaustic * c1 * 0.22 * (0.4 + 0.6 * uv.y);
+          underCol += mix(lightBlue, pureWhite, uv.x) * c2 * 0.14;
+          underCol += mix(cyanCaustic, lightBlue, 0.45) * rays * 0.1;
+
+          // Atmósfera nocturna sobre la superficie antes de sumergirse
+          vec3 surfaceSky = mix(vec3(0.018, 0.048, 0.078), vec3(0.008, 0.018, 0.032), smoothstep(0.0, 1.0, uv.y));
+          vec3 col = mix(surfaceSky, underCol, underMask);
+          col += mix(lightBlue, pureWhite, 0.6) * meniscus * 0.65;
+
+          float vig = smoothstep(1.35, 0.25, length(p * 0.85));
+          col *= (0.55 + 0.45 * vig);
+          gl_FragColor = vec4(col, 1.0);
+        }
+      `
+    });
+    wScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), causticsMat));
+
+    // Renderer B: Almeja 3D + Anillos + Burbujas en blanco puro acromático (R=G=B) con fondo transparente
+    const renderer = new THREE.WebGLRenderer({ canvas: bgCv, alpha: true, antialias: true, powerPreference: "high-performance" });
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.setClearColor(0x000000, 0);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 150);
+    camera.position.set(0, 0.5, 13);
+
+    // Iluminación HDRI acromática (R=G=B puro) para que la resta con letras blancas dé negro/gris puro sin tono naranja
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    const envScene = new THREE.Scene();
+    envScene.background = new THREE.Color(0x1a1a1a);
+    const addLightPanel = (col, x, y, z, s) => {
+      const m = new THREE.Mesh(new THREE.SphereGeometry(s, 16, 16), new THREE.MeshBasicMaterial({ color: col }));
+      m.position.set(x, y, z); envScene.add(m);
+    };
+    addLightPanel(0xffffff, 12, 14, 10, 6);
+    addLightPanel(0xf5f5f5, -14, 8, 8, 5);
+    addLightPanel(0xeaeaea, 0, -14, 6, 5);
+    addLightPanel(0xffffff, -8, 12, -12, 5);
+    const envMap = pmrem.fromScene(envScene, 0.04).texture;
+    scene.environment = envMap;
+
+    const bmpCv = document.createElement("canvas"); bmpCv.width = bmpCv.height = 256;
+    const bmpCx = bmpCv.getContext("2d");
+    for (let y = 0; y < 256; y++) {
+      const v = Math.floor(128 + 60 * Math.sin(y * 0.25) + 30 * Math.cos(y * 0.6));
+      bmpCx.fillStyle = "rgb(" + v + "," + v + "," + v + ")";
+      bmpCx.fillRect(0, y, 256, 1);
+    }
+    const bumpTex = new THREE.CanvasTexture(bmpCv);
+    bumpTex.wrapS = bumpTex.wrapT = THREE.RepeatWrapping;
+    bumpTex.repeat.set(4, 4);
+
+    // Estado de transición desde la pantalla portal (move: 0 en el centro estática -> 1 a la derecha girando con anillos y burbujas)
+    const introState = { move: 0, spin: 0, rings: 0, dive: 0 };
+    window.__introState = introState;
+
+    const sculpGroup = new THREE.Group();
+    sculpGroup.position.set(0, -0.15, 1.3);
+    scene.add(sculpGroup);
+
+    // Geometría esculpida como Almeja de Nácar 3D (estrías radiales de valva + curvatura orgánica)
+    const orbGeo = new THREE.IcosahedronGeometry(2.3, 5);
+    const rawPos = orbGeo.attributes.position.array;
+    for (let i = 0; i < rawPos.length; i += 3) {
+      let x = rawPos[i], y = rawPos[i + 1], z = rawPos[i + 2];
+      const angle = Math.atan2(x, y + 2.6);
+      const ribs = Math.cos(angle * 18.0) * 0.075 * smoothstepShell(y);
+      x *= 1.12;
+      y *= 0.88;
+      z = z * (0.58 + 0.12 * (y / 2.3)) + ribs;
+      rawPos[i] = x; rawPos[i + 1] = y; rawPos[i + 2] = z;
+    }
+    function smoothstepShell(y) { const t = Math.max(0, Math.min(1, (y + 2.0) / 4.0)); return t * t * (3 - 2 * t); }
+    orbGeo.computeVertexNormals();
+    const orbBase = orbGeo.attributes.position.array.slice();
+
+    const nacreMat = new THREE.MeshPhysicalMaterial({
+      color: new THREE.Color(0xffffff),
+      emissive: new THREE.Color(0xffffff),
+      emissiveIntensity: 0.72,
+      metalness: 0.08,
+      roughness: 0.08,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.04,
+      reflectivity: 1.0,
+      envMap: envMap,
+      envMapIntensity: 1.8,
+      bumpMap: bumpTex,
+      bumpScale: 0.015
+    });
+    const nacreOrb = new THREE.Mesh(orbGeo, nacreMat);
+    sculpGroup.add(nacreOrb);
+
+    // Grupo de Anillos y Burbujas satelitales (ocultos en la pantalla inicial, se incorporan cuando la almeja baja a su sitio)
+    const orbitExtras = new THREE.Group();
+    orbitExtras.scale.setScalar(0.0001);
+    orbitExtras.visible = false;
+    sculpGroup.add(orbitExtras);
+
+    const ringMat1 = new THREE.MeshPhysicalMaterial({
+      color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 0.85, metalness: 0.15, roughness: 0.1, clearcoat: 1.0, envMap: envMap
+    });
+    const ringMat2 = new THREE.MeshPhysicalMaterial({
+      color: 0xf2f2f2, emissive: 0xededed, emissiveIntensity: 0.78, metalness: 0.15, roughness: 0.12, clearcoat: 1.0, envMap: envMap
+    });
+    const ring1 = new THREE.Mesh(new THREE.TorusGeometry(3.4, 0.055, 24, 120), ringMat1);
+    ring1.rotation.set(Math.PI * 0.32, Math.PI * 0.15, 0);
+    const ring2 = new THREE.Mesh(new THREE.TorusGeometry(4.0, 0.045, 20, 120), ringMat2);
+    ring2.rotation.set(-Math.PI * 0.28, -Math.PI * 0.22, 0);
+    orbitExtras.add(ring1, ring2);
+
+    const dropGroup = new THREE.Group();
+    const dropGeo = new THREE.SphereGeometry(1, 28, 28);
+    const drops = [];
+    for (let i = 0; i < 16; i++) {
+      const m = new THREE.Mesh(dropGeo, i % 2 === 0 ? ringMat1 : nacreMat);
+      const rad = 3.8 + (i % 4) * 1.3;
+      const ang = (i / 16) * Math.PI * 2;
+      const sc = 0.11 + (i % 3) * 0.07;
+      m.scale.setScalar(sc);
+      drops.push({ mesh: m, rad, ang, yOff: (Math.random() - 0.5) * 4.4, spd: 0.3 + (i % 5) * 0.12 });
+      dropGroup.add(m);
+    }
+    orbitExtras.add(dropGroup);
+
+    const light1 = new THREE.PointLight(0xffffff, 3.5, 40); light1.position.set(7, 6, 8);
+    const light2 = new THREE.PointLight(0xffffff, 3.0, 40); light2.position.set(-7, -5, 7);
+    const ambLight = new THREE.AmbientLight(0xffffff, 1.5);
+    scene.add(light1, light2, ambLight);
+
+    let mx = 0, my = 0, tmx = 0, tmy = 0, sProg = 0, tsProg = 0, spinClock = 0, clock = 0;
+    window.__setFaseRatio = r => { tsProg = r; };
+    addEventListener("pointermove", e => {
+      tmx = (e.clientX / innerWidth - 0.5) * 2;
+      tmy = (e.clientY / innerHeight - 0.5) * 2;
+    }, { passive: true });
+    addEventListener("resize", () => {
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+      wRenderer.setSize(innerWidth, innerHeight);
+      causticsMat.uniforms.uRes.value.set(innerWidth, innerHeight);
+    });
+
+    const render3D = () => {
+      clock += calm ? 0 : 0.01;
+      spinClock += calm ? 0 : (0.01 * introState.spin);
+      if (window.__modoFases !== true) {
+        const maxS = Math.max(document.documentElement.scrollHeight - innerHeight, 1);
+        tsProg = scrollY / maxS;
+      }
+      sProg += (tsProg - sProg) * 0.055;
+      mx += (tmx - mx) * 0.045;
+      my += (tmy - my) * 0.045;
+
+      causticsMat.uniforms.uTime.value = clock;
+      causticsMat.uniforms.uScroll.value = sProg;
+      causticsMat.uniforms.uDive.value = introState.dive;
+      causticsMat.uniforms.uMouse.value.set(mx, -my);
+
+      // Deformación orgánica (estática/sutil en el menú inicial, fluida cuando ya entró a la página)
+      const morphAmt = 0.15 + 0.85 * introState.spin;
+      const pos = orbGeo.attributes.position.array;
+      for (let i = 0; i < pos.length; i += 3) {
+        const bx = orbBase[i], by = orbBase[i + 1], bz = orbBase[i + 2];
+        const len = Math.sqrt(bx * bx + by * by + bz * bz) || 1;
+        const nx = bx / len, ny = by / len, nz = bz / len;
+        const wave = 1 + morphAmt * (0.09 * Math.sin(nx * 3.2 + spinClock * 1.6) * Math.cos(ny * 3.0 - spinClock * 1.3) + 0.05 * Math.sin(nz * 4.5 + spinClock * 2.1 + sProg * 5.0));
+        pos[i] = bx * wave; pos[i + 1] = by * wave; pos[i + 2] = bz * wave;
+      }
+      orbGeo.attributes.position.needsUpdate = true;
+      orbGeo.computeVertexNormals();
+
+      // En el portal inicial (move=0) la almeja está en el centro (0, -0.18, 1.35) casi estática; al presionar viaja a la derecha (4.45, 0.45, -1.3)
+      const targetX = 4.45 + Math.cos(sProg * Math.PI * 1.6) * 0.75 + mx * 0.7;
+      const targetY = 0.45 + Math.sin(sProg * Math.PI * 2.0) * 0.7 - my * 0.55;
+      const targetZ = -1.3 - Math.sin(sProg * Math.PI) * 1.4;
+
+      const m = introState.move;
+      // Arco suave hacia abajo al sumergirse
+      const diveDip = Math.sin(m * Math.PI) * -1.15;
+      sculpGroup.position.x = (1 - m) * (mx * 0.22) + m * targetX;
+      sculpGroup.position.y = (1 - m) * (-0.18 - my * 0.18) + m * targetY + diveDip;
+      sculpGroup.position.z = (1 - m) * 1.35 + m * targetZ;
+
+      sculpGroup.rotation.y = (1 - m) * (mx * 0.28) + m * (spinClock * 0.38 + sProg * Math.PI * 2.0);
+      sculpGroup.rotation.x = (1 - m) * (-0.12 + my * 0.22) + m * (spinClock * 0.18 + sProg * Math.PI * 0.8);
+
+      if (introState.rings > 0.001) {
+        orbitExtras.visible = true;
+        orbitExtras.scale.setScalar(introState.rings);
+        ring1.rotation.z = spinClock * 0.5 + sProg * 2.5;
+        ring2.rotation.y = -spinClock * 0.4 - sProg * 2.0;
+        drops.forEach(d => {
+          const a = d.ang + spinClock * d.spd + sProg * 2.2;
+          d.mesh.position.set(Math.cos(a) * d.rad, d.yOff + Math.sin(spinClock * 1.5 + d.ang) * 0.4, Math.sin(a) * d.rad);
+        });
+      } else {
+        orbitExtras.visible = false;
+      }
+
+      wRenderer.render(wScene, wCam);
+      renderer.render(scene, camera);
+    };
+    render3D();
+    if (!calm) {
+      if (window.gsap) gsap.ticker.add(render3D);
+      else (function rLoop(){ render3D(); requestAnimationFrame(rLoop); })();
+    }
+  }
+
+  // =========================================================================
+  // 2. BLOQUE 3D DE AGUA Y TIERRA KÁRSTICA (#tank-3d) CON OLEAJE CONSTANTE, ROTACIÓN Y ZOOM (SIN PECES)
+  // =========================================================================
+  const tankCv = $("#tank-3d");
+  if (tankCv && window.THREE) {
+    const tRenderer = new THREE.WebGLRenderer({ canvas: tankCv, alpha: true, antialias: true, powerPreference: "high-performance" });
+    tRenderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+    tRenderer.toneMapping = THREE.ACESFilmicToneMapping;
+    tRenderer.toneMappingExposure = 1.15;
+
+    const tScene = new THREE.Scene();
+    const tCam = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
+
+    const resizeTank = () => {
+      const r = tankCv.getBoundingClientRect();
+      const w = Math.max(r.width, 280), h = Math.max(r.height, 260);
+      tRenderer.setSize(w, h, false);
+      tCam.aspect = w / h;
+      tCam.updateProjectionMatrix();
+    };
+    resizeTank();
+    addEventListener("resize", resizeTank);
+
+    // Iluminación del diorama 3D
+    const tPmrem = new THREE.PMREMGenerator(tRenderer);
+    const tEnvSc = new THREE.Scene();
+    tEnvSc.background = new THREE.Color(0x0b1d2a);
+    const addTLight = (c, x, y, z, s) => {
+      const m = new THREE.Mesh(new THREE.SphereGeometry(s, 12, 12), new THREE.MeshBasicMaterial({ color: c }));
+      m.position.set(x, y, z); tEnvSc.add(m);
+    };
+    addTLight(0xffffff, 10, 14, 10, 5);
+    addTLight(0xb8ecff, -12, 10, -8, 4.5);
+    addTLight(0x56c8e0, 0, -10, 8, 4);
+    const tEnvMap = tPmrem.fromScene(tEnvSc, 0.04).texture;
+    tScene.environment = tEnvMap;
+
+    const dirL1 = new THREE.DirectionalLight(0xffffff, 2.4); dirL1.position.set(6, 10, 7);
+    const dirL2 = new THREE.DirectionalLight(0xb8ecff, 1.4); dirL2.position.set(-7, 5, -6);
+    const tAmb = new THREE.AmbientLight(0x8ab8cc, 1.1);
+    tScene.add(dirL1, dirL2, tAmb);
+
+    const diorama = new THREE.Group();
+    diorama.position.y = -0.15;
+    tScene.add(diorama);
+
+    const W_SIZE = 4.6;
+    const WATER_BOT = -0.75;
+    const WATER_TOP_BASE = 1.05;
+    const GRID_SEG = 36;
+
+    // Función de altura de ola en tiempo real (compartida por la superficie, paredes de agua y nenúfares)
+    const waveHeight = (x, z, time) => {
+      return WATER_TOP_BASE
+        + Math.sin(x * 1.55 + time * 2.4) * Math.cos(z * 1.35 + time * 1.9) * 0.11
+        + Math.sin((x * 0.9 - z * 1.2) + time * 3.1) * 0.055
+        + Math.cos(x * 2.6 + z * 2.2 - time * 1.7) * 0.025;
+    };
+
+    // A. BASE DE TIERRA Y ROCA KÁRSTICA EN 3D (abajo del bloque de agua)
+    const soilGeo = new THREE.BoxGeometry(W_SIZE + 0.08, 1.35, W_SIZE + 0.08, 24, 8, 24);
+    const sPos = soilGeo.attributes.position.array;
+    const sCol = new Float32Array(sPos.length);
+    for (let i = 0; i < sPos.length; i += 3) {
+      let vx = sPos[i], vy = sPos[i + 1], vz = sPos[i + 2];
+      const n = Math.sin(vx * 2.3) * Math.cos(vz * 2.3) * 0.06 + Math.sin(vx * 5.1 + vz * 4.7) * 0.025;
+      if (vy > 0.5) {
+        // Superficie superior de tierra en contacto con el agua/geomembrana
+        vy += n * 0.85;
+      } else {
+        // Rugosidad kárstica en paredes y base
+        const edge = Math.max(Math.abs(vx), Math.abs(vz));
+        if (edge > W_SIZE * 0.48) {
+          const crk = Math.sin(vx * 3.8 + vy * 5.2) * Math.cos(vz * 3.8 - vy * 4.5) * 0.045;
+          vx += Math.sign(vx) * crk;
+          vz += Math.sign(vz) * crk;
+        }
+      }
+      sPos[i] = vx; sPos[i + 1] = vy; sPos[i + 2] = vz;
+
+      // Color por estratos: suelo delgado oscuro arriba (leptosol) y caliza kárstica porosa abajo
+      const hNorm = (vy + 0.675) / 1.35;
+      const strata = Math.sin(vy * 14.0 + Math.sin(vx * 2.0) * 1.5) * 0.04;
+      let r, g, b;
+      if (hNorm > 0.78) {
+        r = 0.25 + strata; g = 0.21 + strata; b = 0.16 + strata; // Leptosol oscuro (<25 cm)
+      } else {
+        r = 0.44 + strata; g = 0.41 + strata; b = 0.35 + strata; // Roca caliza de Yucatán
+      }
+      sCol[i] = r; sCol[i + 1] = g; sCol[i + 2] = b;
+    }
+    soilGeo.setAttribute("color", new THREE.BufferAttribute(sCol, 3));
+    soilGeo.computeVertexNormals();
+    const soilMesh = new THREE.Mesh(soilGeo, new THREE.MeshStandardMaterial({
+      vertexColors: true, roughness: 0.88, metalness: 0.05
+    }));
+    soilMesh.position.y = WATER_BOT - 0.68;
+    diorama.add(soilMesh);
+
+    // Grietas/fisuras kársticas oscuras en el bloque de tierra
+    const crackMat = new THREE.LineBasicMaterial({ color: 0x1a1510, transparent: true, opacity: 0.65 });
+    const crackPts = [];
+    for (let k = 0; k < 12; k++) {
+      const side = k % 4;
+      const offset = ((k / 12) - 0.5) * (W_SIZE * 0.75);
+      const half = (W_SIZE + 0.1) * 0.5;
+      let x0 = side < 2 ? offset : (side === 2 ? half : -half);
+      let z0 = side >= 2 ? offset : (side === 0 ? half : -half);
+      crackPts.push(new THREE.Vector3(x0, WATER_BOT - 0.05, z0));
+      crackPts.push(new THREE.Vector3(x0 + (Math.random() - 0.5) * 0.35, WATER_BOT - 0.65, z0 + (Math.random() - 0.5) * 0.35));
+      crackPts.push(new THREE.Vector3(x0 + (Math.random() - 0.5) * 0.35, WATER_BOT - 0.65, z0 + (Math.random() - 0.5) * 0.35));
+      crackPts.push(new THREE.Vector3(x0 + (Math.random() - 0.5) * 0.5, WATER_BOT - 1.3, z0 + (Math.random() - 0.5) * 0.5));
+    }
+    diorama.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(crackPts), crackMat));
+
+    // B. ETAPA 1: Filtraciones de contaminantes hacia el subsuelo (cuando no hay geomembrana)
+    const leaksGroup = new THREE.Group();
+    const leakDrops = [];
+    const leakMat = new THREE.MeshBasicMaterial({ color: 0xd9824b, transparent: true, opacity: 0.85 });
+    const leakGeo = new THREE.SphereGeometry(0.06, 10, 10);
+    for (let i = 0; i < 28; i++) {
+      const m = new THREE.Mesh(leakGeo, leakMat);
+      const lx = (Math.random() - 0.5) * (W_SIZE * 0.85);
+      const lz = (Math.random() - 0.5) * (W_SIZE * 0.85);
+      m.scale.set(0.8, 2.2, 0.8);
+      leakDrops.push({ mesh: m, x: lx, z: lz, phase: Math.random() });
+      leaksGroup.add(m);
+    }
+    diorama.add(leaksGroup);
+
+    // C. ETAPA 2: Geomembrana HDPE de 1.5 mm en 3D (sella la base y bordes inferiores)
+    const linerGroup = new THREE.Group();
+    const linerMat = new THREE.MeshPhysicalMaterial({
+      color: 0x101c26, emissive: 0x163848, emissiveIntensity: 0.35, roughness: 0.25, metalness: 0.4, clearcoat: 0.8, transparent: true, opacity: 0
+    });
+    const linerBase = new THREE.Mesh(new THREE.BoxGeometry(W_SIZE + 0.14, 0.08, W_SIZE + 0.14), linerMat);
+    linerBase.position.y = WATER_BOT;
+    const linerRimGeo = new THREE.EdgesGeometry(new THREE.BoxGeometry(W_SIZE + 0.15, 0.12, W_SIZE + 0.15));
+    const linerRimMat = new THREE.LineBasicMaterial({ color: 0x7ce0f4, transparent: true, opacity: 0 });
+    const linerRim = new THREE.LineSegments(linerRimGeo, linerRimMat);
+    linerRim.position.y = WATER_BOT + 0.02;
+    linerGroup.add(linerBase, linerRim);
+    diorama.add(linerGroup);
+
+    // D. ETAPA 3: Aliados vivos en 3D (Almejas nacaradas + Macrófitas Nymphaea ampla + Biopelícula — SIN PECES)
+    const lifeGroup = new THREE.Group();
+    lifeGroup.scale.setScalar(0.001);
+    lifeGroup.visible = false;
+    diorama.add(lifeGroup);
+
+    // Almejas nacaradas bivalvas en 3D sobre el fondo
+    const clamMat = new THREE.MeshPhysicalMaterial({
+      color: 0xffffff, emissive: 0xb8ecff, emissiveIntensity: 0.35, roughness: 0.15, metalness: 0.15, clearcoat: 1.0
+    });
+    const clamPositions = [[-1.3, -1.1], [1.2, -1.2], [-0.4, 0.9], [1.35, 0.85], [-1.4, 0.3], [0.25, -0.45]];
+    const clamShells = [];
+    clamPositions.forEach((cp, idx) => {
+      const cg = new THREE.Group();
+      cg.position.set(cp[0], WATER_BOT + 0.08, cp[1]);
+      cg.rotation.y = idx * 1.1;
+      const botHalf = new THREE.Mesh(new THREE.SphereGeometry(0.26, 18, 12, 0, Math.PI * 2, 0, Math.PI * 0.5), clamMat);
+      botHalf.scale.set(1.25, 0.35, 0.95);
+      botHalf.rotation.x = Math.PI;
+      const topHalf = new THREE.Mesh(new THREE.SphereGeometry(0.26, 18, 12, 0, Math.PI * 2, 0, Math.PI * 0.5), clamMat);
+      topHalf.scale.set(1.25, 0.35, 0.95);
+      topHalf.rotation.z = -0.22;
+      cg.add(botHalf, topHalf);
+      clamShells.push(topHalf);
+      lifeGroup.add(cg);
+    });
+
+    // Macrófitas (Nymphaea ampla): tallos 3D, hojas flotantes y flores blancas/azul claro en la superficie
+    const stemMat = new THREE.MeshStandardMaterial({ color: 0x2f8f62, roughness: 0.5 });
+    const padMat = new THREE.MeshStandardMaterial({ color: 0x48c78e, roughness: 0.35, side: THREE.DoubleSide });
+    const flowerMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, emissive: 0xd8f5ff, emissiveIntensity: 0.45, roughness: 0.2 });
+    const lilyPads = [];
+    const lilyCoords = [[-1.05, -0.55], [0.95, -0.75], [-0.55, 1.05], [1.05, 0.75]];
+    lilyCoords.forEach((lc, i) => {
+      const h = WATER_TOP_BASE - WATER_BOT;
+      const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.042, h, 10), stemMat);
+      stem.position.set(lc[0], WATER_BOT + h * 0.5, lc[1]);
+      lifeGroup.add(stem);
+
+      // Colonias de biopelícula microbiana luminosa adheridas al tallo
+      for (let b = 0; b < 5; b++) {
+        const bm = new THREE.Mesh(new THREE.SphereGeometry(0.055, 10, 10), new THREE.MeshBasicMaterial({ color: 0x8fe3e8, transparent: true, opacity: 0.85 }));
+        const by = WATER_BOT + 0.35 + b * 0.25;
+        bm.position.set(lc[0] + Math.cos(b * 2.1 + i) * 0.08, by, lc[1] + Math.sin(b * 2.1 + i) * 0.08);
+        lifeGroup.add(bm);
+      }
+
+      // Hoja flotante y flor de loto/nenúfar en la superficie
+      const padGroup = new THREE.Group();
+      padGroup.position.set(lc[0], WATER_TOP_BASE, lc[1]);
+      const pad = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.025, 24, 1, false, 0.25, Math.PI * 1.85), padMat);
+      padGroup.add(pad);
+      if (i < 3) {
+        const flw = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.16, 7), flowerMat);
+        flw.position.y = 0.08;
+        padGroup.add(flw);
+      }
+      lilyPads.push({ group: padGroup, stem, x: lc[0], z: lc[1] });
+      lifeGroup.add(padGroup);
+    });
+
+    // E. CUBO / BLOQUE DE AGUA EN 3D (Superficie con olas constantes + 4 paredes laterales conectadas)
+    const waterState = {
+      r: 0.31, g: 0.25, b: 0.16, // Etapa 1: agua turbia marrón
+      opacity: 0.92,
+      roughness: 0.36,
+      murkOpacity: 0.9,
+      leaksOpacity: 0.85,
+      linerOpacity: 0,
+      lifeScale: 0,
+      hudOpacity: 0,
+      sparkOpacity: 0
+    };
+
+    const waterMat = new THREE.MeshPhysicalMaterial({
+      color: new THREE.Color(waterState.r, waterState.g, waterState.b),
+      roughness: waterState.roughness,
+      metalness: 0.05,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.06,
+      reflectivity: 1.0,
+      envMap: tEnvMap,
+      envMapIntensity: 1.7,
+      transparent: true,
+      opacity: waterState.opacity,
+      side: THREE.DoubleSide,
+      depthWrite: false
+    });
+
+    // Malla superior del agua (GRID_SEG x GRID_SEG)
+    const topGeo = new THREE.PlaneGeometry(W_SIZE, W_SIZE, GRID_SEG, GRID_SEG);
+    topGeo.rotateX(-Math.PI / 2);
+    const topMesh = new THREE.Mesh(topGeo, waterMat);
+    diorama.add(topMesh);
+
+    // Paredes laterales dinámicas del cubo de agua (se ajustan en cada frame a la ola del borde)
+    const buildSideWall = () => {
+      const g = new THREE.PlaneGeometry(W_SIZE, 1, GRID_SEG, 1);
+      const m = new THREE.Mesh(g, waterMat);
+      diorama.add(m);
+      return g;
+    };
+    const wallFront = buildSideWall();
+    const wallBack = buildSideWall();
+    const wallLeft = buildSideWall();
+    const wallRight = buildSideWall();
+
+    const syncWall = (geo, isZFixed, fixedVal, flipNorm, time) => {
+      const arr = geo.attributes.position.array;
+      const cols = GRID_SEG + 1;
+      for (let c = 0; c < cols; c++) {
+        const u = (c / GRID_SEG - 0.5) * W_SIZE * (flipNorm ? -1 : 1);
+        const wx = isZFixed ? u : fixedVal;
+        const wz = isZFixed ? fixedVal : u;
+        const wyTop = waveHeight(wx, wz, time);
+        // Fila superior (índice c)
+        arr[c * 3] = wx;
+        arr[c * 3 + 1] = wyTop;
+        arr[c * 3 + 2] = wz;
+        // Fila inferior (índice cols + c)
+        const bIdx = (cols + c) * 3;
+        arr[bIdx] = wx;
+        arr[bIdx + 1] = WATER_BOT;
+        arr[bIdx + 2] = wz;
+      }
+      geo.attributes.position.needsUpdate = true;
+      geo.computeVertexNormals();
+    };
+
+    // Partículas en suspensión dentro del bloque de agua 3D (sedimento turbio -> agua limpia)
+    const mCount = 260, mGeo = new THREE.BufferGeometry();
+    const mPos = new Float32Array(mCount * 3);
+    for (let i = 0; i < mCount; i++) {
+      mPos[i * 3] = (Math.random() - 0.5) * (W_SIZE * 0.92);
+      mPos[i * 3 + 1] = WATER_BOT + 0.12 + Math.random() * (WATER_TOP_BASE - WATER_BOT - 0.25);
+      mPos[i * 3 + 2] = (Math.random() - 0.5) * (W_SIZE * 0.92);
+    }
+    mGeo.setAttribute("position", new THREE.BufferAttribute(mPos, 3));
+    const murkMat = new THREE.PointsMaterial({
+      color: 0x9c8458, size: 0.09, transparent: true, opacity: 0.9, depthWrite: false
+    });
+    const murkPts = new THREE.Points(mGeo, murkMat);
+    diorama.add(murkPts);
+
+    // F. ETAPA 4: Holograma 3D del Digital Twin (malla + plano de escaneo + sensores IoT)
+    const hudGroup = new THREE.Group();
+    const hudBoxMat = new THREE.LineBasicMaterial({ color: 0x7ce0f4, transparent: true, opacity: 0 });
+    const hudCage = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(W_SIZE + 0.06, WATER_TOP_BASE - WATER_BOT + 0.1, W_SIZE + 0.06)), hudBoxMat);
+    hudCage.position.y = (WATER_TOP_BASE + WATER_BOT) * 0.5;
+    const scanPlaneMat = new THREE.MeshBasicMaterial({ color: 0xb8ecff, wireframe: true, transparent: true, opacity: 0 });
+    const scanPlane = new THREE.Mesh(new THREE.PlaneGeometry(W_SIZE + 0.04, W_SIZE + 0.04, 12, 12), scanPlaneMat);
+    scanPlane.rotation.x = -Math.PI / 2;
+    const sensorMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0 });
+    const halfW = W_SIZE * 0.48;
+    [[-halfW, -halfW], [halfW, -halfW], [-halfW, halfW], [halfW, halfW]].forEach(sc => {
+      const sNode = new THREE.Mesh(new THREE.SphereGeometry(0.09, 12, 12), sensorMat);
+      sNode.position.set(sc[0], WATER_TOP_BASE + 0.12, sc[1]);
+      hudGroup.add(sNode);
+    });
+    hudGroup.add(hudCage, scanPlane);
+    diorama.add(hudGroup);
+
+    // G. ETAPA 5: Destellos volumétricos de agua cristalina
+    const sparkMat = new THREE.MeshBasicMaterial({ color: 0xe6f9ff, transparent: true, opacity: 0, side: THREE.DoubleSide, depthWrite: false });
+    const sparkGroup = new THREE.Group();
+    for (let i = 0; i < 3; i++) {
+      const ray = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.55, WATER_TOP_BASE - WATER_BOT, 12, 1, true), sparkMat);
+      ray.position.set((i - 1) * 1.15, (WATER_TOP_BASE + WATER_BOT) * 0.5, (i % 2 === 0 ? -0.4 : 0.4));
+      ray.rotation.z = -0.15;
+      sparkGroup.add(ray);
+    }
+    diorama.add(sparkGroup);
+
+    // Controles interactivos: Click + Drag para rotar 360° y Rueda/Botones para Zoom
+    let rotY = -0.62, rotX = 0.42, tRotY = -0.62, tRotX = 0.42;
+    let zoom = 9.6, tZoom = 9.6;
+    let dragging = false, prevX = 0, prevY = 0, pinchDist = 0;
+
+    tankCv.addEventListener("pointerdown", e => {
+      dragging = true;
+      prevX = e.clientX;
+      prevY = e.clientY;
+      tankCv.setPointerCapture(e.pointerId);
+    });
+    tankCv.addEventListener("pointermove", e => {
+      if (!dragging) return;
+      const dx = e.clientX - prevX, dy = e.clientY - prevY;
+      prevX = e.clientX; prevY = e.clientY;
+      tRotY += dx * 0.009;
+      tRotX = Math.max(-0.08, Math.min(1.18, tRotX + dy * 0.008));
+    });
+    const stopDrag = e => { dragging = false; };
+    tankCv.addEventListener("pointerup", stopDrag);
+    tankCv.addEventListener("pointercancel", stopDrag);
+
+    // Zoom con la rueda del mouse sobre el visor 3D (sin cambiar la fase de la página)
+    const tankBoxEl = $("#tankbox");
+    tankBoxEl.addEventListener("wheel", e => {
+      e.preventDefault();
+      e.stopPropagation();
+      tZoom = Math.max(5.4, Math.min(14.5, tZoom + (e.deltaY > 0 ? 0.75 : -0.75)));
+    }, { passive: false });
+
+    // Pinch-to-zoom en pantallas táctiles
+    tankCv.addEventListener("touchstart", e => {
+      if (e.touches.length === 2) {
+        pinchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      }
+    }, { passive: true });
+    tankCv.addEventListener("touchmove", e => {
+      if (e.touches.length === 2 && pinchDist > 0) {
+        const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+        tZoom = Math.max(5.4, Math.min(14.5, tZoom - (d - pinchDist) * 0.025));
+        pinchDist = d;
+      }
+    }, { passive: true });
+
+    // Botones +, - y Reiniciar vista
+    const btnIn = $("#z-in"), btnOut = $("#z-out"), btnRst = $("#z-rst");
+    if (btnIn) btnIn.addEventListener("click", () => { tZoom = Math.max(5.4, tZoom - 1.1); });
+    if (btnOut) btnOut.addEventListener("click", () => { tZoom = Math.min(14.5, tZoom + 1.1); });
+    if (btnRst) btnRst.addEventListener("click", () => { tRotY = -0.62; tRotX = 0.42; tZoom = 9.6; });
+
+    // Transición del bloque 3D según la etapa seleccionada (0 a 4)
+    const presetsEtapa = [
+      // 1/5: Agua turbia marrón + filtración activa al suelo kárstico
+      { r: 0.33, g: 0.26, b: 0.16, opacity: 0.93, roughness: 0.35, murkOpacity: 0.92, leaksOpacity: 0.9, linerOpacity: 0, lifeScale: 0.001, hudOpacity: 0, sparkOpacity: 0 },
+      // 2/5: Geomembrana sella el fondo + cesan filtraciones + agua empieza a asentarse
+      { r: 0.22, g: 0.34, b: 0.30, opacity: 0.82, roughness: 0.24, murkOpacity: 0.55, leaksOpacity: 0, linerOpacity: 1, lifeScale: 0.001, hudOpacity: 0, sparkOpacity: 0 },
+      // 3/5: Brotan almejas, macrófitas y biopelícula (sin peces) + agua se aclara a la mitad
+      { r: 0.14, g: 0.48, b: 0.54, opacity: 0.68, roughness: 0.15, murkOpacity: 0.25, leaksOpacity: 0, linerOpacity: 1, lifeScale: 1, hudOpacity: 0, sparkOpacity: 0 },
+      // 4/5: Digital Twin activo (sensores IoT + malla de simulación) + agua casi cristalina
+      { r: 0.18, g: 0.64, b: 0.76, opacity: 0.52, roughness: 0.09, murkOpacity: 0.08, leaksOpacity: 0, linerOpacity: 1, lifeScale: 1, hudOpacity: 0.88, sparkOpacity: 0.06 },
+      // 5/5: Agua 100% cristalina y luminosa en 4 días
+      { r: 0.34, g: 0.80, b: 0.94, opacity: 0.38, roughness: 0.05, murkOpacity: 0.0, leaksOpacity: 0, linerOpacity: 1, lifeScale: 1, hudOpacity: 0.2, sparkOpacity: 0.18 }
+    ];
+
+    window.__setTankStage = (idx, inmediato) => {
+      const p = presetsEtapa[idx] || presetsEtapa[0];
+      const dur = inmediato ? 0 : 0.6;
+      if (p.lifeScale > 0.01) lifeGroup.visible = true;
+      if (window.gsap && !inmediato) {
+        gsap.to(waterState, {
+          r: p.r, g: p.g, b: p.b,
+          opacity: p.opacity, roughness: p.roughness,
+          murkOpacity: p.murkOpacity, leaksOpacity: p.leaksOpacity,
+          linerOpacity: p.linerOpacity, lifeScale: p.lifeScale,
+          hudOpacity: p.hudOpacity, sparkOpacity: p.sparkOpacity,
+          duration: dur, ease: "power3.out", overwrite: "auto",
+          onComplete: () => { if (p.lifeScale <= 0.01) lifeGroup.visible = false; }
+        });
+      } else {
+        Object.assign(waterState, p);
+        lifeGroup.visible = p.lifeScale > 0.01;
+      }
+    };
+    window.__setTankStage(0, true);
+
+    let tClock = 0;
+    const renderTank = () => {
+      tClock += calm ? 0 : 0.016;
+
+      // Suavizado de cámara orbital (rotación y zoom)
+      if (!dragging && !calm) tRotY += 0.0015;
+      rotY += (tRotY - rotY) * 0.1;
+      rotX += (tRotX - rotX) * 0.1;
+      zoom += (tZoom - zoom) * 0.1;
+
+      tCam.position.x = Math.sin(rotY) * Math.cos(rotX) * zoom;
+      tCam.position.y = Math.sin(rotX) * zoom;
+      tCam.position.z = Math.cos(rotY) * Math.cos(rotX) * zoom;
+      tCam.lookAt(0, -0.05, 0);
+
+      // Aplicar materiales interpolados por etapa
+      waterMat.color.setRGB(waterState.r, waterState.g, waterState.b);
+      waterMat.opacity = waterState.opacity;
+      waterMat.roughness = waterState.roughness;
+      murkMat.opacity = waterState.murkOpacity;
+      leakMat.opacity = waterState.leaksOpacity;
+      linerMat.opacity = waterState.linerOpacity;
+      linerRimMat.opacity = waterState.linerOpacity * 0.75;
+      lifeGroup.scale.setScalar(Math.max(0.001, waterState.lifeScale));
+      hudBoxMat.opacity = waterState.hudOpacity;
+      scanPlaneMat.opacity = waterState.hudOpacity * 0.55;
+      sensorMat.opacity = waterState.hudOpacity;
+      sparkMat.opacity = waterState.sparkOpacity;
+
+      // 1. Oleaje constante en la superficie superior del cubo de agua
+      const tArr = topGeo.attributes.position.array;
+      for (let i = 0; i < tArr.length; i += 3) {
+        tArr[i + 1] = waveHeight(tArr[i], tArr[i + 2], tClock);
+      }
+      topGeo.attributes.position.needsUpdate = true;
+      topGeo.computeVertexNormals();
+
+      // 2. Sincronizar las 4 paredes del bloque de agua con los bordes de la ola
+      const half = W_SIZE * 0.5;
+      syncWall(wallFront, true, half, false, tClock);
+      syncWall(wallBack, true, -half, true, tClock);
+      syncWall(wallRight, false, half, true, tClock);
+      syncWall(wallLeft, false, -half, false, tClock);
+
+      // 3. Nenúfares flotando al ritmo de la ola + almejas filtrando
+      lilyPads.forEach(lp => {
+        const wy = waveHeight(lp.x, lp.z, tClock);
+        lp.group.position.y = wy;
+        lp.stem.scale.y = (wy - WATER_BOT) / (WATER_TOP_BASE - WATER_BOT);
+        lp.stem.position.y = WATER_BOT + (wy - WATER_BOT) * 0.5;
+      });
+      clamShells.forEach((cs, k) => {
+        cs.rotation.z = -0.18 - Math.sin(tClock * 2.0 + k) * 0.08;
+      });
+
+      // 4. Movimiento de gotas de filtración (Etapa 1) y plano de escaneo Digital Twin (Etapa 4)
+      if (waterState.leaksOpacity > 0.01) {
+        leakDrops.forEach(ld => {
+          const p = (ld.phase + tClock * 0.45) % 1;
+          ld.mesh.position.set(ld.x, WATER_BOT - p * 1.25, ld.z);
+        });
+      }
+      if (waterState.hudOpacity > 0.01) {
+        scanPlane.position.y = WATER_BOT + ((Math.sin(tClock * 1.8) * 0.5 + 0.5) * (WATER_TOP_BASE - WATER_BOT));
+      }
+
+      // 5. Deriva suave de partículas en suspensión
+      const mp = mGeo.attributes.position.array;
+      for (let i = 0; i < mp.length; i += 3) {
+        mp[i + 1] += Math.sin(tClock * 1.5 + i) * 0.0015;
+      }
+      mGeo.attributes.position.needsUpdate = true;
+
+      tRenderer.render(tScene, tCam);
+    };
+    renderTank();
+    if (!calm) {
+      if (window.gsap) gsap.ticker.add(renderTank);
+      else (function tLoop(){ renderTank(); requestAnimationFrame(tLoop); })();
+    }
+  }
+
+  // datos medidos (con etiquetas "Antes" y "Después" visibles en móvil)
+  const box = $("#datos");
+  const fmt = (v, u) => v === null ? '<span class="val pend">Pendiente</span>' : '<span class="val">' + v + " " + u + "</span>";
+  MEDICIONES.filas.forEach(f => {
+    const max = Math.max(f.antes || 0, f.despues || 0) || 1;
+    const bar = (v, lbl) => '<div><span class="cell-lbl">' + lbl + '</span><div class="bt"><div class="bf" data-w="' + (v === null ? 0 : Math.round(v / max * 100)) + '"></div></div>' + fmt(v, f.unidad) + "</div>";
+    const r = document.createElement("div"); r.className = "row";
+    r.innerHTML = "<strong>" + f.nombre + "</strong>" + bar(f.antes, "Antes") + bar(f.despues, "Después");
+    box.appendChild(r);
+  });
+  $("#upd").textContent = "Última actualización: " + MEDICIONES.actualizado;
+
+  // contadores y barras
+  const count = el => {
+    const end = +el.dataset.n, dec = +(el.dataset.d || 0), p = el.dataset.p || "", s = el.dataset.s || "";
+    if (calm) { el.textContent = p + end.toFixed(dec) + s; return; }
+    const t0 = performance.now();
+    (function tick(t){ const k = Math.min((t - t0) / 1800, 1); el.textContent = p + (end * (1 - Math.pow(1 - k, 3))).toFixed(dec) + s; if (k < 1) requestAnimationFrame(tick); })(t0);
+  };
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.querySelectorAll("[data-n]").forEach(count);
+    e.target.querySelectorAll(".bf").forEach(b => b.style.width = b.dataset.w + "%");
+    io.unobserve(e.target);
+  }), { threshold: .25 });
+  $$(".facts,#datos").forEach(el => io.observe(el));
+
+  if (!window.gsap || !window.ScrollTrigger) return;
+  gsap.registerPlugin(ScrollTrigger);
+
+  let lenis = null;
+  if (!calm && window.Lenis) {
+    lenis = new Lenis({ lerp: 0.08, smoothWheel: false });
+    lenis.on("scroll", ScrollTrigger.update);
+    gsap.ticker.add(time => lenis.raf(time * 1000));
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  const mm = gsap.matchMedia();
+
+  // =========================================================================
+  // 3. PANTALLA PORTAL "NÁCAR" + COREOGRAFÍA DE INMERSIÓN AL PRESIONAR LA ALMEJA 3D
+  // =========================================================================
+  const introPortal = $("#intro-portal"), introNacar = $("#intro-nacar"), clamBtn = $("#clam-trigger");
+  const brandNav = $("#brand-nav"), diveVeil = $("#dive-veil"), hudStep = $("#hud-step");
+  let introAbierto = true;
+
+  const ejecutarInmersion = () => {
+    if (!introAbierto) return;
+    introAbierto = false;
+    window.scrollTo(0, 0);
+
+    const st3D = window.__introState;
+    if (!window.gsap || calm) {
+      document.body.classList.remove("intro-lock");
+      if (introPortal) introPortal.classList.add("done");
+      if (st3D) { st3D.move = 1; st3D.spin = 1; st3D.rings = 1; st3D.dive = 1; }
+      return;
+    }
+
+    // Calcular vector exacto desde el título gigante "NÁCAR" hacia su lugar en el panel superior de opciones (#brand-nav)
+    const rFrom = introNacar.getBoundingClientRect();
+    const rTo = brandNav.getBoundingClientRect();
+    const dx = (rTo.left + rTo.width * 0.5) - (rFrom.left + rFrom.width * 0.5);
+    const dy = (rTo.top + rTo.height * 0.5) - (rFrom.top + rFrom.height * 0.5);
+    const sc = Math.max(0.11, rTo.height / Math.max(rFrom.height, 1));
+
+    // Preparar entrada del Hero para cuando termine de sumergirse
+    gsap.set("#h1 .w>span", { yPercent: 115 });
+    gsap.set(".hero .lead,.hero .btns", { y: 28, opacity: 0 });
+
+    const tl = gsap.timeline({
+      onComplete: () => {
+        if (introPortal) introPortal.classList.add("done");
+      }
+    });
+
+    // 1. Ocultar textos auxiliares del portal con difuminado
+    tl.to("#intro-tag,#intro-cta,#clam-trigger", {
+      opacity: 0, filter: "blur(10px)", duration: 0.45, ease: "power2.in", pointerEvents: "none"
+    }, 0);
+
+    // 2. La palabra gigante "NÁCAR" se reacomoda viajando y escalando hacia el panel superior de opciones con blur de movimiento
+    tl.to(introNacar, {
+      x: dx * 0.45, y: dy * 0.45, scale: 0.45, filter: "blur(8px)", duration: 0.65, ease: "power2.in"
+    }, 0.05)
+    .to(introNacar, {
+      x: dx, y: dy, scale: sc, filter: "blur(0px)", opacity: 0, duration: 0.85, ease: "expo.out"
+    }, 0.7);
+
+    // 3. Efecto óptico difuminado de sumergirse bajo la superficie del agua
+    if (diveVeil) {
+      tl.to(diveVeil, { opacity: 1, backdropFilter: "blur(16px)", webkitBackdropFilter: "blur(16px)", duration: 0.65, ease: "power2.in" }, 0.1)
+        .to(diveVeil, { opacity: 0, backdropFilter: "blur(0px)", webkitBackdropFilter: "blur(0px)", duration: 1.1, ease: "power3.out" }, 0.75);
+    }
+
+    // 4. Transición 3D: El agua sube (uDive), la almeja viaja a la derecha (move) y al llegar brotan sus anillos y burbujas (rings + spin)
+    if (st3D) {
+      tl.to(st3D, { dive: 1, duration: 1.75, ease: "power3.inOut" }, 0)
+        .to(st3D, { move: 1, duration: 1.75, ease: "expo.inOut" }, 0.05)
+        .to(st3D, { spin: 1, duration: 1.4, ease: "power2.out" }, 0.55)
+        .to(st3D, { rings: 1, duration: 1.35, ease: "back.out(1.45)" }, 0.82);
+    }
+
+    // 5. Desbloquear y revelar el panel superior de opciones y el Hero
+    tl.call(() => {
+      document.body.classList.remove("intro-lock");
+    }, null, 0.78);
+
+    tl.to("#h1 .w>span", {
+      yPercent: 0, duration: 1.35, ease: "expo.out", stagger: 0.08, clearProps: "transform",
+      onComplete: () => $$("#h1 .w").forEach(w => w.classList.add("done"))
+    }, 0.92)
+    .to(".hero .lead,.hero .btns", {
+      y: 0, opacity: 1, duration: 1.15, ease: "expo.out", stagger: 0.14, clearProps: "transform,opacity"
+    }, 1.25);
+  };
+
+  if (clamBtn) clamBtn.addEventListener("click", ejecutarInmersion);
+  if (introPortal) {
+    introPortal.addEventListener("click", e => {
+      if (e.target === introPortal) ejecutarInmersion();
+    });
+  }
+
+  // Cursor magnético contextual estilo Awwwards
+  const awwCur = $("#aww-cursor"), awwLbl = $("#aww-lbl");
+  if (awwCur && matchMedia("(hover: hover)").matches) {
+    let cx = innerWidth * 0.5, cy = innerHeight * 0.5, tcx = cx, tcy = cy;
+    addEventListener("pointermove", e => { tcx = e.clientX; tcy = e.clientY; }, { passive: true });
+    const tickCur = () => {
+      cx += (tcx - cx) * 0.18;
+      cy += (tcy - cy) * 0.18;
+      awwCur.style.transform = "translate3d(" + cx.toFixed(1) + "px," + cy.toFixed(1) + "px,0)";
+    };
+    gsap.ticker.add(tickCur);
+
+    const bindCursorHover = (sel, txt) => {
+      $$(sel).forEach(el => {
+        el.addEventListener("pointerenter", () => {
+          awwCur.classList.add("expand");
+          if (awwLbl) awwLbl.textContent = txt;
+        });
+        el.addEventListener("pointerleave", () => {
+          awwCur.classList.remove("expand");
+          if (awwLbl) awwLbl.textContent = "";
+        });
+      });
+    };
+    bindCursorHover("#clam-trigger", "ENTRAR");
+    bindCursorHover("#tank-3d", "ROTAR 3D");
+    bindCursorHover(".btn, nav a", "VER");
+  }
+
+  // animaciones de entrada de cada sección (limpiando transforms al terminar para mantener mix-blend-mode:difference puro)
+  mm.add("(prefers-reduced-motion: no-preference)", () => {
+    $$("h2.sp").forEach(h => gsap.from(h.querySelectorAll(".w>span"), { yPercent: 115, duration: 1.2, ease: "expo.out", stagger: .05, clearProps: "transform", scrollTrigger: { trigger: h, start: "top 86%", toggleActions: "play none none reverse" } }));
+    $$(".rule").forEach(r => gsap.from(r, { scaleX: 0, duration: 1.1, ease: "expo.out", scrollTrigger: { trigger: r, start: "top 88%", toggleActions: "play none none reverse" } }));
+    $$("section:not(.hero):not(.journey) p:not(.note)").forEach(p => gsap.from(p, { y: 24, opacity: 0, duration: 1.1, ease: "expo.out", clearProps: "transform,opacity", scrollTrigger: { trigger: p, start: "top 88%", toggleActions: "play none none reverse" } }));
+    $$(".fact").forEach((f, i) => gsap.from(f, { y: 30, opacity: 0, duration: 1.2, delay: (i % 4) * .08, ease: "expo.out", scrollTrigger: { trigger: f, start: "top 88%", toggleActions: "play none none reverse" } }));
+    $$(".ph").forEach(p => gsap.from(p, { clipPath: "inset(0 0 100% 0)", y: 20, duration: 1.2, ease: "expo.inOut", scrollTrigger: { trigger: p, start: "top 85%", toggleActions: "play none none reverse" } }));
+    $$(".step,.help>div,.panel,.row:not(.head),.chips span").forEach(c => gsap.from(c, { y: 26, opacity: 0, duration: 1.1, ease: "expo.out", scrollTrigger: { trigger: c, start: "top 90%", toggleActions: "play none none reverse" } }));
+  });
+
+  // Navegación por fases con UN SOLO SCROLL (escritorio) + transiciones ágiles del bloque 3D de agua
+  mm.add("(min-width: 900px) and (prefers-reduced-motion: no-preference)", () => {
+    window.__modoFases = true;
+    const st = $$(".st");
+    const dots = $$(".dots span");
+    const navLinks = $$("nav a");
+
+    const irAEstacion = (idx, inmediato) => {
+      st.forEach((el, k) => el.classList.toggle("on", k === idx));
+      dots.forEach((el, k) => el.classList.toggle("on", k === idx));
+      if (window.__setTankStage) window.__setTankStage(idx, inmediato);
+    };
+    irAEstacion(0, true);
+
+    // Secuencia completa de fases de la página (cada gesto de scroll avanza 1 fase)
+    const fases = [
+      { sel: ".hero", st: null },
+      { sel: "#problema", st: null },
+      { sel: "#viaje", st: 0 },
+      { sel: "#viaje", st: 1 },
+      { sel: "#viaje", st: 2 },
+      { sel: "#viaje", st: 3 },
+      { sel: "#viaje", st: 4 },
+      { sel: "#nosotros", st: null },
+      { sel: "#impacto", st: null },
+      { sel: "#gemelo", st: null },
+      { sel: "#ruta", st: null },
+      { sel: "#apoyo", st: null }
+    ];
+
+    let faseActual = 0, bloqueadoHasta = 0, ultTiempoWheel = 0, ultDelta = 0;
+    const actualizarNavActivo = (sel, idx) => {
+      navLinks.forEach(a => a.classList.toggle("active", a.getAttribute("href") === sel));
+      if (hudStep) hudStep.textContent = "FASE " + String((idx || 0) + 1).padStart(2, "0") + " / " + String(fases.length).padStart(2, "0");
+    };
+
+    fases.forEach((f, i) => {
+      const el = $(f.sel);
+      if (el && (f.st === null || f.st === 0) && Math.abs(scrollY - el.offsetTop) < innerHeight * 0.45) faseActual = i;
+    });
+    actualizarNavActivo(fases[faseActual].sel, faseActual);
+
+    const moverScroll = (y, dur) => {
+      if (lenis) {
+        lenis.scrollTo(y, { duration: dur, easing: t => 1 - Math.pow(1 - t, 4), force: true, lock: true });
+      } else {
+        window.scrollTo({ top: y, behavior: "smooth" });
+      }
+    };
+
+    const irAFase = (nuevoIdx, rapido) => {
+      const idx = Math.max(0, Math.min(fases.length - 1, nuevoIdx));
+      const prev = fases[faseActual];
+      const sig = fases[idx];
+      faseActual = idx;
+      const ratio = idx / (fases.length - 1);
+      if (window.__setFaseRatio) window.__setFaseRatio(ratio);
+      if (window.__syncThumbRatio) window.__syncThumbRatio(ratio);
+      actualizarNavActivo(sig.sel, idx);
+
+      if (sig.st !== null) irAEstacion(sig.st, false);
+
+      const el = $(sig.sel);
+      if (!el) return;
+      const mismaSeccion = prev && prev.sel === sig.sel && Math.abs(el.getBoundingClientRect().top) < 80;
+      if (mismaSeccion) {
+        bloqueadoHasta = performance.now() + (rapido ? 180 : 580);
+      } else {
+        const y = Math.max(0, el.offsetTop);
+        moverScroll(y, rapido ? 0.45 : 0.95);
+        bloqueadoHasta = performance.now() + (rapido ? 220 : 920);
+      }
+    };
+    window.__irAFasePorRatio = r => {
+      const targetIdx = Math.round(Math.max(0, Math.min(1, r)) * (fases.length - 1));
+      if (targetIdx !== faseActual) irAFase(targetIdx, true);
+    };
+    if (window.__syncThumbRatio) window.__syncThumbRatio(faseActual / (fases.length - 1));
+
+    // Clic en los indicadores (dots) de las 5 estaciones
+    dots.forEach((d, k) => {
+      d.addEventListener("click", () => {
+        const idx = fases.findIndex(f => f.sel === "#viaje" && f.st === k);
+        if (idx !== -1) irAFase(idx);
+      });
+    });
+
+    // Un solo gesto de rueda/trackpad avanza o retrocede exactamente 1 fase (excepto cuando se hace zoom sobre #tankbox o en el portal intro)
+    const onWheel = e => {
+      if (e.ctrlKey) return;
+      if (introAbierto) { e.preventDefault(); return; }
+      if (e.target && e.target.closest && e.target.closest("#tankbox")) return;
+      e.preventDefault();
+      const ahora = performance.now();
+      const absD = Math.abs(e.deltaY);
+      const dt = ahora - ultTiempoWheel;
+      ultTiempoWheel = ahora;
+
+      // Ignorar la inercia residual del mismo gesto de trackpad
+      const PicoNuevo = absD > ultDelta * 1.35 && absD > 18;
+      ultDelta = absD;
+      if (ahora < bloqueadoHasta && !(dt > 140 && PicoNuevo)) return;
+      if (absD < 4) return;
+
+      const dir = e.deltaY > 0 ? 1 : -1;
+      const secActual = $(fases[faseActual].sel);
+      if (secActual && fases[faseActual].st === null) {
+        const r = secActual.getBoundingClientRect();
+        if (dir > 0 && r.bottom > innerHeight + 48) {
+          moverScroll(scrollY + Math.min(r.bottom - innerHeight + 24, innerHeight * 0.7), 0.75);
+          bloqueadoHasta = ahora + 750;
+          return;
+        }
+        if (dir < 0 && r.top < -48) {
+          moverScroll(Math.max(0, secActual.offsetTop), 0.75);
+          bloqueadoHasta = ahora + 750;
+          return;
+        }
+      }
+
+      irAFase(faseActual + dir);
+    };
+    addEventListener("wheel", onWheel, { passive: false });
+
+    // Soporte para teclado (Flechas, RePág/AvPág, Espacio)
+    const onKey = e => {
+      if (["INPUT", "TEXTAREA", "SELECT"].includes((e.target && e.target.tagName) || "")) return;
+      if (introAbierto) {
+        if (["Enter", " ", "ArrowDown"].includes(e.key)) { e.preventDefault(); ejecutarInmersion(); }
+        return;
+      }
+      if (performance.now() < bloqueadoHasta) return;
+      if (["ArrowDown", "PageDown", " "].includes(e.key)) {
+        e.preventDefault(); irAFase(faseActual + 1);
+      } else if (["ArrowUp", "PageUp"].includes(e.key)) {
+        e.preventDefault(); irAFase(faseActual - 1);
+      } else if (e.key === "Home") {
+        e.preventDefault(); irAFase(0);
+      } else if (e.key === "End") {
+        e.preventDefault(); irAFase(fases.length - 1);
+      }
+    };
+    addEventListener("keydown", onKey);
+
+    // Enlaces del menú y botones sincronizados con las fases
+    $$('a[href^="#"]').forEach(a => {
+      a.addEventListener("click", e => {
+        const href = a.getAttribute("href");
+        const targetSel = href === "#inicio" ? ".hero" : href;
+        const idx = fases.findIndex(f => f.sel === targetSel);
+        if (idx !== -1) {
+          e.preventDefault();
+          irAFase(idx);
+        }
+      });
+    });
+
+    return () => {
+      window.__modoFases = false;
+      removeEventListener("wheel", onWheel);
+      removeEventListener("keydown", onKey);
+    };
+  });
+
+  // celular o movimiento reducido: estado final, sin fijar la sección
+  mm.add("(max-width: 899px), (prefers-reduced-motion: reduce)", () => {
+    window.__modoFases = false;
+    gsap.set(".st", { opacity: 1, clearProps: "transform" });
+    if (window.__setTankStage) window.__setTankStage(4, true);
+  });
+
+  // Botón flotante de desplazamiento (#c-thumb): integrado dentro de la página sin barra lateral que robe espacio
+  const cScroll = $("#c-scroll"), cThumb = $("#c-thumb");
+  if (cScroll && cThumb) {
+    let tRatio = 0, curRatio = 0, thumbDrag = false, grabY = 0;
+
+    const pintarThumb = r => {
+      const maxY = Math.max(0, cScroll.clientHeight - cThumb.offsetHeight);
+      cThumb.style.transform = "translate3d(0," + (r * maxY).toFixed(1) + "px,0)";
+    };
+
+    window.__syncThumbRatio = r => {
+      if (!thumbDrag) tRatio = Math.max(0, Math.min(1, r));
+    };
+
+    addEventListener("scroll", () => {
+      if (!window.__modoFases && !thumbDrag) {
+        const maxS = Math.max(1, document.documentElement.scrollHeight - innerHeight);
+        tRatio = Math.max(0, Math.min(1, scrollY / maxS));
+      }
+    }, { passive: true });
+
+    const tickThumb = () => {
+      if (!thumbDrag) {
+        curRatio += (tRatio - curRatio) * 0.14;
+        pintarThumb(curRatio);
+      }
+    };
+    if (window.gsap) gsap.ticker.add(tickThumb);
+    else (function thLoop(){ tickThumb(); requestAnimationFrame(thLoop); })();
+
+    cThumb.addEventListener("pointerdown", e => {
+      e.preventDefault();
+      e.stopPropagation();
+      thumbDrag = true;
+      cThumb.classList.add("dragging");
+      grabY = e.clientY - cThumb.getBoundingClientRect().top;
+      cThumb.setPointerCapture(e.pointerId);
+    });
+
+    cThumb.addEventListener("pointermove", e => {
+      if (!thumbDrag) return;
+      const tr = cScroll.getBoundingClientRect();
+      const maxY = Math.max(1, tr.height - cThumb.offsetHeight);
+      const r = Math.max(0, Math.min(1, (e.clientY - tr.top - grabY) / maxY));
+      tRatio = curRatio = r;
+      pintarThumb(r);
+      if (window.__modoFases && window.__irAFasePorRatio) {
+        window.__irAFasePorRatio(r);
+      } else {
+        const maxS = Math.max(1, document.documentElement.scrollHeight - innerHeight);
+        if (lenis) lenis.scrollTo(r * maxS, { immediate: true, force: true });
+        else window.scrollTo(0, r * maxS);
+      }
+    });
+
+    const finThumb = () => {
+      if (!thumbDrag) return;
+      thumbDrag = false;
+      cThumb.classList.remove("dragging");
+    };
+    cThumb.addEventListener("pointerup", finThumb);
+    cThumb.addEventListener("pointercancel", finThumb);
+  }
+})();
+</script>
+</body>
+</html>

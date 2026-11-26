@@ -1,0 +1,97 @@
+{
+  "experiments": [
+    {
+      "id": "EXP-1",
+      "citation": "Mallma Leyton & Guzmán Alvis (2011), Acta Agronómica 60(1): Evaluación de Anodontites tortolis con E. coli (V=30 L, 8 h, n=6 y 8)",
+      "literature_benchmark": {
+        "clearance_rate_range_L_h_ind": [
+          0.47,
+          3.8
+        ],
+        "initial_ecoli_ufc_100mL": 2300.0,
+        "observation": "Tasa individual medida entre 0.47 y 3.80 L/h/ind; abatimiento significativo en 8 horas respecto al control."
+      },
+      "model_results": {
+        "Control (0 almejas)": {
+          "n_bivalves": 0,
+          "cr_eff_L_h_ind": 1.09,
+          "q_biv_total_L_h": 0.0,
+          "ecoli_initial_ufc_100mL": 2300.0,
+          "ecoli_at_8h_ufc_100mL": 2170.2,
+          "removal_at_8h_pct": 5.6,
+          "time_to_200_ufc_h": 336.3
+        },
+        "Tratamiento T1 (6 almejas)": {
+          "n_bivalves": 6,
+          "cr_eff_L_h_ind": 1.2296,
+          "q_biv_total_L_h": 7.38,
+          "ecoli_initial_ufc_100mL": 2300.0,
+          "ecoli_at_8h_ufc_100mL": 435.8,
+          "removal_at_8h_pct": 81.1,
+          "time_to_200_ufc_h": 11.6
+        },
+        "Tratamiento T2 (8 almejas)": {
+          "n_bivalves": 8,
+          "cr_eff_L_h_ind": 1.2274,
+          "q_biv_total_L_h": 9.82,
+          "ecoli_initial_ufc_100mL": 2300.0,
+          "ecoli_at_8h_ufc_100mL": 251.4,
+          "removal_at_8h_pct": 89.1,
+          "time_to_200_ufc_h": 8.8
+        }
+      },
+      "within_published_range": true
+    },
+    {
+      "id": "EXP-2",
+      "citation": "Navinta Huashuayo (2019), UNSA / CONCYTEC: Tasa de filtración en juveniles (51.9 mm) y adultos de Anodontites trapesialis con Chlorella vulgaris",
+      "literature_benchmark": {
+        "juvenile_51_9mm_filtration_rate_L_h_ind": 2.378,
+        "adult_filtration_rate_L_h_ind": 2.686,
+        "published_genus_range_L_h_ind": [
+          0.47,
+          3.8
+        ]
+      },
+      "model_results": {
+        "juvenile_51_9mm_CR_max_L_h_ind": 2.348,
+        "juvenile_51_9mm_CR_eff_L_h_ind": 1.864,
+        "adult_65mm_CR_max_L_h_ind": 3.664,
+        "adult_65mm_CR_eff_L_h_ind": 2.708,
+        "juvenile_relative_diff_pct": 21.6,
+        "adult_relative_diff_pct": 0.8
+      },
+      "within_published_range": true
+    },
+    {
+      "id": "EXP-3",
+      "citation": "Soria Córdova & Sánchez Apagüeño (2012), UNAP Iquitos: Efecto biofiltro de Anodontites trapesialis en agua de estanque (V=30 L, n=30 ind, 24-72 h)",
+      "literature_benchmark": {
+        "expected_24h_coliform_reduction_pct": "> 99% (desaparición de coliformes termotolerantes en 24 h)"
+      },
+      "model_results": {
+        "treatment_30_clams_ecoli_24h": 0.0,
+        "treatment_30_clams_removal_24h_pct": 100.0,
+        "treatment_30_clams_tss_24h_mg_L": 0.0,
+        "control_0_clams_ecoli_24h": 2052.8,
+        "control_0_clams_removal_24h_pct": 17.89
+      },
+      "within_published_range": true
+    },
+    {
+      "id": "EXP-4",
+      "citation": "Validación de Saturación Branquial por Turbidez (11.3 vs 38.4 mg/L SPM) y Coprecipitación Kárstica de Fósforo (Taylor & Francis 2025, Y=10.9*SRP)",
+      "literature_benchmark": {
+        "expected_clearance_drop_at_38_4_mg_L_pct": "55% a 61% de caída",
+        "expected_karst_phosphorus_mineral_sink_pct": "> 90% en aguas duras kársticas (SI_c > 0)"
+      },
+      "model_results": {
+        "cr_at_11_3_mg_L": 2.43,
+        "cr_at_38_4_mg_L": 1.108,
+        "clearance_drop_pct": 54.4,
+        "yucatan_karst_calcite_phosphorus_sink_pct": 98.4
+      },
+      "within_published_range": true
+    }
+  ]
+}

@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Proyecto Nácar · Regenerando el agua de Yucatán</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050D14; --alt:rgba(10,24,36,.48); --card:rgba(12,29,43,.56); --ink:#EAF2F6; --muted:#94AAB8; --line:rgba(143,227,232,.14);
+  --accent:#52C3CD; --accent-ink:#041018; --bar:#52C3CD; --bar-bg:rgba(143,227,232,.12); --ph:rgba(11,27,40,.52);
+  --nacar:linear-gradient(90deg,#F4B6D2,#C9B6F2,#8FE3E8);
+  --glass-shadow:0 24px 60px -15px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.09);
+  color-scheme:dark; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+:root[data-theme="light"]{
+  --bg:#F4F9FB; --alt:rgba(255,255,255,.55); --card:rgba(255,255,255,.72); --ink:#0E2A3B; --muted:#4E6375; --line:rgba(11,110,120,.16);
+  --accent:#0B6E78; --accent-ink:#FFFFFF; --bar:#0B6E78; --bar-bg:rgba(11,110,120,.12); --ph:rgba(235,244,248,.65);
+  --glass-shadow:0 20px 45px -15px rgba(14,42,59,.1),inset 0 1px 0 rgba(255,255,255,.8);
+  color-scheme:light;
+}
+html{scroll-behavior:smooth;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 64px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1.04rem/1.7 "IBM Plex Sans",system-ui,sans-serif;overflow-x:hidden;position:relative}
+/* Escenario espacial de fondo estilo Hashgraph VC */
+.bg-stage{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;background:radial-gradient(ellipse 80% 60% at 70% 20%,rgba(11,110,120,.22),transparent 70%),radial-gradient(ellipse 65% 55% at 15% 80%,rgba(201,182,242,.1),transparent 70%),linear-gradient(180deg,#040A10 0%,#071520 50%,#040B11 100%)}
+:root[data-theme="light"] .bg-stage{background:radial-gradient(ellipse 80% 60% at 70% 20%,rgba(143,227,232,.35),transparent 70%),radial-gradient(ellipse 65% 55% at 15% 80%,rgba(244,182,210,.22),transparent 70%),linear-gradient(180deg,#EEF6F9 0%,#E3F0F5 50%,#F4F9FB 100%)}
+#bg-webgl{position:absolute;inset:0;width:100%;height:100%;display:block}
+.bg-aurora{position:absolute;inset:-15%;filter:blur(110px);opacity:.55;background:radial-gradient(circle at 78% 28%,rgba(82,195,205,.28) 0%,transparent 38%),radial-gradient(circle at 22% 68%,rgba(201,182,242,.2) 0%,transparent 36%),radial-gradient(circle at 55% 85%,rgba(244,182,210,.15) 0%,transparent 32%);animation:auroraMove 22s ease-in-out infinite alternate}
+@keyframes auroraMove{0%{transform:translate3d(0,0,0) scale(1)}100%{transform:translate3d(-3%,4%,0) scale(1.08)}}
+.bg-grid{position:absolute;inset:0;background-image:linear-gradient(to right,rgba(143,227,232,.045) 1px,transparent 1px),linear-gradient(to bottom,rgba(143,227,232,.045) 1px,transparent 1px);background-size:64px 64px;-webkit-mask-image:radial-gradient(ellipse 75% 70% at 50% 45%,#000 20%,transparent 85%);mask-image:radial-gradient(ellipse 75% 70% at 50% 45%,#000 20%,transparent 85%)}
+.bg-noise{position:absolute;inset:0;opacity:.038;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+main,footer{position:relative;z-index:1}
+h1,h2,h3{font-family:"Source Serif 4",Georgia,serif;margin:0;color:var(--ink)}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.wrap{max-width:1120px;width:100%;margin:0 auto;padding:0 24px}
+header.top{position:fixed;inset:env(safe-area-inset-top,0px) 0 auto 0;z-index:50;transition:background .4s,border-color .4s,backdrop-filter .4s;border-bottom:1px solid transparent}
+header.top.solid{background:rgba(5,13,20,.68);backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);border-color:var(--line)}
+:root[data-theme="light"] header.top.solid{background:rgba(244,249,251,.75)}
+header.top .wrap{display:flex;justify-content:space-between;align-items:center;height:62px;gap:18px}
+.brand{font:700 1.2rem "Source Serif 4",serif;text-decoration:none;letter-spacing:-.01em}
+nav{display:flex;gap:24px;font-size:.93rem;font-weight:500;overflow-x:auto}
+nav a{text-decoration:none;color:var(--muted);white-space:nowrap;transition:color .25s}
+nav a:hover{color:var(--accent)}
+section{min-height:100svh;padding:88px 0 56px;position:relative;display:flex;align-items:center}
+section.alt{background:var(--alt);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-block:1px solid var(--line)}
+h2{font-size:clamp(2rem,4.4vw,3.3rem);font-weight:600;line-height:1.1;letter-spacing:-.015em;max-width:20ch;margin-bottom:16px}
+.w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.12em}
+.w>span{display:inline-block}
+.rule{width:72px;height:4px;background:var(--nacar);border-radius:2px;margin:0 0 36px;transform-origin:left;box-shadow:0 0 18px rgba(143,227,232,.4)}
+h3{font-size:1.25rem;font-weight:600;line-height:1.25;margin-bottom:8px}
+p{margin:0 0 18px;max-width:62ch}
+.cols{display:grid;grid-template-columns:1.1fr 1fr;gap:72px;align-items:center}
+.btns{display:flex;flex-wrap:wrap;gap:12px}
+.btn{display:inline-block;padding:14px 26px;border-radius:8px;font-weight:600;font-size:.97rem;text-decoration:none;border:1.5px solid var(--accent);transition:background .3s,color .3s,transform .3s,box-shadow .3s}
+.btn:hover{transform:translateY(-2px)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);box-shadow:0 8px 28px -6px rgba(82,195,205,.45)}
+.btn.primary:hover{background:transparent;color:var(--accent);box-shadow:0 12px 32px -4px rgba(82,195,205,.6)}
+.btn.ghost{color:var(--accent);background:rgba(82,195,205,.06);backdrop-filter:blur(8px)}
+.btn.ghost:hover{background:var(--accent);color:var(--accent-ink);box-shadow:0 8px 28px -6px rgba(82,195,205,.4)}
+/* hero */
+.hero{position:relative;min-height:100svh;padding:0;display:flex;align-items:center;overflow:hidden}
+#sea{position:absolute;left:0;right:0;bottom:0;width:100%;height:58%;pointer-events:none;opacity:.65}
+.hero .wrap{position:relative;padding-top:96px;padding-bottom:140px}
+.hero h1{font-size:clamp(3rem,9.5vw,8.2rem);font-weight:700;line-height:.98;letter-spacing:-.03em;max-width:11ch;margin-bottom:28px;text-shadow:0 12px 40px rgba(0,0,0,.35)}
+.hero .lead{font-size:1.25rem;color:var(--muted);max-width:42ch;margin-bottom:32px}
+.cue{position:absolute;left:24px;bottom:22px;font-size:.9rem;color:var(--ink);display:flex;align-items:center;gap:10px;z-index:2}
+.cue i{display:block;width:1.5px;height:38px;background:var(--accent);transform-origin:top;animation:cue 2.2s ease-in-out infinite}
+@keyframes cue{0%{transform:scaleY(0)}50%{transform:scaleY(1)}100%{transform:scaleY(1);opacity:0}}
+/* marquee */
+.marquee{border-block:1px solid var(--line);overflow:hidden;padding:18px 0;background:rgba(7,19,29,.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);position:relative;z-index:1}
+:root[data-theme="light"] .marquee{background:rgba(255,255,255,.6)}
+.marquee div{display:flex;width:max-content;animation:mq 34s linear infinite}
+.marquee span{font:600 1.5rem "Source Serif 4",serif;padding:0 28px;display:flex;align-items:center;gap:56px;white-space:nowrap}
+.marquee span::after{content:"";width:9px;height:9px;border-radius:50%;background:var(--nacar);box-shadow:0 0 12px rgba(143,227,232,.7)}
+@keyframes mq{to{transform:translateX(-50%)}}
+/* facts */
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));border-top:1px solid var(--line);margin-top:44px;gap:18px;padding-top:24px}
+.fact{padding:24px;background:var(--card);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:12px;box-shadow:var(--glass-shadow)}
+.fact+.fact{padding-left:24px;border-left:1px solid var(--line)}
+.fact b{display:block;font:600 clamp(2.6rem,5vw,3.8rem)/1 "Source Serif 4",serif;background:var(--nacar);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:10px}
+.fact span{color:var(--muted);font-size:.96rem;line-height:1.5;display:block;max-width:26ch}
+/* journey */
+.journey{padding:0;min-height:100svh;display:flex;align-items:center;background:var(--alt);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-block:1px solid var(--line)}
+.stage{display:grid;grid-template-columns:1fr 1.1fr;gap:64px;align-items:center;padding-top:88px;padding-bottom:56px}
+.journey h2{margin-bottom:24px}
+.sts{position:relative;display:grid;align-items:center}
+.st{grid-area:1/1;min-height:210px;padding-bottom:10px;opacity:0;pointer-events:none;transform:translateY(22px);transition:opacity .45s cubic-bezier(.16,1,.3,1),transform .45s cubic-bezier(.16,1,.3,1)}
+.st.on{opacity:1;pointer-events:auto;transform:translateY(0)}
+.st small{display:block;color:var(--accent);font-weight:600;margin-bottom:10px;letter-spacing:.06em;text-transform:uppercase;font-size:.8rem}
+.st h3{font-size:clamp(1.7rem,3vw,2.4rem);line-height:1.12;margin-bottom:14px}
+.st p{color:var(--muted)}
+.dots{display:none;gap:8px;margin-top:26px}
+.is-pinned .dots{display:flex}
+.dots span{width:34px;height:4px;border-radius:2px;background:var(--bar-bg);transition:background .3s}
+.dots span.on{background:var(--accent)}
+.tankbox{position:relative;background:var(--card);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--glass-shadow)}
+.tankbox svg{display:block;width:100%;height:auto}
+#liner{stroke-dasharray:1;stroke-dashoffset:1}
+#murk circle{animation:fl 6s ease-in-out infinite;transform-box:fill-box}
+#murk circle:nth-child(2n){animation-duration:8s;animation-delay:-2s}
+#murk circle:nth-child(3n){animation-duration:5s;animation-delay:-4s}
+@keyframes fl{50%{transform:translateY(-16px)}}
+.surf{animation:sw 5s ease-in-out infinite alternate}
+@keyframes sw{to{transform:translateX(-14px)}}
+/* media slots */
+figure{margin:0}
+.ph{background:var(--ph);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:14px;min-height:310px;display:flex;align-items:center;justify-content:center;text-align:center;padding:28px;color:var(--muted);font-size:.95rem;overflow:hidden;box-shadow:var(--glass-shadow);position:relative}
+#impacto .ph{min-height:240px}
+.ph::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 20%,rgba(143,227,232,.08),transparent 60%);pointer-events:none}
+figure img,figure video{width:100%;display:block;border-radius:10px}
+/* data */
+.row{display:grid;grid-template-columns:170px 1fr 1fr;gap:20px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}
+.row.head{color:var(--muted);font-weight:600;font-size:.9rem;padding-top:0;border-bottom:2px solid var(--accent)}
+.row .bt{height:12px;background:var(--bar-bg);border-radius:6px;overflow:hidden}
+.row .bf{height:100%;width:0;background:var(--nacar);border-radius:6px;transition:width 1.8s cubic-bezier(.16,1,.3,1)}
+.row .val{font-weight:600;font-size:.95rem;display:block;margin-top:6px}
+.pend{color:var(--muted);font-style:italic;font-weight:400}
+.note{color:var(--muted);font-size:.92rem}
+.panel{border-left:4px solid var(--accent);background:var(--card);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);padding:22px 26px;border-radius:0 12px 12px 0;border-block:1px solid var(--line);border-right:1px solid var(--line);box-shadow:var(--glass-shadow)}
+.panel p:last-child{margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+.chips span{border:1px solid var(--line);background:var(--card);backdrop-filter:blur(12px);border-radius:999px;padding:7px 18px;font-size:.92rem;font-weight:500;transition:border-color .3s,transform .3s,box-shadow .3s}
+.chips span:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 6px 20px -4px rgba(82,195,205,.3)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.step{background:var(--card);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:12px;padding:26px;box-shadow:var(--glass-shadow)}
+.step em{font:600 .9rem "IBM Plex Sans",sans-serif;font-style:normal;color:var(--accent);display:block;margin-bottom:8px;letter-spacing:.05em;text-transform:uppercase}
+.step p{color:var(--muted);margin:0}
+.big{font-size:clamp(2.4rem,7vw,5.6rem);line-height:1.02;letter-spacing:-.025em;max-width:16ch;margin-bottom:40px}
+.help{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:28px;margin-bottom:40px}
+.help div{background:var(--card);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:12px;padding:26px;box-shadow:var(--glass-shadow)}
+.help p{margin:0;color:var(--muted)}
+footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-size:.92rem;background:rgba(4,10,16,.6);backdrop-filter:blur(12px)}
+@media (max-width:899px){
+  section,.journey{min-height:0;padding:70px 0;display:block}
+  .cols,.stage{grid-template-columns:1fr;gap:34px}.stage{min-height:0;padding-top:80px;padding-bottom:70px}
+  .steps,.sts{grid-template-columns:1fr;display:block;gap:28px}.st{min-height:0;opacity:1;pointer-events:auto;transform:none;padding-bottom:28px}.tankbox{position:static}
+  .fact+.fact{padding-left:24px;border-left:1px solid var(--line)}.fact{padding-right:24px}
+  .row{grid-template-columns:1fr;gap:6px}.row.head{display:none}
+  .hero .wrap{padding-bottom:120px}
+}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}.marquee div,.cue i,#murk circle,.surf,.bg-aurora{animation:none}.btn,.row .bf{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="bg-stage" aria-hidden="true">
+  <div class="bg-aurora"></div>
+  <div class="bg-grid"></div>
+  <canvas id="bg-webgl"></canvas>
+  <div class="bg-noise"></div>
+</div>
+<header class="top" id="top">
+  <div class="wrap">
+    <a class="brand" href="#inicio">Proyecto Nácar</a>
+    <nav aria-label="Secciones">
+      <a href="#problema">Problema</a><a href="#viaje">El recorrido</a><a href="#nosotros">Nosotros</a>
+      <a href="#impacto">Impacto</a><a href="#ruta">Ruta</a><a href="#apoyo">Apoyo</a>
+    </nav>
+  </div>
+</header>
+
+<main id="inicio">
+  <section class="hero">
+    <!-- Espacio para foto o video de fondo: se coloca aquí, detrás del canvas -->
+    <canvas id="sea" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <h1 id="h1">Regenerando el agua de Yucatán</h1>
+      <p class="lead">Biofiltración natural y tecnología de digital twin para proteger el acuífero kárstico de la península.</p>
+      <div class="btns"><a class="btn primary" href="#apoyo">Apoyar el proyecto</a><a class="btn ghost" href="#viaje">Ver cómo funciona</a></div>
+    </div>
+    <div class="cue" aria-hidden="true"><i></i>Desliza</div>
+  </section>
+
+  <div class="marquee" aria-hidden="true"><div>
+    <span>Biofiltración natural</span><span>Digital twin</span><span>Acuífero kárstico</span><span>Yucatán</span>
+    <span>Biofiltración natural</span><span>Digital twin</span><span>Acuífero kárstico</span><span>Yucatán</span>
+  </div></div>
+
+  <section id="problema">
+    <div class="wrap">
+      <h2 class="sp">¿Qué hay bajo el agua que bebemos?</h2>
+      <div class="rule"></div>
+      <p>La península de Yucatán enfrenta una crisis hídrica y de salud pública. El acuífero kárstico tiene un suelo hiperpermeable que impide la filtración natural, y las comunidades quedan expuestas a agua con patógenos fecales, metales pesados y nitratos.</p>
+      <div class="facts">
+        <div class="fact"><b data-n="2400" data-s="%">0</b><span>por encima de los límites de la OMS en patógenos fecales</span></div>
+        <div class="fact"><b data-p="&lt; " data-n="25" data-s=" cm">0</b><span>de suelo (leptosoles): no hay filtración natural</span></div>
+        <div class="fact"><b data-n="1.5" data-s=" mm" data-d="1">0</b><span>de geomembrana que aísla el biofiltro del manto freático</span></div>
+        <div class="fact"><b data-n="4" data-s=" días">0</b><span>para una reducción drástica de la turbidez</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="journey" id="viaje">
+    <div class="wrap stage">
+      <div>
+        <h2 class="sp">El agua se aclara a medida que bajas</h2>
+        <div class="sts">
+          <div class="st"><small>1 de 5</small><h3>El suelo no filtra</h3><p>En Yucatán el suelo mide menos de 25 cm y deja pasar todo al acuífero. Los patógenos fecales llegan a superar hasta 2400% los límites de la OMS.</p></div>
+          <div class="st"><small>2 de 5</small><h3>Aislamos el agua</h3><p>Una geomembrana de polietileno de alta densidad de 1.5 mm confina el biofiltro y evita filtraciones al manto freático.</p></div>
+          <div class="st"><small>3 de 5</small><h3>Cuatro aliados vivos</h3><p>Almejas nativas filtran partículas y bacterias. Macrófitas como <i>Nymphaea ampla</i> absorben nutrientes y metales pesados. Una biopelícula microbiana realiza la nitrificación y peces nativos sostienen el ciclo reproductivo de las almejas.</p></div>
+          <div class="st"><small>4 de 5</small><h3>Un digital twin que predice</h3><p>Sensores IoT y modelos matemáticos (Navier-Stokes, CWM1, DEB/SFG y PHREEQC) simulan el sistema para optimizarlo antes de construirlo.</p></div>
+          <div class="st"><small>5 de 5</small><h3>Agua cristalina en 4 días</h3><p>Reducción drástica de turbidez, casi total de coliformes fecales y crítica de fosfatos y nitratos. Los datos varían según el volumen de agua.</p></div>
+        </div>
+        <div class="dots" aria-hidden="true"><span class="on"></span><span></span><span></span><span></span><span></span></div>
+      </div>
+      <!-- Aquí también puede ir una foto o video por estación -->
+      <div class="tankbox">
+        <svg viewBox="0 0 500 400" role="img" aria-label="Biofiltro cuya agua pasa de turbia a cristalina">
+          <defs>
+            <clipPath id="cp"><rect x="40" y="70" width="420" height="250"/></clipPath>
+            <linearGradient id="cleanWater" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#1E6F7D" stop-opacity=".85"/>
+              <stop offset="100%" stop-color="#0B3545" stop-opacity=".95"/>
+            </linearGradient>
+          </defs>
+          <rect x="0" y="320" width="500" height="80" rx="6" fill="#132533"/>
+          <path d="M0 340 H500 M60 320 l8 22 M180 320 l-6 30 M330 320 l10 26 M430 320 l-8 20" stroke="#294457" stroke-width="2" fill="none"/>
+          <g id="leaks" opacity="1">
+            <path d="M110 318 v36 M225 318 v40 M355 318 v36" stroke="#C87A4B" stroke-width="3" stroke-dasharray="5 5" stroke-linecap="round"/>
+            <g fill="#C87A4B" opacity=".75"><circle cx="110" cy="358" r="5"/><circle cx="225" cy="362" r="6"/><circle cx="355" cy="358" r="5"/></g>
+          </g>
+          <text x="250" y="374" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="15" fill="#94AAB8">Suelo kárstico: menos de 25 cm</text>
+          <g clip-path="url(#cp)">
+            <rect x="40" y="70" width="420" height="250" fill="url(#cleanWater)"/>
+            <g id="sparkles" opacity="0">
+              <path d="M95 74 L135 315 M235 74 L275 315 M365 74 L395 315" stroke="#8FE3E8" stroke-width="18" opacity=".12"/>
+              <g fill="#EAF9FB" opacity=".85"><circle cx="150" cy="120" r="3"/><circle cx="285" cy="145" r="3.5"/><circle cx="370" cy="115" r="2.5"/><circle cx="195" cy="260" r="2.5"/></g>
+            </g>
+            <g id="life">
+              <g fill="#C9B6F2"><ellipse cx="110" cy="306" rx="20" ry="9"/><ellipse cx="190" cy="308" rx="20" ry="9"/><ellipse cx="270" cy="306" rx="20" ry="9"/><ellipse cx="350" cy="308" rx="20" ry="9"/></g>
+              <path d="M120 74 V170 M220 74 V190 M320 74 V165 M400 74 V180" stroke="#42B883" stroke-width="3.5" stroke-linecap="round"/>
+              <g fill="#5CD69C"><ellipse cx="120" cy="74" rx="32" ry="7"/><ellipse cx="220" cy="74" rx="36" ry="8"/><ellipse cx="320" cy="74" rx="32" ry="7"/><ellipse cx="400" cy="74" rx="30" ry="7"/></g>
+              <g fill="#8FE3E8"><circle cx="112" cy="176" r="4"/><circle cx="130" cy="186" r="4"/><circle cx="212" cy="194" r="4"/><circle cx="232" cy="204" r="4"/><circle cx="312" cy="170" r="4"/><circle cx="330" cy="180" r="4"/><circle cx="392" cy="186" r="4"/></g>
+              <path d="M240 240 q18 -14 36 0 q-18 14 -36 0Z M276 240 l13 -10 v20Z" fill="#F4B6D2"/>
+            </g>
+            <g id="twin-hud" opacity="0">
+              <path d="M40 130 H460 M40 190 H460 M40 250 H460 M145 70 V320 M250 70 V320 M355 70 V320" stroke="#8FE3E8" stroke-width="1" stroke-dasharray="4 6" opacity=".42"/>
+              <path d="M70 160 C160 135, 340 185, 430 155 M70 225 C170 205, 330 245, 430 215" stroke="#C9B6F2" stroke-width="2" fill="none" stroke-dasharray="6 4" opacity=".85"/>
+              <g fill="none" stroke="#52C3CD" stroke-width="2"><circle cx="145" cy="130" r="9"/><circle cx="250" cy="190" r="9"/><circle cx="355" cy="130" r="9"/></g>
+              <g fill="#F4B6D2"><circle cx="145" cy="130" r="3.5"/><circle cx="250" cy="190" r="3.5"/><circle cx="355" cy="130" r="3.5"/></g>
+            </g>
+            <g id="murk" opacity=".95">
+              <rect x="40" y="70" width="420" height="250" fill="#4A3F2B"/>
+              <g fill="#8C7853" opacity=".85"><circle cx="90" cy="250" r="9"/><circle cx="160" cy="150" r="6"/><circle cx="230" cy="220" r="10"/><circle cx="300" cy="130" r="7"/><circle cx="360" cy="260" r="9"/><circle cx="420" cy="170" r="6"/><circle cx="130" cy="110" r="5"/><circle cx="270" cy="270" r="7"/></g>
+            </g>
+            <path class="surf" d="M20 74 q30 -9 60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0" stroke="#8FE3E8" stroke-width="3" fill="none" opacity=".85"/>
+          </g>
+          <path id="liner" pathLength="1" d="M40 70 V312 Q40 320 48 320 H452 Q460 320 460 312 V70" stroke="#52C3CD" stroke-width="7" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section id="nosotros">
+    <div class="wrap">
+      <h2 class="sp">¿Quién está detrás del proyecto?</h2>
+      <div class="rule"></div>
+      <div class="cols">
+        <div>
+          <p>Somos una empresa social liderada por un equipo interdisciplinario juvenil: estudiantes de arquitectura (Universidad Marista) y de matemáticas (UADY), con el respaldo de asesores en ingeniería ambiental y derechos humanos titulados por la UADY.</p>
+          <p>Nuestro propósito es regenerar ecosistemas acuáticos, escalar a nivel global y llevar el proyecto al <i>World Summit of Nobel Peace Laureates</i>.</p>
+        </div>
+        <figure class="ph" data-slot="equipo">Fotografía o video del equipo</figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt" id="impacto">
+    <div class="wrap">
+      <h2 class="sp">Resultados que se pueden medir</h2>
+      <div class="rule"></div>
+      <div class="cols">
+        <figure class="ph" data-slot="antes-despues">Comparativa fotográfica antes y después del cuerpo de agua</figure>
+        <div>
+          <p><strong>Estrategia de operación.</strong> Iniciamos con un modelo B2B: mantenimiento ecológico de lagos y estanques corporativos. Ese sector financia el capital semilla para instalar después la tecnología en comunidades rurales vulnerables.</p>
+          <div class="panel"><h3>Impacto comprobado en 4 días</h3><p>Reducimos la turbidez, abatimos casi por completo los coliformes fecales y disminuimos fosfatos y nitratos: de ecosistemas eutrofizados a agua cristalina y segura.</p></div>
+        </div>
+      </div>
+      <h3 style="margin:32px 0 4px">Datos medidos</h3>
+      <p class="note">Publicamos las mediciones conforme las recogemos. Lo que falta aparece como pendiente.</p>
+      <div id="datos"><div class="row head"><span>Parámetro</span><span>Antes</span><span>Después</span></div></div>
+      <p class="note" id="upd" style="margin-top:14px"></p>
+    </div>
+  </section>
+
+  <section id="gemelo">
+    <div class="wrap">
+      <h2 class="sp">Un digital twin del biofiltro</h2>
+      <div class="rule"></div>
+      <div class="cols">
+        <div>
+          <p>Una plataforma predictiva en Python replica el biofiltro en digital, en lugar de trabajar por prueba y error. Sensores IoT envían datos de calidad del agua en tiempo real para alimentar los modelos y optimizar el rendimiento antes de construir.</p>
+          <div class="chips"><span>Navier-Stokes</span><span>CWM1</span><span>DEB/SFG</span><span>PHREEQC</span><span>Sensores IoT</span><span>Python</span></div>
+        </div>
+        <figure class="ph" data-slot="gemelo">Interfaz del digital twin</figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt" id="ruta">
+    <div class="wrap">
+      <h2 class="sp">Hacia dónde vamos</h2>
+      <div class="rule"></div>
+      <div class="steps">
+        <div class="step"><em>Fase 1</em><h3>Empresas privadas</h3><p>Mantenimiento ecológico de lagos y estanques corporativos que financia el capital semilla.</p></div>
+        <div class="step"><em>Fase 2</em><h3>Comunidades rurales</h3><p>Biofiltros donde el agua contaminada afecta directamente la salud de las personas.</p></div>
+        <div class="step"><em>Fase 3</em><h3>Escala global</h3><p>Replicar el modelo en otros ecosistemas y presentarlo en el World Summit of Nobel Peace Laureates.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="apoyo">
+    <div class="wrap">
+      <h2 class="big sp">El agua de Yucatán también tiene futuro.</h2>
+      <div class="help">
+        <div><h3>Súmate como aliado</h3><p>Si tu empresa tiene un lago o estanque, trabajemos juntos en su regeneración.</p></div>
+        <div><h3>Difunde</h3><p>Comparte esta página con personas y organizaciones interesadas en el agua de Yucatán.</p></div>
+        <div><h3>Colabora</h3><p>Aporta conocimiento, contactos o recursos para llevar biofiltros a más comunidades.</p></div>
+      </div>
+      <div class="btns"><a class="btn primary" href="mailto:contacto@ejemplo.com?subject=Quiero%20apoyar%20Proyecto%20N%C3%A1car">Escríbenos para apoyar</a></div>
+    </div>
+  </section>
+</main>
+<footer><div class="wrap">© 2026 Proyecto Nácar. Empresa social para la regeneración acuática en Yucatán.</div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+/* ===== EDITA AQUÍ: mediciones (null = pendiente) ===== */
+const MEDICIONES = {
+  actualizado: "12 de noviembre de 2026",
+  filas: [
+    { nombre: "Turbidez", unidad: "NTU", antes: null, despues: null },
+    { nombre: "Coliformes fecales", unidad: "NMP/100 ml", antes: null, despues: null },
+    { nombre: "Fosfatos", unidad: "mg/L", antes: null, despues: null },
+    { nombre: "Nitratos", unidad: "mg/L", antes: null, despues: null }
+  ]
+};
+/* ======================================================= */
+(function(){
+  const $ = s => document.querySelector(s), $$ = s => [].slice.call(document.querySelectorAll(s));
+  const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // encabezado sólido al bajar
+  const top = $("#top"); const onS = () => top.classList.toggle("solid", scrollY > 30);
+  addEventListener("scroll", onS, { passive: true }); onS();
+
+  // titulares: palabras que se revelan
+  const split = el => { el.innerHTML = el.textContent.trim().split(/\s+/).map(w => '<span class="w"><span>' + w + "</span></span>").join(" "); };
+  split($("#h1")); $$("h2.sp").forEach(split);
+
+  // olas del hero (canvas)
+  const cv = $("#sea"), cx = cv.getContext("2d"); let W, H, t = 0, vis = true;
+  const size = () => { const r = cv.getBoundingClientRect(), d = Math.min(devicePixelRatio || 1, 2); W = cv.width = r.width * d; H = cv.height = r.height * d; };
+  const cols = ["rgba(143,227,232,.35)", "rgba(63,193,201,.2)", "rgba(11,110,120,.14)"];
+  const draw = () => {
+    cx.clearRect(0, 0, W, H);
+    cols.forEach((c, i) => {
+      cx.beginPath(); cx.moveTo(0, H);
+      for (let x = 0; x <= W; x += 12) {
+        const y = H * (.5 + i * .13) + Math.sin(x / (W / (2.5 + i)) + t * (1 + i * .45) + i * 2) * H * .05 + Math.sin(x / (W / 8) - t * .8) * H * .015;
+        cx.lineTo(x, y);
+      }
+      cx.lineTo(W, H); cx.closePath(); cx.fillStyle = c; cx.fill();
+    });
+  };
+  size(); draw(); addEventListener("resize", () => { size(); draw(); });
+  if (!calm) {
+    new IntersectionObserver(e => vis = e[0].isIntersecting).observe(cv);
+    (function loop(){ if (vis) { t += .014; draw(); } requestAnimationFrame(loop); })();
+  }
+
+  // Escenario 3D WebGL estilo Hashgraph VC (Malla de acuífero + Nodo geodésico Digital Twin + Partículas nácar)
+  const bgCv = $("#bg-webgl");
+  if (bgCv && window.THREE) {
+    const renderer = new THREE.WebGLRenderer({ canvas: bgCv, alpha: true, antialias: true, powerPreference: "high-performance" });
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+    renderer.setSize(innerWidth, innerHeight);
+
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x050d14, 0.032);
+    const camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.1, 120);
+    camera.position.set(0, 1.4, 13);
+
+    // Textura procedural de halo luminoso para nodos y partículas
+    const spCv = document.createElement("canvas"); spCv.width = spCv.height = 64;
+    const spCx = spCv.getContext("2d"), grd = spCx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    grd.addColorStop(0, "rgba(255,255,255,1)");
+    grd.addColorStop(0.35, "rgba(143,227,232,0.65)");
+    grd.addColorStop(1, "rgba(0,0,0,0)");
+    spCx.fillStyle = grd; spCx.fillRect(0, 0, 64, 64);
+    const glowTex = new THREE.CanvasTexture(spCv);
+
+    // 1. Malla topográfica del acuífero kárstico (wireframe + nodos brillantes)
+    const planeGeo = new THREE.PlaneGeometry(54, 36, 48, 32);
+    const basePos = planeGeo.attributes.position.array.slice();
+    const planeMat = new THREE.MeshBasicMaterial({ color: 0x52c3cd, wireframe: true, transparent: true, opacity: 0.11 });
+    const planeMesh = new THREE.Mesh(planeGeo, planeMat);
+    planeMesh.rotation.x = -Math.PI * 0.43;
+    planeMesh.position.set(0, -4.4, -8);
+    scene.add(planeMesh);
+
+    const planeNodes = new THREE.Points(planeGeo, new THREE.PointsMaterial({
+      size: 0.24, map: glowTex, color: 0x8fe3e8, transparent: true, opacity: 0.55, depthWrite: false, blending: THREE.AdditiveBlending
+    }));
+    planeNodes.rotation.copy(planeMesh.rotation);
+    planeNodes.position.copy(planeMesh.position);
+    scene.add(planeNodes);
+
+    // 2. Núcleo geodésico "Digital Twin" en 3D (estilo Hashgraph)
+    const twinGroup = new THREE.Group();
+    twinGroup.position.set(4.2, 1.1, -2.5);
+    const icoOuterGeo = new THREE.IcosahedronGeometry(3.1, 2);
+    const icoOuterWire = new THREE.Mesh(icoOuterGeo, new THREE.MeshBasicMaterial({ color: 0xc9b6f2, wireframe: true, transparent: true, opacity: 0.16 }));
+    const icoOuterPts = new THREE.Points(icoOuterGeo, new THREE.PointsMaterial({
+      size: 0.28, map: glowTex, color: 0xf4b6d2, transparent: true, opacity: 0.8, depthWrite: false, blending: THREE.AdditiveBlending
+    }));
+    const icoInnerGeo = new THREE.IcosahedronGeometry(1.85, 1);
+    const icoInnerWire = new THREE.Mesh(icoInnerGeo, new THREE.MeshBasicMaterial({ color: 0x52c3cd, wireframe: true, transparent: true, opacity: 0.24 }));
+    twinGroup.add(icoOuterWire, icoOuterPts, icoInnerWire);
+    scene.add(twinGroup);
+
+    // 3. Nube espacial de partículas bioluminiscentes nácar
+    const pCount = 240, pGeo = new THREE.BufferGeometry();
+    const pPos = new Float32Array(pCount * 3), pCol = new Float32Array(pCount * 3);
+    const palette = [new THREE.Color(0x8fe3e8), new THREE.Color(0xc9b6f2), new THREE.Color(0xf4b6d2), new THREE.Color(0x52c3cd)];
+    for (let i = 0; i < pCount; i++) {
+      pPos[i * 3] = (Math.random() - 0.5) * 42;
+      pPos[i * 3 + 1] = (Math.random() - 0.5) * 24;
+      pPos[i * 3 + 2] = (Math.random() - 0.5) * 26 - 4;
+      const c = palette[i % palette.length];
+      pCol[i * 3] = c.r; pCol[i * 3 + 1] = c.g; pCol[i * 3 + 2] = c.b;
+    }
+    pGeo.setAttribute("position", new THREE.BufferAttribute(pPos, 3));
+    pGeo.setAttribute("color", new THREE.BufferAttribute(pCol, 3));
+    const particles = new THREE.Points(pGeo, new THREE.PointsMaterial({
+      size: 0.32, map: glowTex, vertexColors: true, transparent: true, opacity: 0.65, depthWrite: false, blending: THREE.AdditiveBlending
+    }));
+    scene.add(particles);
+
+    let mx = 0, my = 0, tmx = 0, tmy = 0, sProg = 0, tsProg = 0, clock = 0;
+    window.__setFaseRatio = r => { tsProg = r; };
+    addEventListener("pointermove", e => {
+      tmx = (e.clientX / innerWidth - 0.5) * 2;
+      tmy = (e.clientY / innerHeight - 0.5) * 2;
+    }, { passive: true });
+    addEventListener("resize", () => {
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+    });
+
+    const render3D = () => {
+      clock += calm ? 0 : 0.008;
+      if (window.__modoFases !== true) {
+        const maxS = Math.max(document.documentElement.scrollHeight - innerHeight, 1);
+        tsProg = scrollY / maxS;
+      }
+      sProg += (tsProg - sProg) * 0.055;
+      mx += (tmx - mx) * 0.04;
+      my += (tmy - my) * 0.04;
+
+      // Ondulación fluida de la malla del acuífero
+      const pos = planeGeo.attributes.position.array;
+      for (let i = 0; i < pos.length; i += 3) {
+        const x = basePos[i], y = basePos[i + 1];
+        pos[i + 2] = Math.sin(x * 0.22 + clock * 1.4) * Math.cos(y * 0.24 + clock * 1.1) * 1.15 + Math.sin((x + y) * 0.14 - clock * 0.9) * 0.55;
+      }
+      planeGeo.attributes.position.needsUpdate = true;
+
+      // Transición espacial del núcleo Digital Twin según la fase actual
+      twinGroup.rotation.y = clock * 0.45 + sProg * Math.PI * 2.2;
+      twinGroup.rotation.x = clock * 0.25 + sProg * Math.PI * 0.9;
+      icoInnerWire.rotation.y = -clock * 0.8 - sProg * Math.PI * 1.5;
+      twinGroup.position.x = Math.cos(sProg * Math.PI * 1.6) * 3.8 + mx * 0.9;
+      twinGroup.position.y = 1.1 + Math.sin(sProg * Math.PI * 2) * 1.1 - my * 0.6;
+      twinGroup.position.z = -2.5 - Math.sin(sProg * Math.PI) * 2.2;
+
+      particles.rotation.y = clock * 0.08 + sProg * 0.5;
+      camera.position.x = mx * 1.1;
+      camera.position.y = 1.4 - my * 0.7 - sProg * 1.2;
+      camera.lookAt(0, -0.6 - sProg * 0.8, -4);
+
+      renderer.render(scene, camera);
+    };
+    render3D();
+    if (!calm) {
+      if (window.gsap) gsap.ticker.add(render3D);
+      else (function rLoop(){ render3D(); requestAnimationFrame(rLoop); })();
+    }
+  }
+
+  // datos medidos
+  const box = $("#datos");
+  const fmt = (v, u) => v === null ? '<span class="val pend">Pendiente</span>' : '<span class="val">' + v + " " + u + "</span>";
+  MEDICIONES.filas.forEach(f => {
+    const max = Math.max(f.antes || 0, f.despues || 0) || 1;
+    const bar = v => '<div><div class="bt"><div class="bf" data-w="' + (v === null ? 0 : Math.round(v / max * 100)) + '"></div></div>' + fmt(v, f.unidad) + "</div>";
+    const r = document.createElement("div"); r.className = "row";
+    r.innerHTML = "<strong>" + f.nombre + "</strong>" + bar(f.antes) + bar(f.despues);
+    box.appendChild(r);
+  });
+  $("#upd").textContent = "Última actualización: " + MEDICIONES.actualizado;
+
+  // contadores y barras
+  const count = el => {
+    const end = +el.dataset.n, dec = +(el.dataset.d || 0), p = el.dataset.p || "", s = el.dataset.s || "";
+    if (calm) { el.textContent = p + end.toFixed(dec) + s; return; }
+    const t0 = performance.now();
+    (function tick(t){ const k = Math.min((t - t0) / 1800, 1); el.textContent = p + (end * (1 - Math.pow(1 - k, 3))).toFixed(dec) + s; if (k < 1) requestAnimationFrame(tick); })(t0);
+  };
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.querySelectorAll("[data-n]").forEach(count);
+    e.target.querySelectorAll(".bf").forEach(b => b.style.width = b.dataset.w + "%");
+    io.unobserve(e.target);
+  }), { threshold: .25 });
+  $$(".facts,#datos").forEach(el => io.observe(el));
+
+  if (!window.gsap || !window.ScrollTrigger) return;
+  gsap.registerPlugin(ScrollTrigger);
+
+  let lenis = null;
+  if (!calm && window.Lenis) {
+    lenis = new Lenis({ lerp: 0.08, smoothWheel: false });
+    lenis.on("scroll", ScrollTrigger.update);
+    gsap.ticker.add(time => lenis.raf(time * 1000));
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  const mm = gsap.matchMedia();
+
+  // animaciones de entrada de cada sección
+  mm.add("(prefers-reduced-motion: no-preference)", () => {
+    gsap.from("#h1 .w>span", { yPercent: 115, duration: 1.4, ease: "expo.out", stagger: .09, delay: .1 });
+    gsap.from(".hero .lead,.hero .btns", { y: 28, opacity: 0, duration: 1.2, ease: "expo.out", stagger: .14, delay: .65 });
+    $$("h2.sp").forEach(h => gsap.from(h.querySelectorAll(".w>span"), { yPercent: 115, duration: 1.2, ease: "expo.out", stagger: .05, scrollTrigger: { trigger: h, start: "top 86%", toggleActions: "play none none reverse" } }));
+    $$(".rule").forEach(r => gsap.from(r, { scaleX: 0, duration: 1.1, ease: "expo.out", scrollTrigger: { trigger: r, start: "top 88%", toggleActions: "play none none reverse" } }));
+    $$("section:not(.hero):not(.journey) p:not(.note)").forEach(p => gsap.from(p, { y: 24, opacity: 0, duration: 1.1, ease: "expo.out", scrollTrigger: { trigger: p, start: "top 88%", toggleActions: "play none none reverse" } }));
+    $$(".fact").forEach((f, i) => gsap.from(f, { y: 30, opacity: 0, duration: 1.2, delay: (i % 4) * .08, ease: "expo.out", scrollTrigger: { trigger: f, start: "top 88%", toggleActions: "play none none reverse" } }));
+    $$(".ph").forEach(p => gsap.from(p, { clipPath: "inset(0 0 100% 0)", y: 20, duration: 1.2, ease: "expo.inOut", scrollTrigger: { trigger: p, start: "top 85%", toggleActions: "play none none reverse" } }));
+    $$(".step,.help>div,.panel,.row:not(.head),.chips span").forEach(c => gsap.from(c, { y: 26, opacity: 0, duration: 1.1, ease: "expo.out", scrollTrigger: { trigger: c, start: "top 90%", toggleActions: "play none none reverse" } }));
+  });
+
+  // Navegación por fases con UN SOLO SCROLL (escritorio) + transiciones ágiles del biofiltro
+  mm.add("(min-width: 900px) and (prefers-reduced-motion: no-preference)", () => {
+    window.__modoFases = true;
+    const st = $$(".st");
+    // 5 estados claros y diferenciados del biofiltro (transición rápida de 0.55s por etapa)
+    const estados = [
+      { liner: 1, leaks: 1, life: 0, hud: 0, murk: .96, spark: 0 }, // 1/5: Suelo no filtra + agua muy turbia + filtración
+      { liner: 0, leaks: 0, life: 0, hud: 0, murk: .64, spark: 0 }, // 2/5: Geomembrana sella + agua empieza a asentarse
+      { liner: 0, leaks: 0, life: 1, hud: 0, murk: .32, spark: 0 }, // 3/5: Aliados vivos + agua se aclara a más de la mitad
+      { liner: 0, leaks: 0, life: 1, hud: 1, murk: .10, spark: .3 }, // 4/5: Digital twin activo + agua casi cristalina
+      { liner: 0, leaks: 0, life: 1, hud: .22, murk: 0, spark: 1 }   // 5/5: Agua 100% cristalina y luminosa
+    ];
+
+    const irAEstacion = (idx, inmediato) => {
+      const e = estados[idx] || estados[0];
+      const d = inmediato ? 0 : 0.55;
+      st.forEach((el, k) => el.classList.toggle("on", k === idx));
+      gsap.to("#liner", { strokeDashoffset: e.liner, duration: d, ease: "power3.out", overwrite: "auto" });
+      gsap.to("#leaks", { opacity: e.leaks, duration: d * 0.8, ease: "power2.out", overwrite: "auto" });
+      gsap.to("#life", { opacity: e.life, duration: d, ease: "power3.out", overwrite: "auto" });
+      gsap.to("#twin-hud", { opacity: e.hud, duration: d, ease: "power3.out", overwrite: "auto" });
+      gsap.to("#murk", { opacity: e.murk, duration: d, ease: "power3.out", overwrite: "auto" });
+      gsap.to("#sparkles", { opacity: e.spark, duration: d, ease: "power3.out", overwrite: "auto" });
+    };
+    irAEstacion(0, true);
+
+    // Secuencia completa de fases de la página (cada gesto de scroll avanza 1 fase)
+    const fases = [
+      { sel: ".hero", st: null },
+      { sel: "#problema", st: null },
+      { sel: "#viaje", st: 0 },
+      { sel: "#viaje", st: 1 },
+      { sel: "#viaje", st: 2 },
+      { sel: "#viaje", st: 3 },
+      { sel: "#viaje", st: 4 },
+      { sel: "#nosotros", st: null },
+      { sel: "#impacto", st: null },
+      { sel: "#gemelo", st: null },
+      { sel: "#ruta", st: null },
+      { sel: "#apoyo", st: null }
+    ];
+
+    let faseActual = 0, bloqueadoHasta = 0, ultTiempoWheel = 0, ultDelta = 0;
+    fases.forEach((f, i) => {
+      const el = $(f.sel);
+      if (el && (f.st === null || f.st === 0) && Math.abs(scrollY - el.offsetTop) < innerHeight * 0.45) faseActual = i;
+    });
+
+    const moverScroll = (y, dur) => {
+      if (lenis) {
+        lenis.scrollTo(y, { duration: dur, easing: t => 1 - Math.pow(1 - t, 4), force: true, lock: true });
+      } else {
+        window.scrollTo({ top: y, behavior: "smooth" });
+      }
+    };
+
+    const irAFase = (nuevoIdx) => {
+      const idx = Math.max(0, Math.min(fases.length - 1, nuevoIdx));
+      const prev = fases[faseActual];
+      const sig = fases[idx];
+      faseActual = idx;
+      if (window.__setFaseRatio) window.__setFaseRatio(idx / (fases.length - 1));
+
+      if (sig.st !== null) irAEstacion(sig.st, false);
+
+      const el = $(sig.sel);
+      if (!el) return;
+      const mismaSeccion = prev && prev.sel === sig.sel && Math.abs(el.getBoundingClientRect().top) < 80;
+      if (mismaSeccion) {
+        bloqueadoHasta = performance.now() + 580;
+      } else {
+        const y = Math.max(0, el.offsetTop);
+        moverScroll(y, 0.95);
+        bloqueadoHasta = performance.now() + 920;
+      }
+    };
+
+    // Un solo gesto de rueda/trackpad avanza o retrocede exactamente 1 fase
+    const onWheel = e => {
+      if (e.ctrlKey) return;
+      e.preventDefault();
+      const ahora = performance.now();
+      const absD = Math.abs(e.deltaY);
+      const dt = ahora - ultTiempoWheel;
+      ultTiempoWheel = ahora;
+
+      // Ignorar la inercia residual del mismo gesto de trackpad
+      const PicoNuevo = absD > ultDelta * 1.35 && absD > 18;
+      ultDelta = absD;
+      if (ahora < bloqueadoHasta && !(dt > 140 && PicoNuevo)) return;
+      if (absD < 4) return;
+
+      const dir = e.deltaY > 0 ? 1 : -1;
+      // Si una sección es más alta que la pantalla (ej. #impacto en pantallas bajas), mostrar el resto antes de cambiar de sección
+      const secActual = $(fases[faseActual].sel);
+      if (secActual && fases[faseActual].st === null) {
+        const r = secActual.getBoundingClientRect();
+        if (dir > 0 && r.bottom > innerHeight + 48) {
+          moverScroll(scrollY + Math.min(r.bottom - innerHeight + 24, innerHeight * 0.7), 0.75);
+          bloqueadoHasta = ahora + 750;
+          return;
+        }
+        if (dir < 0 && r.top < -48) {
+          moverScroll(Math.max(0, secActual.offsetTop), 0.75);
+          bloqueadoHasta = ahora + 750;
+          return;
+        }
+      }
+
+      irAFase(faseActual + dir);
+    };
+    addEventListener("wheel", onWheel, { passive: false });
+
+    // Soporte para teclado (Flechas, RePág/AvPág, Espacio)
+    const onKey = e => {
+      if (["INPUT", "TEXTAREA", "SELECT"].includes((e.target && e.target.tagName) || "")) return;
+      if (performance.now() < bloqueadoHasta) return;
+      if (["ArrowDown", "PageDown", " "].includes(e.key)) {
+        e.preventDefault(); irAFase(faseActual + 1);
+      } else if (["ArrowUp", "PageUp"].includes(e.key)) {
+        e.preventDefault(); irAFase(faseActual - 1);
+      } else if (e.key === "Home") {
+        e.preventDefault(); irAFase(0);
+      } else if (e.key === "End") {
+        e.preventDefault(); irAFase(fases.length - 1);
+      }
+    };
+    addEventListener("keydown", onKey);
+
+    // Enlaces del menú y botones sincronizados con las fases
+    $$('a[href^="#"]').forEach(a => {
+      a.addEventListener("click", e => {
+        const href = a.getAttribute("href");
+        const targetSel = href === "#inicio" ? ".hero" : href;
+        const idx = fases.findIndex(f => f.sel === targetSel);
+        if (idx !== -1) {
+          e.preventDefault();
+          irAFase(idx);
+        }
+      });
+    });
+
+    return () => {
+      window.__modoFases = false;
+      removeEventListener("wheel", onWheel);
+      removeEventListener("keydown", onKey);
+    };
+  });
+
+  // celular o movimiento reducido: estado final, sin fijar la sección
+  mm.add("(max-width: 899px), (prefers-reduced-motion: reduce)", () => {
+    window.__modoFases = false;
+    gsap.set(".st", { opacity: 1, clearProps: "transform" });
+    gsap.set("#murk", { opacity: 0 });
+    gsap.set("#leaks", { opacity: 0 });
+    gsap.set("#liner", { strokeDashoffset: 0 });
+    gsap.set("#life", { opacity: 1 });
+    gsap.set("#sparkles", { opacity: 1 });
+  });
+})();
+</script>
+</body>
+</html>

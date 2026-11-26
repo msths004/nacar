@@ -1,0 +1,154 @@
+catalog_status: "template_seed_level_D"
+notes: >
+  Catálogo secundario de especies nativas para escalabilidad futura (Fase 3).
+  ADVERTENCIA: Todos los valores aquí declarados son plantillas semilla provisionales (Nivel D).
+  Se mantienen fuera de la especie focal principal (Anodontites trapesialis / A. ciconia) para
+  asegurar que el usuario del backend pueda cambiar de especie sin modificar las ecuaciones.
+
+species:
+  anodontites_tortolis:
+    scientific_name: "Anodontites tortolis"
+    family: "Mycetopodidae"
+    status: "template_seed_level_D"
+    larval_type: "lasidium"
+    requires_host_fish_for_recruitment: true
+    parameters:
+      a_W: {value: 1.08e-5, unit: "g/mm^b_W", evidence_level: "D"}
+      b_W: {value: 2.92, unit: "adim", evidence_level: "D"}
+      a_CR: {value: 1.65, unit: "L/(h*g^b_CR)", evidence_level: "D"}
+      b_CR: {value: 0.66, unit: "adim", evidence_level: "D"}
+      gamma_sif: {value: 0.42, unit: "adim", evidence_level: "D"}
+      gamma_jet: {value: 1.70, unit: "adim", evidence_level: "D"}
+      v_jet_cm_s: {value: 3.20, unit: "cm/s", evidence_level: "D"}
+      T_opt_C: {value: 26.8, unit: "degC", evidence_level: "D"}
+      T_crit_C: {value: 32.0, unit: "degC", evidence_level: "D"}
+      dT_tol_C: {value: 6.8, unit: "degC", evidence_level: "D"}
+      gamma_heat: {value: 1.35, unit: "1/degC", evidence_level: "D"}
+      TSS_50_mg_L: {value: 32.0, unit: "mg/L", evidence_level: "D"}
+      p_sat: {value: 1.60, unit: "adim", evidence_level: "D"}
+      TPM_crit_mg_L: {value: 9.5, unit: "mg/L", evidence_level: "D"}
+      PF_max: {value: 0.62, unit: "adim", evidence_level: "D"}
+      k_pf: {value: 0.08, unit: "L/mg", evidence_level: "D"}
+      K_O_biv_mg_L: {value: 1.35, unit: "mg O2/L", evidence_level: "D"}
+      eta_ret_bact: {value: 0.86, unit: "adim", evidence_level: "D"}
+      AE_conover: {value: 0.63, unit: "adim", evidence_level: "D"}
+      O_N_atomic_ratio: {value: 52.0, unit: "O:N", evidence_level: "D"}
+      f_basal_O2: {value: 3.00, unit: "J/(h*g^0.75)", evidence_level: "D"}
+      sda_catabolic_fraction: {value: 0.08, unit: "adim", evidence_level: "D"}
+      E_O2_J_mg: {value: 14.06, unit: "J/mg O2", evidence_level: "D"}
+      alpha_hidr_N: {value: 0.012, unit: "mg N/mg POM", evidence_level: "D"}
+      alpha_hidr_P: {value: 0.0025, unit: "mg P/mg POM", evidence_level: "D"}
+      L_p_maturity_mm: {value: 42.0, unit: "mm", evidence_level: "D"}
+      kappa_deb: {value: 0.70, unit: "adim", evidence_level: "D"}
+      p_M_vol_J_g_h: {value: 1.10, unit: "J/(g*h)", evidence_level: "D"}
+      T_A_arrhenius_K: {value: 5800.0, unit: "K", evidence_level: "D"}
+      mu_POM_J_mg: {value: 20.5, unit: "J/mg POM", evidence_level: "D"}
+      c_clean_PsR_J_mg: {value: 0.45, unit: "J/mg MS", evidence_level: "D"}
+      K_R_gonad_J_h: {value: 16.0, unit: "J/h", evidence_level: "D"}
+      T_rep_opt_C: {value: 27.2, unit: "degC", evidence_level: "D"}
+      dT_rep_C: {value: 3.4, unit: "degC", evidence_level: "D"}
+      tau_peak_month: {value: 6, unit: "mes", evidence_level: "D"}
+      b_basal_season: {value: 0.22, unit: "adim", evidence_level: "D"}
+      K_O_rep_mg_L: {value: 3.0, unit: "mg O2/L", evidence_level: "D"}
+      K_NH_rep_mg_L: {value: 1.4, unit: "mg N/L", evidence_level: "D"}
+      d_opt_fert_cm: {value: 8.5, unit: "cm", evidence_level: "D"}
+      L_sperm_cm: {value: 17.0, unit: "cm", evidence_level: "D"}
+      d_min_crowd_cm: {value: 2.5, unit: "cm", evidence_level: "D"}
+
+  psoronaias_semigranosa:
+    scientific_name: "Psoronaias semigranosa"
+    family: "Unionidae"
+    status: "template_seed_level_D"
+    larval_type: "glochidium"
+    requires_host_fish_for_recruitment: true
+    parameters:
+      a_W: {value: 1.32e-5, unit: "g/mm^b_W", evidence_level: "D"}
+      b_W: {value: 2.98, unit: "adim", evidence_level: "D"}
+      a_CR: {value: 1.55, unit: "L/(h*g^b_CR)", evidence_level: "D"}
+      b_CR: {value: 0.68, unit: "adim", evidence_level: "D"}
+      gamma_sif: {value: 0.40, unit: "adim", evidence_level: "D"}
+      gamma_jet: {value: 1.65, unit: "adim", evidence_level: "D"}
+      v_jet_cm_s: {value: 3.10, unit: "cm/s", evidence_level: "D"}
+      T_opt_C: {value: 26.0, unit: "degC", evidence_level: "D"}
+      T_crit_C: {value: 31.0, unit: "degC", evidence_level: "D"}
+      dT_tol_C: {value: 6.2, unit: "degC", evidence_level: "D"}
+      gamma_heat: {value: 1.45, unit: "1/degC", evidence_level: "D"}
+      TSS_50_mg_L: {value: 25.0, unit: "mg/L", evidence_level: "D"}
+      p_sat: {value: 1.70, unit: "adim", evidence_level: "D"}
+      TPM_crit_mg_L: {value: 7.0, unit: "mg/L", evidence_level: "D"}
+      PF_max: {value: 0.58, unit: "adim", evidence_level: "D"}
+      k_pf: {value: 0.08, unit: "L/mg", evidence_level: "D"}
+      K_O_biv_mg_L: {value: 1.65, unit: "mg O2/L", evidence_level: "D"}
+      eta_ret_bact: {value: 0.91, unit: "adim", evidence_level: "D"}
+      AE_conover: {value: 0.68, unit: "adim", evidence_level: "D"}
+      O_N_atomic_ratio: {value: 48.0, unit: "O:N", evidence_level: "D"}
+      f_basal_O2: {value: 3.20, unit: "J/(h*g^0.75)", evidence_level: "D"}
+      sda_catabolic_fraction: {value: 0.08, unit: "adim", evidence_level: "D"}
+      E_O2_J_mg: {value: 14.06, unit: "J/mg O2", evidence_level: "D"}
+      alpha_hidr_N: {value: 0.012, unit: "mg N/mg POM", evidence_level: "D"}
+      alpha_hidr_P: {value: 0.0025, unit: "mg P/mg POM", evidence_level: "D"}
+      L_p_maturity_mm: {value: 45.0, unit: "mm", evidence_level: "D"}
+      kappa_deb: {value: 0.72, unit: "adim", evidence_level: "D"}
+      p_M_vol_J_g_h: {value: 1.20, unit: "J/(g*h)", evidence_level: "D"}
+      T_A_arrhenius_K: {value: 5800.0, unit: "K", evidence_level: "D"}
+      mu_POM_J_mg: {value: 20.5, unit: "J/mg POM", evidence_level: "D"}
+      c_clean_PsR_J_mg: {value: 0.45, unit: "J/mg MS", evidence_level: "D"}
+      K_R_gonad_J_h: {value: 17.5, unit: "J/h", evidence_level: "D"}
+      T_rep_opt_C: {value: 26.2, unit: "degC", evidence_level: "D"}
+      dT_rep_C: {value: 3.0, unit: "degC", evidence_level: "D"}
+      tau_peak_month: {value: 4, unit: "mes", evidence_level: "D"}
+      b_basal_season: {value: 0.18, unit: "adim", evidence_level: "D"}
+      K_O_rep_mg_L: {value: 3.5, unit: "mg O2/L", evidence_level: "D"}
+      K_NH_rep_mg_L: {value: 1.0, unit: "mg N/L", evidence_level: "D"}
+      d_opt_fert_cm: {value: 8.0, unit: "cm", evidence_level: "D"}
+      L_sperm_cm: {value: 16.0, unit: "cm", evidence_level: "D"}
+      d_min_crowd_cm: {value: 2.5, unit: "cm", evidence_level: "D"}
+
+  cyrtonaias_tampicoensis:
+    scientific_name: "Cyrtonaias tampicoensis"
+    family: "Unionidae"
+    status: "template_seed_level_D"
+    larval_type: "glochidium"
+    requires_host_fish_for_recruitment: true
+    parameters:
+      a_W: {value: 1.25e-5, unit: "g/mm^b_W", evidence_level: "D"}
+      b_W: {value: 2.96, unit: "adim", evidence_level: "D"}
+      a_CR: {value: 1.75, unit: "L/(h*g^b_CR)", evidence_level: "D"}
+      b_CR: {value: 0.67, unit: "adim", evidence_level: "D"}
+      gamma_sif: {value: 0.44, unit: "adim", evidence_level: "D"}
+      gamma_jet: {value: 1.75, unit: "adim", evidence_level: "D"}
+      v_jet_cm_s: {value: 3.40, unit: "cm/s", evidence_level: "D"}
+      T_opt_C: {value: 25.5, unit: "degC", evidence_level: "D"}
+      T_crit_C: {value: 30.8, unit: "degC", evidence_level: "D"}
+      dT_tol_C: {value: 6.0, unit: "degC", evidence_level: "D"}
+      gamma_heat: {value: 1.45, unit: "1/degC", evidence_level: "D"}
+      TSS_50_mg_L: {value: 26.0, unit: "mg/L", evidence_level: "D"}
+      p_sat: {value: 1.65, unit: "adim", evidence_level: "D"}
+      TPM_crit_mg_L: {value: 7.5, unit: "mg/L", evidence_level: "D"}
+      PF_max: {value: 0.60, unit: "adim", evidence_level: "D"}
+      k_pf: {value: 0.08, unit: "L/mg", evidence_level: "D"}
+      K_O_biv_mg_L: {value: 1.60, unit: "mg O2/L", evidence_level: "D"}
+      eta_ret_bact: {value: 0.90, unit: "adim", evidence_level: "D"}
+      AE_conover: {value: 0.66, unit: "adim", evidence_level: "D"}
+      O_N_atomic_ratio: {value: 49.0, unit: "O:N", evidence_level: "D"}
+      f_basal_O2: {value: 3.05, unit: "J/(h*g^0.75)", evidence_level: "D"}
+      sda_catabolic_fraction: {value: 0.08, unit: "adim", evidence_level: "D"}
+      E_O2_J_mg: {value: 14.06, unit: "J/mg O2", evidence_level: "D"}
+      alpha_hidr_N: {value: 0.012, unit: "mg N/mg POM", evidence_level: "D"}
+      alpha_hidr_P: {value: 0.0025, unit: "mg P/mg POM", evidence_level: "D"}
+      L_p_maturity_mm: {value: 50.0, unit: "mm", evidence_level: "D"}
+      kappa_deb: {value: 0.66, unit: "adim", evidence_level: "D"}
+      p_M_vol_J_g_h: {value: 1.18, unit: "J/(g*h)", evidence_level: "D"}
+      T_A_arrhenius_K: {value: 5800.0, unit: "K", evidence_level: "D"}
+      mu_POM_J_mg: {value: 20.5, unit: "J/mg POM", evidence_level: "D"}
+      c_clean_PsR_J_mg: {value: 0.45, unit: "J/mg MS", evidence_level: "D"}
+      K_R_gonad_J_h: {value: 19.0, unit: "J/h", evidence_level: "D"}
+      T_rep_opt_C: {value: 25.8, unit: "degC", evidence_level: "D"}
+      dT_rep_C: {value: 2.9, unit: "degC", evidence_level: "D"}
+      tau_peak_month: {value: 4, unit: "mes", evidence_level: "D"}
+      b_basal_season: {value: 0.20, unit: "adim", evidence_level: "D"}
+      K_O_rep_mg_L: {value: 3.4, unit: "mg O2/L", evidence_level: "D"}
+      K_NH_rep_mg_L: {value: 1.1, unit: "mg N/L", evidence_level: "D"}
+      d_opt_fert_cm: {value: 9.5, unit: "cm", evidence_level: "D"}
+      L_sperm_cm: {value: 18.0, unit: "cm", evidence_level: "D"}
+      d_min_crowd_cm: {value: 2.5, unit: "cm", evidence_level: "D"}

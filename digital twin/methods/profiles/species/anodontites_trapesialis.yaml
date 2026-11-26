@@ -1,0 +1,224 @@
+species_id: "anodontites_trapesialis"
+scientific_name: "Anodontites trapesialis (Lamarck, 1819)"
+synonyms: ["Anodontites ciconia (Gould, 1851)", "Glabaris trapesialis ciconia"]
+family: "Mycetopodidae (Orden Unionida)"
+status: "focal_species_phase1"
+larval_type: "lasidium"
+requires_host_fish_for_recruitment: true
+pending_verifications:
+  - "Confirmar sinonimia vigente de Anodontites ciconia respecto a A. trapesialis en MolluscaBase / MUSSEL Project."
+  - "Confirmar distribución nativa específica en la cuenca receptora del sitio piloto en Yucatán (GBIF / CONABIO)."
+
+parameters:
+  # 1. Morfometría, Alometría y Sifones (Bloques 1 y 2)
+  a_W:
+    value: 1.15e-5
+    unit: "g / mm^b_W"
+    evidence_level: "C"
+    source: "Escalamiento alométrico de tejido blando AFDW extrapolado de bivalvos dulceacuícolas (Tabla 4)"
+  b_W:
+    value: 2.95
+    unit: "adimensional"
+    evidence_level: "C"
+    source: "Exponente volumétrico cúbico tisular (W proporc. L^3, Reporte p. 12)"
+  a_CR:
+    value: 1.95
+    unit: "L / (h * g^b_CR)"
+    evidence_level: "B"
+    source: "Calibrado dentro del rango reportado para Anodontites trapesialis (0.47 a 3.80 L/h/ind)"
+  b_CR:
+    value: 0.67
+    unit: "adimensional"
+    evidence_level: "C"
+    source: "Exponente superficial branquial teórico (2/3 ~ 0.67, Reporte p. 12)"
+  gamma_sif:
+    value: 0.45
+    unit: "adimensional"
+    evidence_level: "D"
+    source: "Relación radio de succión sifonal vs longitud de concha (semilla hidrodinámica)"
+  gamma_jet:
+    value: 1.80
+    unit: "adimensional"
+    evidence_level: "D"
+    source: "Longitud característica de chorro exhalante vertical (semilla hidrodinámica)"
+  v_jet_cm_s:
+    value: 3.50
+    unit: "cm/s"
+    evidence_level: "D"
+    source: "Velocidad característica de eyección sifonal (semilla hidrodinámica)"
+
+  # 2. Tolerancias Ambientales, Turbidez y Retención Bacteriana (Bloques 2 y 6)
+  T_opt_C:
+    value: 26.5
+    unit: "degC"
+    evidence_level: "C"
+    source: "Temperatura óptima neotropical de filtración (Tabla 4 / Reporte Sec. 2.4)"
+  T_crit_C:
+    value: 31.5
+    unit: "degC"
+    evidence_level: "C"
+    source: "Umbral superior de cierre valvular y estrés térmico (>31-34 degC, Reporte p. 4)"
+  dT_tol_C:
+    value: 6.5
+    unit: "degC"
+    evidence_level: "C"
+    source: "Amplitud térmica operativa unimodal"
+  gamma_heat:
+    value: 1.4
+    unit: "1/degC"
+    evidence_level: "D"
+    source: "Pendiente sigmoidal de cierre valvular por calor extremo (semilla)"
+  TSS_50_mg_L:
+    value: 28.0
+    unit: "mg/L"
+    evidence_level: "C"
+    source: "Ajustado a caída experimental de ~57-61% entre 11.3 y 38.4 mg/L SPM (Reporte p. 15)"
+  p_sat:
+    value: 1.65
+    unit: "adimensional"
+    evidence_level: "C"
+    source: "Exponente de Hill para saturación branquial por sólidos suspendidos"
+  TPM_crit_mg_L:
+    value: 8.0
+    unit: "mg/L"
+    evidence_level: "C"
+    source: "Umbral de rechazo pre-ingestivo de pseudoheces (6 a 12 mg TPM/L, Reporte p. 13)"
+  PF_max:
+    value: 0.60
+    unit: "adimensional"
+    evidence_level: "C"
+    source: "Fracción máxima de partículas rechazadas como pseudoheces"
+  k_pf:
+    value: 0.08
+    unit: "L/mg"
+    evidence_level: "D"
+    source: "Constante exponencial de ascenso de pseudoheces sobre TPM_crit (semilla)"
+  K_O_biv_mg_L:
+    value: 1.50
+    unit: "mg O2/L"
+    evidence_level: "D"
+    source: "Constante de semi-saturación respiratoria para abertura valvular (semilla)"
+  eta_ret_bact:
+    value: 0.88
+    unit: "adimensional"
+    evidence_level: "C"
+    source: "Eficiencia de retención ciliar de partículas y bacterias coliformes (Reporte p. 11 y 18)"
+
+  # 3. Digestión, Respiración y Excreción (Bloque 2)
+  AE_conover:
+    value: 0.65
+    unit: "adimensional"
+    evidence_level: "C"
+    source: "Eficiencia de absorción orgánica de Conover (rango 50-90%, media ~65-70%, Reporte p. 13)"
+  O_N_atomic_ratio:
+    value: 50.0
+    unit: "atómico O:N"
+    evidence_level: "C"
+    source: "Relación atómica catabólica oxígeno:nitrógeno asumida en SFG (Reporte p. 14)"
+  f_basal_O2:
+    value: 3.10
+    unit: "J / (h * g^0.75)"
+    evidence_level: "D"
+    source: "Tasa basal metabólica en ayuno f_basal(T) a 25 degC en Ec. 2.5 (OCR(0) ~ 0.92 mg O2/h/ind)"
+  sda_catabolic_fraction:
+    value: 0.08
+    unit: "adimensional"
+    evidence_level: "D"
+    source: "Fracción catabólica de acción dinámica específica SDA * AR * mu_POM en Ec. 2.5"
+  E_O2_J_mg:
+    value: 14.06
+    unit: "J / mg O2"
+    evidence_level: "C"
+    source: "Equivalente oxicalórico estándar para bivalvos (Elliot & Davison / SFG)"
+  alpha_hidr_N:
+    value: 0.009
+    unit: "mg N / mg POM"
+    evidence_level: "D"
+    source: "Fracción de amonio liberado por hidrólisis rápida de heces/pseudoheces orgánicas (E_N,tot ~ 0.048 mg N/h)"
+  alpha_hidr_P:
+    value: 0.0025
+    unit: "mg P / mg POM"
+    evidence_level: "D"
+    source: "Fracción de ortofosfato liberado por mineralización de biodepósitos orgánicos (semilla)"
+
+  # 4. Presupuesto Reproductivo DEB y Estacionalidad (Bloque 8 — PENDIENTE DE DEEP RESEARCH)
+  L_p_maturity_mm:
+    value: 48.0
+    unit: "mm"
+    evidence_level: "D"
+    source: "Talla de primera madurez sexual (semilla provisional; sustituir vía Deep Research)"
+  kappa_deb:
+    value: 0.68
+    unit: "adimensional"
+    evidence_level: "C"
+    source: "Regla-kappa DEB dentro de rango reportado de bivalvos (0.43 a 0.85, Reporte p. 14)"
+  p_M_vol_J_g_h:
+    value: 1.15
+    unit: "J / (g * h)"
+    evidence_level: "D"
+    source: "Mantenimiento somático DEB por gramo tisular a 20 degC (semilla provisional)"
+  T_A_arrhenius_K:
+    value: 5800.0
+    unit: "K"
+    evidence_level: "C"
+    source: "Temperatura de Arrhenius estándar de bivalvos en modelos DEB"
+  mu_POM_J_mg:
+    value: 20.5
+    unit: "J / mg POM"
+    evidence_level: "C"
+    source: "Contenido energético estándar de materia orgánica particulada (POM)"
+  c_clean_PsR_J_mg:
+    value: 1.65
+    unit: "J / mg MS"
+    evidence_level: "D"
+    source: "Costo mucoso energético por rechazo branquial de pseudoheces (Ec. 8.1)"
+  K_R_gonad_J_h:
+    value: 3.2
+    unit: "J/h"
+    evidence_level: "D"
+    source: "Semi-saturación de flujo energético reproductivo p_R en f_DEB,rep (Ec. 8.1)"
+  T_rep_opt_C:
+    value: 27.0
+    unit: "degC"
+    evidence_level: "D"
+    source: "Centro térmico de gametogénesis y desove neotropical (semilla)"
+  dT_rep_C:
+    value: 3.2
+    unit: "degC"
+    evidence_level: "D"
+    source: "Amplitud estricta de la ventana térmica reproductiva (semilla)"
+  tau_peak_month:
+    value: 5
+    unit: "mes (1-12)"
+    evidence_level: "D"
+    source: "Mes pico estimado de desove/gravidez (Mayo, transición secas-lluvias; semilla)"
+  b_basal_season:
+    value: 0.20
+    unit: "adimensional"
+    evidence_level: "D"
+    source: "Actividad gametogénica basal fuera del pico estacional (semilla)"
+  K_O_rep_mg_L:
+    value: 3.2
+    unit: "mg O2/L"
+    evidence_level: "D"
+    source: "Oxígeno mínimo de seguridad para incubación en marsupio branquial (semilla)"
+  K_NH_rep_mg_L:
+    value: 1.2
+    unit: "mg N/L"
+    evidence_level: "D"
+    source: "Umbral de amonio de seguridad anti-aborto larval (semilla)"
+  d_opt_fert_cm:
+    value: 9.0
+    unit: "cm"
+    evidence_level: "D"
+    source: "Distancia óptima entre individuos en bandeja para fecundación cruzada (semilla)"
+  L_sperm_cm:
+    value: 18.0
+    unit: "cm"
+    evidence_level: "D"
+    source: "Alcance característico de pluma espermática efectiva en bandeja (semilla)"
+  d_min_crowd_cm:
+    value: 2.5
+    unit: "cm"
+    evidence_level: "D"
+    source: "Umbral de hacinamiento mínimo antes de degradación espermática/hipoxia local (semilla)"

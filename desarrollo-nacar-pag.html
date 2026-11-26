@@ -1,0 +1,2949 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Proyecto Nácar: Regenerando el agua de Yucatán mediante biofiltración natural y tecnología de digital twin para proteger el acuífero kárstico.">
+<meta property="og:title" content="Proyecto Nácar · Regenerando el agua de Yucatán">
+<meta property="og:description" content="Biofiltración natural y tecnología de digital twin para proteger el acuífero kárstico de la península de Yucatán.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#050D14">
+<title>Proyecto Nácar · Regenerando el agua de Yucatán</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+@font-face{
+  font-family:"Sprout";
+  src:local("Sprout"),local("Sprout Sans"),local("Sprout - Sans Serif"),
+      url("fonts/Sprout.woff2") format("woff2"),
+      url("fonts/Sprout.otf") format("opentype"),
+      url("fonts/Sprout.ttf") format("truetype");
+  font-weight:100 900;
+  font-style:normal;
+  font-display:swap;
+}
+:root{
+  --font-sans:"Sprout","Barlow Condensed",system-ui,-apple-system,sans-serif;
+  --bg:#050D14; --alt:rgba(6,16,26,.38); --card:rgba(12,28,42,.58); --ink:#FFFFFF; --muted:#D8ECF6; --line:rgba(184,236,255,.16);
+  --accent:#7CE0F4; --accent-ink:#041018; --bar:#7CE0F4; --bar-bg:rgba(184,236,255,.14); --ph:rgba(10,25,38,.56);
+  --nacar:linear-gradient(90deg,#FFFFFF 0%,#B8ECFF 52%,#56C8E0 100%);
+  --glass-shadow:0 28px 64px -16px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.12);
+  color-scheme:dark; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+:root[data-theme="light"]{
+  --bg:#F4F9FB; --alt:rgba(255,255,255,.55); --card:rgba(255,255,255,.72); --ink:#0E2A3B; --muted:#4E6375; --line:rgba(11,110,120,.16);
+  --accent:#0B6E78; --accent-ink:#FFFFFF; --bar:#0B6E78; --bar-bg:rgba(11,110,120,.12); --ph:rgba(235,244,248,.65);
+  --glass-shadow:0 20px 45px -15px rgba(14,42,59,.1),inset 0 1px 0 rgba(255,255,255,.8);
+  color-scheme:light;
+}
+html{scroll-behavior:smooth;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 76px);scrollbar-width:none;-ms-overflow-style:none}
+html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0!important;height:0!important}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1.08rem/1.62 var(--font-sans);letter-spacing:.015em;overflow-x:hidden;position:relative;-webkit-font-smoothing:antialiased;scrollbar-width:none;-ms-overflow-style:none}
+/* Botón flotante de arrastre integrado dentro de la página (sin barra/carril que robe espacio ni descentre) */
+.c-scroll{position:fixed;top:18px;bottom:18px;right:10px;width:14px;z-index:85;pointer-events:none}
+.c-thumb{
+  position:absolute;top:0;right:2px;width:6px;height:54px;border-radius:999px;
+  background:linear-gradient(180deg,rgba(255,255,255,.92) 0%,rgba(184,236,255,.9) 48%,rgba(86,200,224,.82) 100%);
+  box-shadow:0 0 12px rgba(124,224,244,.65),0 0 26px rgba(86,200,224,.35);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  pointer-events:auto;cursor:grab;touch-action:none;user-select:none;
+  transition:width .25s ease,box-shadow .25s ease,opacity .25s ease;
+}
+/* Halo difuminado que mezcla el brillo azul claro de la barrita con el fondo */
+.c-thumb::before{
+  content:"";position:absolute;inset:-7px -6px;border-radius:999px;z-index:-1;pointer-events:none;
+  background:radial-gradient(ellipse at center,rgba(184,236,255,.55) 0%,rgba(86,200,224,.24) 55%,rgba(86,200,224,0) 100%);
+  filter:blur(5px);transition:transform .25s ease,opacity .25s ease;
+}
+.c-thumb:hover,.c-thumb.dragging{
+  width:8px;box-shadow:0 0 16px rgba(255,255,255,.85),0 0 32px rgba(124,224,244,.75);
+}
+.c-thumb.dragging{cursor:grabbing}
+.c-thumb:hover::before,.c-thumb.dragging::before{transform:scale(1.25,1.12)}
+/* Capa 1 (abajo): Fondo de agua de cenote y cáusticas azules, separada de la mezcla de texto */
+.bg-stage{position:fixed;inset:0;z-index:-2;pointer-events:none;overflow:hidden;background:#03090F}
+:root[data-theme="light"] .bg-stage{background:linear-gradient(180deg,#EEF6F9 0%,#E3F0F5 50%,#F4F9FB 100%)}
+#bg-water{position:absolute;inset:0;width:100%;height:100%;display:block}
+.bg-aurora{position:absolute;inset:-15%;filter:blur(115px);opacity:.42;background:radial-gradient(circle at 78% 28%,rgba(255,255,255,.16) 0%,transparent 38%),radial-gradient(circle at 22% 68%,rgba(184,236,255,.22) 0%,transparent 36%),radial-gradient(circle at 55% 85%,rgba(86,200,224,.18) 0%,transparent 32%);animation:auroraMove 22s ease-in-out infinite alternate}
+@keyframes auroraMove{0%{transform:translate3d(0,0,0) scale(1)}100%{transform:translate3d(-3%,4%,0) scale(1.08)}}
+.bg-grid{position:absolute;inset:0;background-image:linear-gradient(to right,rgba(184,236,255,.038) 1px,transparent 1px),linear-gradient(to bottom,rgba(184,236,255,.038) 1px,transparent 1px);background-size:64px 64px;-webkit-mask-image:radial-gradient(ellipse 75% 70% at 50% 45%,#000 15%,transparent 85%);mask-image:radial-gradient(ellipse 75% 70% at 50% 45%,#000 15%,transparent 85%)}
+.bg-noise{position:absolute;inset:0;opacity:.035;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+/* Capa 2 (aislada): Concha/anillos/burbujas en blanco acromático + textos blancos con mix-blend-mode:difference (cero tono naranja) */
+.blend-stage{position:relative;isolation:isolate;z-index:1}
+#bg-webgl{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:-1;pointer-events:none}
+main{position:static}
+footer{position:relative;z-index:1}
+h1,h2,h3{font-family:var(--font-sans);margin:0;color:#FFFFFF}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.wrap{max-width:1100px;width:100%;margin:0 auto;padding:0 28px}
+/* Pantalla de precarga inicial para evitar que la almeja aparezca de golpe y pre-compilar shaders sin lag */
+.preloader{
+  position:fixed;inset:0;z-index:200;background:#03090F;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  transition:opacity .7s cubic-bezier(.16,1,.3,1),visibility .7s;
+}
+.preloader.hide,.preloader.done{opacity:0;visibility:hidden;pointer-events:none}
+.pre-lbl{font:500 .72rem "JetBrains Mono",monospace;letter-spacing:.24em;color:rgba(184,236,255,.75);text-transform:uppercase}
+.pre-track{width:200px;height:2px;background:rgba(184,236,255,.12);border-radius:2px;overflow:hidden}
+.pre-bar{width:100%;height:100%;background:var(--nacar);transform-origin:left center;transform:scaleX(0);will-change:transform}
+/* Barra superior con panel medianamente translúcido y difuminado en los bordes para fundirse con el fondo */
+header.top{position:fixed;inset:env(safe-area-inset-top,0px) 0 auto 0;z-index:50;padding:14px 0;transition:padding .35s ease}
+header.top .wrap{position:relative;display:flex;justify-content:center;align-items:center;min-height:54px}
+nav{
+  display:inline-flex;align-items:center;gap:12px;padding:8px 18px;
+  background:transparent;border:none;box-shadow:none;
+  position:relative;overflow:visible;
+  transition:opacity .75s ease,transform .75s cubic-bezier(.16,1,.3,1);
+}
+/* Fondo del panel de opciones: medianamente translúcido y difuminado en todos sus bordes (sin línea dura ni aspecto mate) */
+nav::before{
+  content:"";position:absolute;inset:-8px -22px;border-radius:32px;z-index:-2;pointer-events:none;
+  background:radial-gradient(ellipse 94% 88% at 50% 50%,rgba(2,10,18,.44) 0%,rgba(3,12,22,.28) 58%,rgba(3,12,22,0) 100%);
+  backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);
+  -webkit-mask-image:radial-gradient(ellipse 95% 88% at 50% 50%,#000 46%,transparent 100%);
+  mask-image:radial-gradient(ellipse 95% 88% at 50% 50%,#000 46%,transparent 100%);
+  transition:background .35s ease;
+}
+header.top.solid nav::before{
+  background:radial-gradient(ellipse 94% 88% at 50% 50%,rgba(2,9,16,.54) 0%,rgba(3,11,20,.34) 60%,rgba(3,11,20,0) 100%);
+}
+:root[data-theme="light"] nav::before{
+  background:radial-gradient(ellipse 94% 88% at 50% 50%,rgba(220,236,245,.55) 0%,rgba(220,236,245,0) 100%);
+}
+.brand-nav{
+  font:600 1.02rem/1 var(--font-sans);letter-spacing:.18em;text-decoration:none;
+  color:#FFFFFF!important;padding:9px 16px 9px 12px!important;margin-right:2px!important;
+  border-right:1px solid rgba(184,236,255,.14);border-radius:10px 0 0 10px!important;
+}
+/* Pantalla portal de entrada: position:absolute con z-index:auto (no fixed) para NO aislar el stacking context en Chromium y que NÁCAR invierta a negro puro sobre la almeja 3D blanca */
+.intro-portal{
+  position:absolute;top:0;left:0;right:0;height:100svh;z-index:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  pointer-events:auto;user-select:none;
+}
+.intro-portal.done{pointer-events:none;visibility:hidden}
+.intro-title{
+  position:relative;z-index:10;
+  font:500 clamp(3.4rem,8.4vw,7.2rem)/.9 var(--font-sans);letter-spacing:.18em;
+  color:#FFFFFF;margin:0;padding-left:.18em;text-align:center;
+  mix-blend-mode:difference;pointer-events:none;
+}
+.clam-hit{
+  position:absolute;top:50%;left:50%;z-index:11;transform:translate(-50%,-50%);
+  width:min(480px,76vmin);height:min(480px,76vmin);border-radius:50%;cursor:pointer;
+  display:flex;align-items:flex-end;justify-content:center;padding-bottom:14px;
+  border:1px solid rgba(184,236,255,.14);
+  background:radial-gradient(circle,rgba(184,236,255,.04) 0%,transparent 70%);
+  transition:transform .45s cubic-bezier(.16,1,.3,1),border-color .35s ease,box-shadow .35s ease,opacity .45s ease;
+}
+.clam-hit::before{
+  content:"";position:absolute;inset:-14px;border-radius:50%;
+  border:1px dashed rgba(184,236,255,.22);animation:spinSlow 26s linear infinite;pointer-events:none;
+}
+@keyframes spinSlow{to{transform:rotate(360deg)}}
+.clam-hit:hover{
+  transform:translate(-50%,-50%) scale(1.06);
+  border-color:rgba(255,255,255,.45);
+  box-shadow:0 0 50px rgba(124,224,244,.22),inset 0 0 30px rgba(255,255,255,.06);
+}
+.intro-cta{
+  position:absolute;bottom:54px;z-index:10;display:flex;flex-direction:column;align-items:center;gap:10px;
+  font:500 .76rem "JetBrains Mono",monospace;letter-spacing:.16em;text-transform:uppercase;color:#EAF6FC;
+  pointer-events:none;transition:opacity .45s ease,transform .45s ease;
+}
+.intro-cta span{opacity:.78}
+.intro-cta i{display:block;width:1px;height:28px;background:linear-gradient(180deg,#FFFFFF,transparent);animation:cue 2s ease-in-out infinite}
+/* Velo de inmersión ligero acelerado por GPU (sin backdrop-filter pesado para evitar lagazos) */
+.dive-veil{
+  position:fixed;inset:0;z-index:45;pointer-events:none;opacity:0;will-change:opacity;
+  background:radial-gradient(circle at 50% 45%,rgba(143,227,232,.22) 0%,rgba(6,22,34,.68) 60%,rgba(3,9,15,.85) 100%);
+}
+/* Transición 100% acelerada por GPU (solo opacity y transform, cero filter:blur sobre main) */
+body.intro-lock{overflow:hidden!important}
+body.intro-lock header.top nav{opacity:0;transform:translateY(-16px);pointer-events:none}
+body.intro-lock main,body.intro-lock .c-scroll,body.intro-lock .aww-hud{opacity:0;pointer-events:none}
+main,header.top nav,.c-scroll,.aww-hud{transition:opacity .8s ease,transform .8s cubic-bezier(.16,1,.3,1)}
+/* HUD estilo Awwwards */
+.aww-hud{
+  position:fixed;left:28px;right:28px;bottom:18px;z-index:40;pointer-events:none;
+  display:flex;justify-content:flex-end;align-items:center;
+  font:500 .72rem "JetBrains Mono",monospace;letter-spacing:.1em;color:rgba(216,236,246,.55);
+  mix-blend-mode:difference;
+}
+@media (max-width:899px),(hover:none){.aww-hud{display:none}}
+nav a{
+  text-decoration:none;color:var(--muted);white-space:nowrap;
+  font:500 .98rem/1 var(--font-sans);letter-spacing:.04em;
+  position:relative;z-index:1;padding:9px 15px;margin:0 1px;border-radius:14px;
+  transition:color .32s ease,transform .38s cubic-bezier(.22,1,.36,1),padding .38s cubic-bezier(.22,1,.36,1),margin .38s cubic-bezier(.22,1,.36,1);
+}
+/* Efecto de inflado difuminado en cada opción: sin bordes marcados, fundiéndose suavemente con el panel */
+nav a::before{
+  content:"";position:absolute;inset:-8px -12px;border-radius:22px;z-index:-2;pointer-events:none;
+  background:radial-gradient(ellipse 75% 80% at 50% 50%,rgba(1,5,10,.65) 0%,rgba(2,9,16,.35) 55%,rgba(2,9,16,0) 100%);
+  filter:blur(6px);opacity:0;transform:scale(.76,.65);
+  transition:opacity .38s cubic-bezier(.22,1,.36,1),transform .38s cubic-bezier(.22,1,.36,1);
+}
+nav a::after{
+  content:"";position:absolute;inset:-5px -6px;border-radius:16px;z-index:-1;pointer-events:none;
+  background:radial-gradient(ellipse 88% 88% at 50% 50%,rgba(1,6,12,.58) 0%,rgba(2,9,16,.32) 64%,rgba(2,9,16,0) 100%);
+  filter:blur(2px);
+  opacity:0;transform:scale(.84,.72);
+  transition:opacity .38s cubic-bezier(.22,1,.36,1),transform .38s cubic-bezier(.22,1,.36,1);
+}
+nav a:hover,nav a:focus-visible{
+  color:#FFFFFF;transform:scale(1.06);padding-inline:19px;margin-inline:3px;
+}
+nav a:hover::before,nav a:focus-visible::before{
+  opacity:1;transform:scale(1.08,1.18);
+}
+nav a:hover::after,nav a:focus-visible::after{
+  opacity:1;transform:scale(1,1.14);
+}
+nav a.active{color:var(--accent)}
+nav a.active::after{
+  opacity:.65;transform:scale(.98,1);
+}
+nav a.active:hover::after{
+  opacity:1;transform:scale(1,1.14);
+}
+section{min-height:100svh;padding:92px 0 56px;position:relative;display:flex;align-items:center}
+section.alt::before,.journey::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--alt);border-block:1px solid var(--line);pointer-events:none}
+h2{font-size:clamp(1.65rem,2.7vw,2.3rem);font-weight:600;line-height:1.18;letter-spacing:-.026em;max-width:24ch;margin-bottom:14px;color:#FFFFFF;mix-blend-mode:difference}
+.w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.1em}
+.w.done{overflow:visible}
+.w>span{display:inline-block}
+.rule{width:56px;height:3px;background:var(--nacar);border-radius:2px;margin:0 0 28px;transform-origin:left;box-shadow:0 0 16px rgba(184,236,255,.35)}
+h3{font-size:1.08rem;font-weight:600;line-height:1.3;letter-spacing:-.015em;margin-bottom:8px}
+p{margin:0 0 16px;max-width:60ch;color:var(--muted)}
+section>.wrap>p,.cols>div>p{color:#E6F4FA;mix-blend-mode:difference}
+p strong{color:#FFFFFF;font-weight:600}
+.cols{display:grid;grid-template-columns:1.08fr 1fr;gap:64px;align-items:center}
+.btns{display:flex;flex-wrap:wrap;gap:12px}
+.btn{display:inline-block;padding:12px 24px;border-radius:8px;font:600 1.02rem/1.2 var(--font-sans);letter-spacing:.04em;text-decoration:none;border:1.5px solid var(--accent);transition:background .3s,color .3s,transform .3s,box-shadow .3s}
+.btn:hover{transform:translateY(-2px)}
+.btn.primary{background:var(--nacar);color:#041018;border-color:transparent;box-shadow:0 8px 26px -6px rgba(184,236,255,.45)}
+.btn.primary:hover{background:transparent;color:#FFFFFF;border-color:#FFFFFF;box-shadow:0 12px 30px -4px rgba(184,236,255,.6)}
+.btn.ghost{color:#FFFFFF;border-color:rgba(184,236,255,.5);background:rgba(184,236,255,.06);backdrop-filter:blur(8px)}
+.btn.ghost:hover{background:#FFFFFF;color:#041018;border-color:#FFFFFF;box-shadow:0 8px 26px -6px rgba(255,255,255,.4)}
+/* hero: sin text-shadow y con mix-blend-mode:difference para que las letras se vuelvan negras donde tocan la concha/anillos/burbujas blancas */
+.hero{position:relative;min-height:100svh;padding:0;display:flex;align-items:center}
+.hero .wrap{position:relative;padding-top:104px;padding-bottom:120px}
+.hero h1{font-size:clamp(2.35rem,4.4vw,3.85rem);font-weight:600;line-height:1.08;letter-spacing:-.032em;max-width:16ch;margin-bottom:20px;color:#FFFFFF;text-shadow:none;mix-blend-mode:difference}
+.hero .lead{font-size:1.05rem;line-height:1.66;color:#EAF6FC;max-width:48ch;margin-bottom:28px;mix-blend-mode:difference}
+/* facts */
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));border-top:1px solid var(--line);margin-top:36px;gap:16px;padding-top:24px}
+.fact{padding:22px;background:var(--card);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:12px;box-shadow:var(--glass-shadow)}
+.fact+.fact{padding-left:22px;border-left:1px solid var(--line)}
+.fact b{display:block;font:600 clamp(2.05rem,3.3vw,2.75rem)/1.05 var(--font-sans);letter-spacing:.01em;font-variant-numeric:tabular-nums;background:var(--nacar);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:8px}
+.fact span{color:var(--muted);font-size:.88rem;line-height:1.5;display:block;max-width:26ch}
+/* journey */
+.journey{padding:0;min-height:100svh;display:flex;align-items:center;position:relative}
+.stage{display:grid;grid-template-columns:1fr 1.12fr;gap:60px;align-items:center;padding-top:92px;padding-bottom:56px}
+.journey h2{margin-bottom:20px}
+.sts{position:relative}
+.st{padding-bottom:24px}
+.js-ready .sts{display:grid;align-items:center}
+.js-ready .st{grid-area:1/1;min-height:190px;padding-bottom:8px;opacity:0;pointer-events:none;transform:translateY(20px);transition:opacity .45s cubic-bezier(.16,1,.3,1),transform .45s cubic-bezier(.16,1,.3,1)}
+.js-ready .st.on{opacity:1;pointer-events:auto;transform:none;mix-blend-mode:difference}
+.st small{display:block;color:#B8ECFF;font:500 .76rem "JetBrains Mono",monospace;margin-bottom:8px;letter-spacing:.08em;text-transform:uppercase}
+.st h3{font-size:clamp(1.3rem,2vw,1.68rem);line-height:1.2;letter-spacing:-.02em;margin-bottom:10px;color:#FFFFFF}
+.st p{color:#E6F4FA;font-size:.95rem}
+.dots{display:flex;gap:10px;margin-top:20px}
+.dots span{width:34px;height:4px;border-radius:3px;background:var(--bar-bg);cursor:pointer;transition:background .3s,transform .3s,box-shadow .3s}
+.dots span:hover{background:rgba(82,195,205,.45)}
+.dots span.on{background:var(--nacar);box-shadow:0 0 12px rgba(82,195,205,.55);transform:scaleY(1.25)}
+.tankbox{position:relative;background:rgba(7,18,28,.66);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:var(--glass-shadow);overflow:hidden;user-select:none}
+#tank-3d{display:block;width:100%;height:420px;border-radius:10px;cursor:grab;touch-action:none}
+#tank-3d:active{cursor:grabbing}
+.tank-ui{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px;padding:0 4px;font:500 .76rem "JetBrains Mono",monospace;color:var(--muted)}
+.tank-ctrls{display:flex;gap:6px}
+.tank-ctrls button{background:rgba(2,8,14,.55);color:#FFFFFF;border:1px solid var(--line);border-radius:6px;padding:4px 10px;font:500 .75rem "JetBrains Mono",monospace;cursor:pointer;transition:background .25s,border-color .25s,transform .2s}
+.tank-ctrls button:hover{background:rgba(184,236,255,.15);border-color:var(--accent);transform:translateY(-1px)}
+/* media slots */
+figure{margin:0}
+.ph{background:var(--ph);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--line);border-radius:14px;min-height:290px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;color:var(--muted);font-size:.88rem;overflow:hidden;box-shadow:var(--glass-shadow);position:relative;gap:12px}
+#impacto .ph{min-height:225px}
+.ph::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 20%,rgba(143,227,232,.1),transparent 65%);pointer-events:none}
+.ph svg{width:100%;max-width:340px;height:auto;opacity:.9}
+figure img,figure video{width:100%;display:block;border-radius:10px}
+/* data */
+.row{display:grid;grid-template-columns:170px 1fr 1fr;gap:20px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:.92rem}
+.row strong{color:var(--ink);font-weight:500}
+.row.head{color:var(--muted);font:500 .78rem "JetBrains Mono",monospace;text-transform:uppercase;letter-spacing:.06em;padding-top:0;border-bottom:1.5px solid var(--accent)}
+.row .cell-lbl{display:none;font:500 .74rem "JetBrains Mono",monospace;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:4px}
+.row .bt{height:10px;background:var(--bar-bg);border-radius:5px;overflow:hidden}
+.row .bf{height:100%;width:0;background:var(--nacar);border-radius:5px;transition:width 1.8s cubic-bezier(.16,1,.3,1)}
+.row .val{font-weight:500;font-size:.88rem;display:block;margin-top:5px;color:var(--ink)}
+.pend{color:var(--muted);font-style:normal;font-family:"JetBrains Mono",monospace;font-size:.8rem;opacity:.8}
+.note{color:var(--muted);font-size:.86rem}
+.panel{border-left:3px solid var(--accent);background:var(--card);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);padding:20px 24px;border-radius:0 12px 12px 0;border-block:1px solid var(--line);border-right:1px solid var(--line);box-shadow:var(--glass-shadow)}
+.panel p:last-child{margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chips span{border:1px solid var(--line);background:var(--card);backdrop-filter:blur(12px);border-radius:8px;padding:6px 14px;font:500 .8rem "JetBrains Mono",monospace;color:var(--ink);transition:border-color .3s,transform .3s,box-shadow .3s}
+.chips span:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 6px 20px -4px rgba(82,195,205,.3)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.step{background:var(--card);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--line);border-top:2.5px solid var(--accent);border-radius:12px;padding:24px;box-shadow:var(--glass-shadow)}
+.step em{font:500 .76rem "JetBrains Mono",monospace;font-style:normal;color:var(--accent);display:block;margin-bottom:8px;letter-spacing:.08em;text-transform:uppercase}
+.step p{color:var(--muted);margin:0;font-size:.92rem}
+.big{font-size:clamp(1.9rem,3.6vw,2.85rem);line-height:1.12;letter-spacing:-.028em;max-width:18ch;margin-bottom:32px}
+.help{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px;margin-bottom:32px}
+.help div{background:var(--card);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--line);border-top:2.5px solid var(--accent);border-radius:12px;padding:24px;box-shadow:var(--glass-shadow)}
+.help p{margin:0;color:var(--muted);font-size:.92rem}
+footer{border-top:1px solid var(--line);padding:26px 0;color:var(--muted);font-size:.85rem;background:rgba(4,10,16,.65);backdrop-filter:blur(12px)}
+@media (max-width:980px){
+  header.top .wrap{justify-content:space-between}
+  .brand{position:static}
+}
+@media (max-width:899px){
+  header.top{padding:8px 0}
+  header.top .wrap{flex-direction:column;gap:8px;padding:0 16px}
+  nav{width:100%;justify-content:flex-start;gap:8px;padding:6px 10px;overflow-x:auto}
+  nav a{padding:7px 12px;font-size:.8rem}
+  section,.journey{min-height:0;padding:70px 0;display:block}
+  .cols,.stage{grid-template-columns:1fr;gap:34px}.stage{min-height:0;padding-top:80px;padding-bottom:70px}
+  .steps,.js-ready .sts{grid-template-columns:1fr;display:block;gap:24px}.js-ready .st{min-height:0;opacity:1;pointer-events:auto;transform:none;padding-bottom:24px}.tankbox{position:static}
+  #tank-3d{height:340px}
+  .dots{display:none}
+  .fact+.fact{padding-left:22px;border-left:1px solid var(--line)}.fact{padding-right:22px}
+  .row{grid-template-columns:1fr 1fr;gap:12px}.row strong{grid-column:1/-1}.row.head{display:none}.row .cell-lbl{display:block}
+  .hero .wrap{padding-top:124px;padding-bottom:100px}
+}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+/* Cursor personalizado azul brillante que combina con la estela del agua (sin magnetismo) */
+.nacar-cursor{
+  position:fixed;top:0;left:0;width:24px;height:24px;z-index:300;pointer-events:none;
+  opacity:0;will-change:transform,opacity;
+  transition:opacity .25s ease;
+}
+.nacar-cursor.vis{opacity:1}
+.nacar-cursor svg{
+  display:block;width:100%;height:100%;overflow:visible;
+  filter:drop-shadow(0 0 4px rgba(124,224,244,.85)) drop-shadow(0 0 11px rgba(86,200,224,.55));
+  transition:transform .16s cubic-bezier(.22,1,.36,1),filter .2s ease;
+}
+.nacar-cursor.hover svg{
+  transform:scale(1.14);
+  filter:drop-shadow(0 0 6px rgba(184,236,255,.95)) drop-shadow(0 0 16px rgba(86,200,224,.75));
+}
+.nacar-cursor.down svg{
+  transform:scale(.9);
+}
+@media (hover:hover) and (pointer:fine){
+  body.custom-cursor,body.custom-cursor *{cursor:none!important}
+}
+@media (hover:none),(pointer:coarse){
+  .nacar-cursor{display:none!important}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}.bg-aurora{animation:none}.btn,.row .bf{transition:none}
+}
+</style>
+</head>
+<body class="intro-lock">
+<div class="preloader" id="preloader" aria-hidden="true">
+  <span class="pre-lbl" id="pre-lbl">CARGANDO NÁCAR · 0%</span>
+  <div class="pre-track"><div class="pre-bar" id="pre-bar"></div></div>
+</div>
+<div class="bg-stage" aria-hidden="true">
+  <div class="bg-aurora"></div>
+  <div class="bg-grid"></div>
+  <canvas id="bg-water"></canvas>
+  <div class="bg-noise"></div>
+</div>
+<div class="dive-veil" id="dive-veil" aria-hidden="true"></div>
+<div class="nacar-cursor" id="nacar-cursor" aria-hidden="true">
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="nc-grad" x1="2" y1="2" x2="18" y2="20" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stop-color="#E6FAFF"/>
+        <stop offset="48%" stop-color="#7CE0F4"/>
+        <stop offset="100%" stop-color="#2FA6C9"/>
+      </linearGradient>
+    </defs>
+    <path d="M2.2 1.8 L18.4 11.4 L11.4 13.0 L8.4 19.8 Z" fill="url(#nc-grad)" stroke="#D8F8FF" stroke-width="1.15" stroke-linejoin="round"/>
+    <circle cx="3.2" cy="2.9" r="1.4" fill="#FFFFFF"/>
+  </svg>
+</div>
+<div class="c-scroll" id="c-scroll" aria-hidden="true"><div class="c-thumb" id="c-thumb" title="Arrastra para desplazarte"></div></div>
+<header class="top" id="top">
+  <div class="wrap">
+    <nav id="main-nav" aria-label="Secciones">
+      <a class="brand-nav" id="brand-nav" href="#inicio">NÁCAR</a>
+      <a href="#problema">Problema</a><a href="#viaje">El recorrido</a><a href="#nosotros">Nosotros</a>
+      <a href="#impacto">Impacto</a><a href="#gemelo">Digital twin</a><a href="#ruta">Ruta</a><a href="#apoyo">Apoyo</a>
+    </nav>
+  </div>
+</header>
+
+<div class="blend-stage">
+<canvas id="bg-webgl" aria-hidden="true"></canvas>
+<div class="intro-portal" id="intro-portal" role="dialog" aria-label="Bienvenida a Proyecto Nácar">
+  <div class="intro-title" id="intro-nacar">NÁCAR</div>
+  <button type="button" class="clam-hit" id="clam-trigger" aria-label="Presiona la almeja para sumergirte al proyecto"></button>
+  <div class="intro-cta" id="intro-cta"><span>Presiona la almeja para sumergirte</span><i></i></div>
+</div>
+<div class="aww-hud" aria-hidden="true"><span id="hud-step">FASE 01 / 12</span></div>
+<main id="inicio">
+  <section class="hero">
+    <div class="wrap">
+      <h1 id="h1">Regenerando el agua de Yucatán</h1>
+      <p class="lead">Biofiltración natural y tecnología de digital twin para proteger el acuífero kárstico de la península.</p>
+      <div class="btns"><a class="btn primary" href="#apoyo">Apoyar el proyecto</a><a class="btn ghost" href="#viaje">Ver cómo funciona</a></div>
+    </div>
+  </section>
+
+  <section id="problema">
+    <div class="wrap">
+      <h2 class="sp">¿Qué hay bajo el agua que bebemos?</h2>
+      <div class="rule"></div>
+      <p>La península de Yucatán enfrenta una crisis hídrica y de salud pública. El acuífero kárstico tiene un suelo hiperpermeable que impide la filtración natural, y las comunidades quedan expuestas a agua con patógenos fecales, metales pesados y nitratos.</p>
+      <div class="facts">
+        <div class="fact"><b data-n="2400" data-s="%">0</b><span>por encima de los límites de la OMS en patógenos fecales</span></div>
+        <div class="fact"><b data-p="&lt; " data-n="25" data-s=" cm">0</b><span>de suelo (leptosoles): no hay filtración natural</span></div>
+        <div class="fact"><b data-n="1.5" data-s=" mm" data-d="1">0</b><span>de geomembrana que aísla el biofiltro del manto freático</span></div>
+        <div class="fact"><b data-n="4" data-s=" días">0</b><span>para una reducción drástica de la turbidez</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="journey" id="viaje">
+    <div class="wrap stage">
+      <div>
+        <h2 class="sp">El agua se aclara a medida que bajas</h2>
+        <div class="sts">
+          <div class="st on"><small>1 de 5</small><h3>El suelo no filtra</h3><p>En Yucatán el suelo mide menos de 25 cm y deja pasar todo al acuífero. Los patógenos fecales llegan a superar hasta 2400% los límites de la OMS.</p></div>
+          <div class="st"><small>2 de 5</small><h3>Aislamos el agua</h3><p>Una geomembrana de polietileno de alta densidad de 1.5 mm confina el biofiltro y evita filtraciones al manto freático.</p></div>
+          <div class="st"><small>3 de 5</small><h3>Tres aliados vivos</h3><p>Almejas nativas filtran partículas y bacterias. Macrófitas como <i>Nymphaea ampla</i> absorben nutrientes y metales pesados, mientras una biopelícula microbiana realiza la nitrificación.</p></div>
+          <div class="st"><small>4 de 5</small><h3>Un digital twin que predice</h3><p>Sensores IoT y modelos matemáticos (Navier-Stokes, CWM1, DEB/SFG y PHREEQC) simulan el sistema para optimizarlo antes de construirlo.</p></div>
+          <div class="st"><small>5 de 5</small><h3>Agua cristalina en 4 días</h3><p>Reducción drástica de turbidez, casi total de coliformes fecales y crítica de fosfatos y nitratos. Los datos varían según el volumen de agua.</p></div>
+        </div>
+        <div class="dots" role="tablist" aria-label="Etapas del biofiltro"><span class="on" data-st="0" title="Etapa 1"></span><span data-st="1" title="Etapa 2"></span><span data-st="2" title="Etapa 3"></span><span data-st="3" title="Etapa 4"></span><span data-st="4" title="Etapa 5"></span></div>
+      </div>
+      <div class="tankbox" id="tankbox">
+        <canvas id="tank-3d" role="img" aria-label="Bloque 3D interactivo de agua y suelo kárstico"></canvas>
+        <div class="tank-ui">
+          <span>Arrastra para rotar · Rueda para zoom</span>
+          <div class="tank-ctrls">
+            <button type="button" id="z-in" title="Acercar zoom" aria-label="Acercar zoom">+</button>
+            <button type="button" id="z-out" title="Alejar zoom" aria-label="Alejar zoom">−</button>
+            <button type="button" id="z-rst" title="Restablecer vista">Reiniciar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="nosotros">
+    <div class="wrap">
+      <h2 class="sp">¿Quién está detrás del proyecto?</h2>
+      <div class="rule"></div>
+      <div class="cols">
+        <div>
+          <p>Somos una empresa social liderada por un equipo interdisciplinario juvenil: estudiantes de arquitectura (Universidad Marista) y de matemáticas (UADY), con el respaldo de asesores en ingeniería ambiental y derechos humanos titulados por la UADY.</p>
+          <p>Nuestro propósito es regenerar ecosistemas acuáticos, escalar a nivel global y llevar el proyecto al <i>World Summit of Nobel Peace Laureates</i>.</p>
+        </div>
+        <figure class="ph" data-slot="equipo">
+          <svg viewBox="0 0 320 160" aria-hidden="true">
+            <defs><linearGradient id="gEq" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="52%" stop-color="#B8ECFF"/><stop offset="100%" stop-color="#56C8E0"/></linearGradient></defs>
+            <circle cx="90" cy="80" r="46" fill="none" stroke="#52C3CD" stroke-width="1.5" opacity=".6"/>
+            <circle cx="160" cy="80" r="46" fill="none" stroke="url(#gEq)" stroke-width="2"/>
+            <circle cx="230" cy="80" r="46" fill="none" stroke="#B8ECFF" stroke-width="1.5" opacity=".6"/>
+            <text x="72" y="84" font-size="10" fill="#9AB0BE" text-anchor="middle">Arquitectura</text>
+            <text x="160" y="76" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">NÁCAR</text>
+            <text x="160" y="90" font-size="9" fill="#7CE0F4" text-anchor="middle">Ing. Ambiental</text>
+            <text x="248" y="84" font-size="10" fill="#9AB0BE" text-anchor="middle">Matemáticas</text>
+          </svg>
+          <span>Fotografía o video del equipo interdisciplinario (Marista · UADY)</span>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt" id="impacto">
+    <div class="wrap">
+      <h2 class="sp">Resultados que se pueden medir</h2>
+      <div class="rule"></div>
+      <div class="cols">
+        <figure class="ph" data-slot="antes-despues">
+          <svg viewBox="0 0 320 140" aria-hidden="true">
+            <rect x="10" y="15" width="142" height="110" rx="8" fill="#3B3324" stroke="rgba(255,255,255,.12)"/>
+            <circle cx="48" cy="58" r="8" fill="#7D6B48" opacity=".7"/><circle cx="95" cy="85" r="11" fill="#7D6B48" opacity=".6"/><circle cx="115" cy="45" r="6" fill="#7D6B48" opacity=".7"/>
+            <text x="81" y="112" font-size="11" font-weight="600" fill="#D5C6A9" text-anchor="middle">ANTES (Día 0)</text>
+            <rect x="168" y="15" width="142" height="110" rx="8" fill="#0F4C5C" stroke="#52C3CD"/>
+            <circle cx="215" cy="52" r="3" fill="#8FE3E8"/><circle cx="265" cy="68" r="3.5" fill="#FFFFFF"/><circle cx="238" cy="82" r="2.5" fill="#B8ECFF"/>
+            <text x="239" y="112" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">DESPUÉS (Día 4)</text>
+          </svg>
+          <span>Comparativa fotográfica antes y después del cuerpo de agua</span>
+        </figure>
+        <div>
+          <p><strong>Estrategia de operación.</strong> Iniciamos con un modelo B2B: mantenimiento ecológico de lagos y estanques corporativos. Ese sector financia el capital semilla para instalar después la tecnología en comunidades rurales vulnerables.</p>
+          <div class="panel"><h3>Impacto comprobado en 4 días</h3><p>Reducimos la turbidez, abatimos casi por completo los coliformes fecales y disminuimos fosfatos y nitratos: de ecosistemas eutrofizados a agua cristalina y segura.</p></div>
+        </div>
+      </div>
+      <h3 style="margin:32px 0 4px">Datos medidos</h3>
+      <p class="note">Publicamos las mediciones conforme las recogemos. Lo que falta aparece como pendiente.</p>
+      <div id="datos"><div class="row head"><span>Parámetro</span><span>Antes</span><span>Después</span></div></div>
+      <p class="note" id="upd" style="margin-top:14px"></p>
+    </div>
+  </section>
+
+  <section id="gemelo">
+    <div class="wrap">
+      <h2 class="sp">Un digital twin del biofiltro</h2>
+      <div class="rule"></div>
+      <div class="cols">
+        <div>
+          <p>Una plataforma predictiva en Python replica el biofiltro en digital, en lugar de trabajar por prueba y error. Permite elegir el país o tipo de agua, la especie de almeja nativa, el número de canastas y el área de plantas para calcular en cuántas horas se limpia el estanque antes de instalarlo.</p>
+          <div class="chips"><span>Simulador 3D de Canastas</span><span>Equilibrio Almeja-Planta</span><span>Cenotes de Yucatán</span><span>Reproducción por Época</span><span>Sensores en Vivo</span></div>
+          <div class="btns" style="margin-top:22px">
+            <a class="btn primary" href="digital%20twin/frontend/dist/index.html">Abrir Gemelo Digital Interactivo</a>
+          </div>
+        </div>
+        <figure class="ph" data-slot="gemelo" style="padding:20px;align-items:stretch;text-align:left;background:linear-gradient(180deg,#141925 0%,#0E121B 100%);border-color:#232B3E">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.07);padding-bottom:12px">
+            <div>
+              <strong style="color:#FFFFFF;font-size:.98rem;display:block">NÁCAR · Simulador del Estanque</strong>
+              <span style="font-size:.76rem;color:#8B95A7">México · Yucatán · Almeja Nacarada Nativa</span>
+            </div>
+            <span style="background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.35);color:#34D399;padding:4px 10px;border-radius:8px;font-size:.74rem;font-weight:600">Agua Óptima · 95%</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0">
+            <div style="background:#0B0E14;border:1px solid #1E2536;border-radius:10px;padding:12px">
+              <span style="font-size:.72rem;color:#8B95A7;display:block">Tiempo de limpieza</span>
+              <strong style="font-size:1.25rem;color:#3B82F6">36.0 h</strong>
+              <span style="font-size:.68rem;color:#60A5FA;display:block">62% más rápido</span>
+            </div>
+            <div style="background:#0B0E14;border:1px solid #1E2536;border-radius:10px;padding:12px">
+              <span style="font-size:.72rem;color:#8B95A7;display:block">Canastas y almejas</span>
+              <strong style="font-size:1.25rem;color:#FFFFFF">240</strong>
+              <span style="font-size:.68rem;color:#8B95A7;display:block">2 canastas · 6 pisos</span>
+            </div>
+            <div style="background:#0B0E14;border:1px solid #1E2536;border-radius:10px;padding:12px">
+              <span style="font-size:.72rem;color:#8B95A7;display:block">Plantas necesarias</span>
+              <strong style="font-size:1.25rem;color:#34D399">4.5 m²</strong>
+              <span style="font-size:.68rem;color:#8B95A7;display:block">Equilibrio seguro</span>
+            </div>
+          </div>
+          <a href="digital%20twin/frontend/dist/index.html" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:11px 16px;border-radius:10px;background:linear-gradient(180deg,#3B82F6 0%,#2563EB 60%,#1D4ED8 100%);color:#FFFFFF;font-weight:600;font-size:.86rem;text-decoration:none;box-shadow:0 6px 18px -3px rgba(37,99,235,.48),inset 0 1px 0 rgba(255,255,255,.25)">
+            <span>Probar el Gemelo Digital en 3D</span>
+          </a>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt" id="ruta">
+    <div class="wrap">
+      <h2 class="sp">Hacia dónde vamos</h2>
+      <div class="rule"></div>
+      <div class="steps">
+        <div class="step"><em>Fase 1</em><h3>Empresas privadas</h3><p>Mantenimiento ecológico de lagos y estanques corporativos que financia el capital semilla.</p></div>
+        <div class="step"><em>Fase 2</em><h3>Comunidades rurales</h3><p>Biofiltros donde el agua contaminada afecta directamente la salud de las personas.</p></div>
+        <div class="step"><em>Fase 3</em><h3>Escala global</h3><p>Replicar el modelo en otros ecosistemas y presentarlo en el World Summit of Nobel Peace Laureates.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="apoyo">
+    <div class="wrap">
+      <h2 class="big sp">El agua de Yucatán también tiene futuro.</h2>
+      <div class="help">
+        <div><h3>Súmate como aliado</h3><p>Si tu empresa tiene un lago o estanque, trabajemos juntos en su regeneración.</p></div>
+        <div><h3>Difunde</h3><p>Comparte esta página con personas y organizaciones interesadas en el agua de Yucatán.</p></div>
+        <div><h3>Colabora</h3><p>Aporta conocimiento, contactos o recursos para llevar biofiltros a más comunidades.</p></div>
+      </div>
+      <div class="btns"><a class="btn primary" href="mailto:contacto@proyectonacar.org?subject=Quiero%20apoyar%20Proyecto%20N%C3%A1car">Escríbenos para apoyar</a></div>
+    </div>
+  </section>
+</main>
+</main>
+</div>
+<footer><div class="wrap">© 2026 Proyecto Nácar. Empresa social para la regeneración acuática en Yucatán.</div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+/* ===== EDITA AQUÍ: mediciones (null = pendiente) ===== */
+const MEDICIONES = {
+  actualizado: "12 de noviembre de 2026",
+  filas: [
+    { nombre: "Turbidez", unidad: "NTU", antes: null, despues: null },
+    { nombre: "Coliformes fecales", unidad: "NMP/100 ml", antes: null, despues: null },
+    { nombre: "Fosfatos", unidad: "mg/L", antes: null, despues: null },
+    { nombre: "Nitratos", unidad: "mg/L", antes: null, despues: null }
+  ]
+};
+/* ======================================================= */
+(async function(){
+  document.documentElement.classList.add("js-ready");
+  const $ = s => document.querySelector(s), $$ = s => [].slice.call(document.querySelectorAll(s));
+  const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Controlador suave del preloader a 60fps: cede fotogramas entre etapas pesadas para que la barra avance de forma continua (0% -> 100%)
+  const preloader = $("#preloader"), preBar = $("#pre-bar"), preLbl = $("#pre-lbl");
+  const introPortal = $("#intro-portal"), introNacar = $("#intro-nacar"), clamBtn = $("#clam-trigger");
+  const brandNav = $("#brand-nav"), diveVeil = $("#dive-veil"), hudStep = $("#hud-step");
+  if (!calm && window.gsap) {
+    gsap.set(introNacar, { opacity: 0, scale: 0.94 });
+    gsap.set("#intro-cta,#clam-trigger", { opacity: 0, y: 12 });
+  }
+  let preDisplay = 0, preTarget = 0, preText = "CARGANDO NÁCAR", preRunning = Boolean(preloader && !calm);
+  let preLastT = performance.now();
+  const renderPreUI = pct => {
+    const clamped = Math.max(0, Math.min(100, pct));
+    if (preBar) preBar.style.transform = "scaleX(" + (clamped / 100).toFixed(4) + ")";
+    if (preLbl) preLbl.textContent = preText + " · " + String(Math.round(clamped)).padStart(2, "0") + "%";
+  };
+  if (preRunning) {
+    const tickPre = now => {
+      if (!preRunning) return;
+      const dtPre = Math.min(0.05, Math.max(0.001, (now - preLastT) * 0.001));
+      preLastT = now;
+      const diff = preTarget - preDisplay;
+      if (diff > 0.05) {
+        const step = Math.min(diff, Math.max(22 * dtPre, diff * Math.min(1, dtPre * 6.5)));
+        preDisplay = Math.min(preTarget, preDisplay + step);
+      }
+      renderPreUI(preDisplay);
+      requestAnimationFrame(tickPre);
+    };
+    requestAnimationFrame(tickPre);
+  }
+  const yieldFrame = () => calm ? Promise.resolve() : new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));
+  const advancePreload = async (pct, label) => {
+    if (label) preText = label;
+    preTarget = Math.max(preTarget, Math.min(100, pct));
+    if (!preRunning) return;
+    await yieldFrame();
+  };
+  const finishPreloadSmooth = async () => {
+    preTarget = 100;
+    preText = "CARGANDO NÁCAR";
+    if (!preRunning) {
+      if (preloader) preloader.classList.add("done");
+      return;
+    }
+    await new Promise(resolve => {
+      const waitFull = () => {
+        if (preDisplay >= 99.6) {
+          preDisplay = 100;
+          renderPreUI(100);
+          preRunning = false;
+          setTimeout(resolve, 140);
+        } else {
+          requestAnimationFrame(waitFull);
+        }
+      };
+      requestAnimationFrame(waitFull);
+    });
+  };
+
+  await advancePreload(10, "CARGANDO TIPOGRAFÍA");
+  if (!calm && document.fonts && document.fonts.ready) {
+    await Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 500))]);
+  }
+  await advancePreload(18, "PREPARANDO ESCENA 3D");
+
+  // encabezado sólido al bajar
+  const top = $("#top"); const onS = () => top.classList.toggle("solid", scrollY > 30);
+  addEventListener("scroll", onS, { passive: true }); onS();
+
+  // Cursor personalizado azul brillante sincronizado con la estela del agua (solo escritorio con puntero fino)
+  const nCur = $("#nacar-cursor");
+  if (nCur && matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    document.body.classList.add("custom-cursor");
+    const hoverSel = "a,button,.btn,.clam-hit,.dots span,.c-thumb,#tank-3d";
+    const moveCur = e => {
+      nCur.style.transform = "translate3d(" + (e.clientX - 2) + "px," + (e.clientY - 2) + "px,0)";
+      if (!nCur.classList.contains("vis")) nCur.classList.add("vis");
+      const overInteractive = Boolean(e.target && e.target.closest && e.target.closest(hoverSel));
+      nCur.classList.toggle("hover", overInteractive);
+    };
+    addEventListener("pointermove", moveCur, { passive: true });
+    addEventListener("pointerdown", e => {
+      moveCur(e);
+      nCur.classList.add("down");
+    }, { passive: true });
+    addEventListener("pointerup", () => nCur.classList.remove("down"), { passive: true });
+    document.addEventListener("mouseleave", () => nCur.classList.remove("vis"));
+    addEventListener("blur", () => nCur.classList.remove("vis"));
+  }
+
+  // titulares: palabras que se revelan
+  const split = el => { if (el) el.innerHTML = el.textContent.trim().split(/\s+/).map(w => '<span class="w"><span>' + w + "</span></span>").join(" "); };
+  split($("#h1")); $$("h2.sp").forEach(split);
+
+  // =========================================================================
+  // 0. GEOMETRÍA PARAMÉTRICA Y TEXTURAS PROCEDURALES 1024px DE CONCHA BIVALVA REAL
+  // =========================================================================
+  const smoothstep01 = t => {
+    const c = Math.max(0, Math.min(1, t));
+    return c * c * (3 - 2 * c);
+  };
+
+  function createBivalveValveGeometry(opts) {
+    const cfg = Object.assign({ radialSegs: 136, angularSegs: 180, signZ: 1, scale: 1, withMicroRings: true }, opts);
+    const { radialSegs, angularSegs, signZ, scale, withMicroRings } = cfg;
+
+    function rawContour(theta) {
+      const c = Math.cos(theta), s = Math.sin(theta);
+      const up = 0.5 * (1.0 + s);
+      const widthTaper = 1.0 - 0.18 * Math.pow(up, 1.55) + 0.04 * (1.0 - up);
+      let x = 2.52 * c * widthTaper + 0.14 * (1.0 - up) * (1.0 - Math.abs(c)) - 0.24 * Math.pow(up, 2.4);
+      x += 0.12 * (0.5 * (1.0 + c)) * (1.0 - 0.5 * up);
+      const y = 1.92 * s + 0.18 * Math.pow(up, 2.4) - 0.08 * (1.0 - up) * (c * c);
+      return [x, y];
+    }
+
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    for (let k = 0; k < 360; k++) {
+      const [rx, ry] = rawContour((k / 360) * Math.PI * 2);
+      if (rx < minX) minX = rx;
+      if (rx > maxX) maxX = rx;
+      if (ry < minY) minY = ry;
+      if (ry > maxY) maxY = ry;
+    }
+    const xMid = 0.5 * (minX + maxX);
+    const yMid = 0.5 * (minY + maxY);
+    const xu = -0.26 - xMid;
+    const yu = 1.62 - yMid;
+
+    const ringCols = angularSegs + 1;
+    const vertCount = (radialSegs + 1) * ringCols;
+    const positions = new Float32Array(vertCount * 3);
+    const uvs = new Float32Array(vertCount * 2);
+
+    const groovesSpec = [
+      [0.26, 0.016, 0.022],
+      [0.47, 0.017, 0.028],
+      [0.67, 0.016, 0.026],
+      [0.84, 0.014, 0.022]
+    ];
+
+    for (let i = 0; i <= radialSegs; i++) {
+      const u = i / radialSegs;
+      const dome = Math.pow(Math.max(0, 1.0 - Math.pow(u, 2.1)), 0.68);
+      const envUmbo = smoothstep01((u - 0.04) / 0.14);
+      const envRim = smoothstep01((1.0 - u) / 0.06);
+      const ringEnv = envUmbo * envRim;
+
+      for (let j = 0; j <= angularSegs; j++) {
+        const v = j / angularSegs;
+        const theta = v * Math.PI * 2;
+        const [rx, ry] = rawContour(theta);
+        const xm = rx - xMid;
+        const ym = ry - yMid;
+
+        const x = xu + u * (xm - xu);
+        const dorsal = Math.pow(Math.max(0, Math.sin(theta)), 3.0);
+        const y = yu + u * (ym - yu) - 0.05 * dorsal * (u * u * u);
+
+        const belly = 0.62 + 0.72 * Math.exp(-((x + 0.05) * (x + 0.05)) / 3.8 - ((y - 0.30) * (y - 0.30)) / 2.2);
+        let zMag = 0.98 * dome * belly;
+
+        if (withMicroRings && ringEnv > 0) {
+          const uWobble = u + (0.0045 * Math.sin(3.0 * theta + 0.6) + 0.0025 * Math.cos(5.0 * theta - 1.1)) * u * (1.0 - u);
+          let grooves = 0;
+          for (let g = 0; g < groovesSpec.length; g++) {
+            const d = (uWobble - groovesSpec[g][0]) / groovesSpec[g][1];
+            grooves -= groovesSpec[g][2] * Math.exp(-d * d);
+          }
+          const ph1 = uWobble * Math.PI * 2 * 16.0;
+          const ph2 = uWobble * Math.PI * 2 * 34.0 + 0.8;
+          const ridges = 0.014 * (Math.sin(ph1) - 0.26 * Math.sin(2.0 * ph1)) + 0.006 * Math.sin(ph2);
+          zMag = Math.max(0, zMag + ringEnv * (grooves + ridges));
+        }
+
+        const idx = i * ringCols + j;
+        positions[idx * 3] = x * scale;
+        positions[idx * 3 + 1] = y * scale;
+        positions[idx * 3 + 2] = signZ * zMag * scale;
+        uvs[idx * 2] = v;
+        uvs[idx * 2 + 1] = u;
+      }
+    }
+
+    const indices = [];
+    for (let i = 0; i < radialSegs; i++) {
+      for (let j = 0; j < angularSegs; j++) {
+        const a = i * ringCols + j;
+        const b = (i + 1) * ringCols + j;
+        const c = (i + 1) * ringCols + j + 1;
+        const d = i * ringCols + j + 1;
+        if (signZ >= 0) {
+          if (i > 0) indices.push(a, b, c, a, c, d);
+          else indices.push(a, b, c);
+        } else {
+          if (i > 0) indices.push(a, c, b, a, d, c);
+          else indices.push(a, c, b);
+        }
+      }
+    }
+
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    geo.setAttribute("uv", new THREE.BufferAttribute(uvs, 2));
+    geo.setIndex(indices);
+    geo.computeVertexNormals();
+
+    // Soldar normales en la costura theta = 0 == 2*PI y en el polo del umbo (cero facetas o líneas visibles)
+    const nArr = geo.attributes.normal.array;
+    for (let i = 1; i <= radialSegs; i++) {
+      const i0 = (i * ringCols) * 3;
+      const i1 = (i * ringCols + angularSegs) * 3;
+      let nx = nArr[i0] + nArr[i1], ny = nArr[i0 + 1] + nArr[i1 + 1], nz = nArr[i0 + 2] + nArr[i1 + 2];
+      const len = Math.hypot(nx, ny, nz) || 1;
+      nx /= len; ny /= len; nz /= len;
+      nArr[i0] = nArr[i1] = nx;
+      nArr[i0 + 1] = nArr[i1 + 1] = ny;
+      nArr[i0 + 2] = nArr[i1 + 2] = nz;
+    }
+    let px = 0, py = 0, pz = 0;
+    for (let j = 0; j < angularSegs; j++) {
+      const k = j * 3;
+      px += nArr[k]; py += nArr[k + 1]; pz += nArr[k + 2];
+    }
+    const pLen = Math.hypot(px, py, pz) || 1;
+    px /= pLen; py /= pLen; pz /= pLen;
+    if (pz * signZ < 0) { px = -px; py = -py; pz = -pz; }
+    for (let j = 0; j <= angularSegs; j++) {
+      const k = j * 3;
+      nArr[k] = px; nArr[k + 1] = py; nArr[k + 2] = pz;
+    }
+    geo.attributes.normal.needsUpdate = true;
+    return geo;
+  }
+
+  async function createClamTextures(maxAniso, onStep) {
+    const SIZE = 1024;
+    const heightField = new Float32Array(SIZE * SIZE);
+    const bandTone = new Float32Array(SIZE * SIZE);
+    const groovesSpec = [
+      [0.26, 0.015, 0.85],
+      [0.47, 0.016, 1.00],
+      [0.67, 0.015, 0.92],
+      [0.84, 0.013, 0.80]
+    ];
+
+    for (let ty = 0; ty < SIZE; ty++) {
+      if (ty > 0 && ty % 256 === 0 && onStep) await onStep(0.5 * (ty / SIZE));
+      // flipY=true por defecto en CanvasTexture: ty=0 es borde exterior (u=1), ty=SIZE-1 es umbo (u=0)
+      const u = 1.0 - ty / (SIZE - 1);
+      const envUmbo = smoothstep01((u - 0.03) / 0.10);
+      const envRim = smoothstep01((1.0 - u) / 0.025);
+      const ringEnv = envUmbo * envRim;
+
+      for (let tx = 0; tx < SIZE; tx++) {
+        const theta = (tx / SIZE) * Math.PI * 2;
+        const cs = Math.cos(theta), sn = Math.sin(theta);
+        const uWobble = u
+          + (0.0045 * Math.sin(3.0 * theta + 0.6) + 0.0025 * Math.cos(5.0 * theta - 1.1)) * u * (1.0 - u)
+          + 0.0012 * Math.sin(7.0 * theta - 0.4) * u * (1.0 - u);
+
+        let grooves = 0;
+        for (let g = 0; g < groovesSpec.length; g++) {
+          const d = (uWobble - groovesSpec[g][0]) / groovesSpec[g][1];
+          grooves -= groovesSpec[g][2] * Math.exp(-d * d);
+        }
+
+        const p16 = uWobble * Math.PI * 2 * 16.0;
+        const p34 = uWobble * Math.PI * 2 * 34.0 + 0.8;
+        const p72 = uWobble * Math.PI * 2 * 72.0 + 0.35 * Math.sin(uWobble * 19.0);
+        const p136 = uWobble * Math.PI * 2 * 136.0;
+
+        const mod72 = 0.65 + 0.35 * Math.sin(uWobble * 23.0 + cs * 0.6);
+        const mod136 = 0.55 + 0.45 * Math.cos(uWobble * 41.0 - sn * 0.8);
+
+        const r16 = 0.40 * (Math.sin(p16) - 0.28 * Math.sin(2.0 * p16));
+        const r34 = 0.24 * (Math.sin(p34) - 0.24 * Math.sin(2.0 * p34));
+        const r72 = 0.16 * mod72 * (Math.sin(p72) - 0.22 * Math.sin(2.0 * p72));
+        const r136 = 0.08 * mod136 * Math.sin(p136);
+
+        // Grano mineral calcáreo sutil y periódico en theta (sin costura en tx=0)
+        const grain = 0.032 * Math.sin(cs * 38.0 + u * 64.0) * Math.cos(sn * 34.0 - u * 52.0);
+        const idx = ty * SIZE + tx;
+        heightField[idx] = ringEnv * (grooves + r16 + r34 + r72 + r136) + envUmbo * grain;
+        // Bandas tonales de crecimiento nacarado en gris perla (acromático)
+        bandTone[idx] = Math.sin(uWobble * 17.5 + 0.4) * 0.5 + Math.cos(uWobble * 43.0) * 0.5;
+      }
+    }
+
+    const albedoCv = document.createElement("canvas");
+    const normalCv = document.createElement("canvas");
+    const roughCv = document.createElement("canvas");
+    albedoCv.width = albedoCv.height = normalCv.width = normalCv.height = roughCv.width = roughCv.height = SIZE;
+
+    const aCx = albedoCv.getContext("2d"), aImg = aCx.createImageData(SIZE, SIZE), aD = aImg.data;
+    const nCx = normalCv.getContext("2d"), nImg = nCx.createImageData(SIZE, SIZE), nD = nImg.data;
+    const rCx = roughCv.getContext("2d"), rImg = rCx.createImageData(SIZE, SIZE), rD = rImg.data;
+
+    const strX = 2.6, strY = 3.6;
+    for (let ty = 0; ty < SIZE; ty++) {
+      if (ty > 0 && ty % 256 === 0 && onStep) await onStep(0.5 + 0.5 * (ty / SIZE));
+      const u = 1.0 - ty / (SIZE - 1);
+      const tyUp = Math.max(0, ty - 1);
+      const tyDn = Math.min(SIZE - 1, ty + 1);
+      const rimBevel = u > 0.982 ? smoothstep01((u - 0.982) / 0.018) : 0;
+      const nFade = smoothstep01((u - 0.045) / 0.065) * smoothstep01((1.0 - u) / 0.015);
+
+      for (let tx = 0; tx < SIZE; tx++) {
+        const txL = (tx - 1 + SIZE) % SIZE;
+        const txR = (tx + 1) % SIZE;
+        const idx = ty * SIZE + tx;
+        const p = idx * 4;
+
+        const h = heightField[idx];
+        const dhduTex = (heightField[ty * SIZE + txR] - heightField[ty * SIZE + txL]) * 0.5;
+        const dhdvTex = (heightField[tyUp * SIZE + tx] - heightField[tyDn * SIZE + tx]) * 0.5;
+
+        // 1. Albedo / Oclusión Ambiental estrictamente acromático (R = G = B para mix-blend-mode: difference puro)
+        const baseLum = 238 - 10 * smoothstep01(u) + 7 * bandTone[idx];
+        const grooveAO = h < 0 ? Math.max(-96, h * 78) : Math.min(18, h * 26);
+        const lum = Math.max(92, Math.min(252, Math.round(baseLum + grooveAO - rimBevel * 48)));
+        aD[p] = lum;
+        aD[p + 1] = lum;
+        aD[p + 2] = lum;
+        aD[p + 3] = 255;
+
+        // 2. Mapa de normales en espacio tangente
+        let nx = -dhduTex * strX * nFade;
+        let ny = -dhdvTex * strY * nFade;
+        const nz = 1.0;
+        const nLen = Math.hypot(nx, ny, nz) || 1;
+        nx /= nLen; ny /= nLen;
+        nD[p] = Math.round((nx * 0.5 + 0.5) * 255);
+        nD[p + 1] = Math.round((ny * 0.5 + 0.5) * 255);
+        nD[p + 2] = Math.round(((nz / nLen) * 0.5 + 0.5) * 255);
+        nD[p + 3] = 255;
+
+        // 3. Mapa de rugosidad: satinado suave en crestas y umbo (~0.26), más calcáreo en surcos (~0.66)
+        const roughVal = Math.max(58, Math.min(182, Math.round(74 - h * 68 + smoothstep01(u) * 16)));
+        rD[p] = rD[p + 1] = rD[p + 2] = roughVal;
+        rD[p + 3] = 255;
+      }
+    }
+
+    aCx.putImageData(aImg, 0, 0);
+    nCx.putImageData(nImg, 0, 0);
+    rCx.putImageData(rImg, 0, 0);
+
+    const cfgTex = cv => {
+      const tex = new THREE.CanvasTexture(cv);
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.ClampToEdgeWrapping;
+      tex.anisotropy = Math.min(8, maxAniso || 4);
+      tex.needsUpdate = true;
+      return tex;
+    };
+
+    return {
+      albedoMap: cfgTex(albedoCv),
+      normalMap: cfgTex(normalCv),
+      roughnessMap: cfgTex(roughCv)
+    };
+  }
+
+  // =========================================================================
+  // 0B. CONTROLADOR DE ROTACIÓN ORGÁNICA 3D POR CUATERNIONES Y 36 SEEDS DETERMINISTAS
+  // =========================================================================
+  const CLAM_MOTION_SEEDS = [
+    0x9E3779B9, 0x85EBCA6B, 0xC2B2AE35, 0x27D4EB2F, 0x165667B1, 0xD3A2646C,
+    0xFD7046C5, 0xB55A4F09, 0x4F1BBCDC, 0x3C6EF372, 0xA54FF53A, 0x510E527F,
+    0x9B05688C, 0x1F83D9AB, 0x5BE0CD19, 0x6A09E667, 0xBB67AE85, 0x71374491,
+    0xB5C0FBCF, 0xE9B5DBA5, 0x3956C25B, 0x59F111F1, 0x923F82A4, 0xAB1C5ED5,
+    0xD807AA98, 0x12835B01, 0x243185BE, 0x550C7DC3, 0x72BE5D74, 0x80DEB1FE,
+    0x9BDC06A7, 0xC19BF174, 0xE49B69C1, 0xEFBE4786, 0x0FC19DC6, 0x240CA1CC
+  ];
+
+  function mulberry32(seed) {
+    let a = seed >>> 0;
+    return function() {
+      a = (a + 0x6D2B79F5) >>> 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function pickInitialClamSeedIndex() {
+    const count = CLAM_MOTION_SEEDS.length;
+    try {
+      const q = new URLSearchParams(window.location.search).get("seed");
+      if (q !== null && q.trim() !== "" && Number.isFinite(Number(q))) {
+        const parsed = Math.trunc(Number(q));
+        return ((parsed % count) + count) % count;
+      }
+    } catch (_) {}
+    let prev = -1;
+    try {
+      const saved = sessionStorage.getItem("nacar_clam_seed");
+      if (saved !== null) prev = parseInt(saved, 10);
+    } catch (_) {}
+    let idx = Math.floor(Math.random() * count);
+    if (count > 1 && idx === prev) idx = (idx + 1 + Math.floor(Math.random() * (count - 1))) % count;
+    try {
+      sessionStorage.setItem("nacar_clam_seed", String(idx));
+    } catch (_) {}
+    return idx;
+  }
+
+  function createClamMotionController(initialSeedIndex) {
+    const smootherstep = t => {
+      const c = Math.max(0, Math.min(1, t));
+      return c * c * c * (c * (c * 6 - 15) + 10);
+    };
+    const lerp = (a, b, s) => a + (b - a) * s;
+    const randRange = (rng, lo, hi) => lo + rng() * (hi - lo);
+    const randomUnitVec3 = rng => {
+      const z = randRange(rng, -1, 1);
+      const phi = randRange(rng, 0, Math.PI * 2);
+      const r = Math.sqrt(Math.max(0, 1 - z * z));
+      return new THREE.Vector3(r * Math.cos(phi), z, r * Math.sin(phi)).normalize();
+    };
+
+    let seedIndex = 0;
+    let rng = null;
+    let prevRegime = null;
+    let targetRegime = null;
+    let regimeT = 0;
+    let precPhase = 0;
+    let phaseX = 0, phaseY = 0, phaseZ = 0;
+    let phase2X = 0, phase2Y = 0, phase2Z = 0;
+    let ringPhase1 = 0, ringPhase2 = 0, ringWobble = 0;
+    const scrollVel = new THREE.Vector3();
+    const scrollTorqueAxis = new THREE.Vector3();
+
+    const baseQuat = new THREE.Quaternion();
+    const mouseQuat = new THREE.Quaternion();
+    const deltaQuat = new THREE.Quaternion();
+    const outQuat = new THREE.Quaternion();
+    const mouseEuler = new THREE.Euler(0, 0, 0, "YXZ");
+    const curAxis = new THREE.Vector3();
+    const curPrecAxis = new THREE.Vector3();
+    const omegaVec = new THREE.Vector3();
+    const omegaDir = new THREE.Vector3();
+
+    function buildRegime(prev) {
+      let axis = randomUnitVec3(rng);
+      if (prev) {
+        // Garantizar cambio real de dirección 3D (55°-110°) sin colapsar durante la interpolación
+        for (let k = 0; k < 28; k++) {
+          const cand = randomUnitVec3(rng);
+          const d = cand.dot(prev.axis);
+          if (d >= -0.35 && d <= 0.57) { axis = cand; break; }
+        }
+      }
+      let precAxis = randomUnitVec3(rng);
+      for (let k = 0; k < 16; k++) {
+        if (Math.abs(precAxis.dot(axis)) < 0.72) break;
+        precAxis = randomUnitVec3(rng);
+      }
+      return {
+        dur: randRange(rng, 3.2, 6.8),
+        axis,
+        precAxis,
+        precRate: (rng() < 0.5 ? -1 : 1) * randRange(rng, 0.14, 0.42),
+        speed: (rng() < 0.18 ? -1 : 1) * randRange(rng, 0.30, 0.72),
+        amp: [randRange(rng, 0.13, 0.32), randRange(rng, 0.13, 0.34), randRange(rng, 0.12, 0.30)],
+        freq: [randRange(rng, 0.24, 0.76), randRange(rng, 0.26, 0.80), randRange(rng, 0.22, 0.74)],
+        freq2: [randRange(rng, 0.55, 1.35), randRange(rng, 0.58, 1.40), randRange(rng, 0.50, 1.30)]
+      };
+    }
+
+    function setSeed(idx) {
+      const count = CLAM_MOTION_SEEDS.length;
+      seedIndex = ((Math.trunc(Number(idx) || 0) % count) + count) % count;
+      rng = mulberry32(CLAM_MOTION_SEEDS[seedIndex]);
+
+      // Orientación frontal centrada en el portal para que la palabra "NÁCAR" quede completamente dentro de la concha
+      baseQuat.setFromEuler(new THREE.Euler(0.06, 0, 0, "YXZ"));
+
+      phaseX = randRange(rng, 0, Math.PI * 2);
+      phaseY = randRange(rng, 0, Math.PI * 2);
+      phaseZ = randRange(rng, 0, Math.PI * 2);
+      phase2X = randRange(rng, 0, Math.PI * 2);
+      phase2Y = randRange(rng, 0, Math.PI * 2);
+      phase2Z = randRange(rng, 0, Math.PI * 2);
+      precPhase = randRange(rng, 0, Math.PI * 2);
+      ringPhase1 = randRange(rng, 0, Math.PI * 2);
+      ringPhase2 = randRange(rng, 0, Math.PI * 2);
+      ringWobble = randRange(rng, 0, Math.PI * 2);
+      scrollVel.set(0, 0, 0);
+      scrollTorqueAxis.copy(randomUnitVec3(rng));
+
+      prevRegime = buildRegime(null);
+      targetRegime = buildRegime(prevRegime);
+      regimeT = 0;
+    }
+
+    setSeed(initialSeedIndex);
+
+    function step(dt, moveFactor, scrollDelta, mx, my) {
+      const m = Math.max(0, Math.min(1, moveFactor || 0));
+      const safeDt = dt > 0 ? Math.min(dt, 0.05) : 0;
+
+      if (safeDt > 0) {
+        regimeT += safeDt / targetRegime.dur;
+        while (regimeT >= 1) {
+          regimeT -= 1;
+          prevRegime = targetRegime;
+          targetRegime = buildRegime(prevRegime);
+        }
+      }
+
+      const s = smootherstep(regimeT);
+      curAxis.lerpVectors(prevRegime.axis, targetRegime.axis, s);
+      if (curAxis.lengthSq() < 1e-6) curAxis.copy(targetRegime.axis);
+      else curAxis.normalize();
+
+      curPrecAxis.lerpVectors(prevRegime.precAxis, targetRegime.precAxis, s);
+      if (curPrecAxis.lengthSq() < 1e-6) curPrecAxis.copy(targetRegime.precAxis);
+      else curPrecAxis.normalize();
+
+      const curPrecRate = lerp(prevRegime.precRate, targetRegime.precRate, s);
+      const curSpeed = lerp(prevRegime.speed, targetRegime.speed, s);
+      const ax = lerp(prevRegime.amp[0], targetRegime.amp[0], s);
+      const ay = lerp(prevRegime.amp[1], targetRegime.amp[1], s);
+      const az = lerp(prevRegime.amp[2], targetRegime.amp[2], s);
+      const fx = lerp(prevRegime.freq[0], targetRegime.freq[0], s);
+      const fy = lerp(prevRegime.freq[1], targetRegime.freq[1], s);
+      const fz = lerp(prevRegime.freq[2], targetRegime.freq[2], s);
+      const f2x = lerp(prevRegime.freq2[0], targetRegime.freq2[0], s);
+      const f2y = lerp(prevRegime.freq2[1], targetRegime.freq2[1], s);
+      const f2z = lerp(prevRegime.freq2[2], targetRegime.freq2[2], s);
+
+      if (safeDt > 0) {
+        precPhase += curPrecRate * safeDt;
+        phaseX += fx * safeDt;
+        phaseY += fy * safeDt;
+        phaseZ += fz * safeDt;
+        phase2X += f2x * safeDt;
+        phase2Y += f2y * safeDt;
+        phase2Z += f2z * safeDt;
+      }
+
+      curAxis.applyAxisAngle(curPrecAxis, precPhase).normalize();
+
+      // Dirección de rotación orgánica en los 3 ejes (x, y, z) con velocidad angular estrictamente constante
+      const CONST_ANGULAR_SPEED = 0.48;
+      const dx = curAxis.x + ax * (0.68 * Math.sin(phaseX) + 0.32 * Math.cos(phase2X));
+      const dy = curAxis.y + ay * (0.68 * Math.sin(phaseY) + 0.32 * Math.cos(phase2Y));
+      const dz = curAxis.z + az * (0.68 * Math.sin(phaseZ) + 0.32 * Math.cos(phase2Z));
+
+      omegaDir.set(dx, dy, dz);
+      if (omegaDir.lengthSq() < 1e-6) omegaDir.copy(curAxis);
+      else omegaDir.normalize();
+
+      const wx = omegaDir.x * CONST_ANGULAR_SPEED;
+      const wy = omegaDir.y * CONST_ANGULAR_SPEED;
+      const wz = omegaDir.z * CONST_ANGULAR_SPEED;
+      omegaVec.set(wx, wy, wz);
+
+      if (safeDt > 0) {
+        deltaQuat.setFromAxisAngle(omegaDir, CONST_ANGULAR_SPEED * safeDt);
+        baseQuat.premultiply(deltaQuat).normalize();
+
+        ringPhase1 += 0.42 * safeDt;
+        ringPhase2 -= 0.36 * safeDt;
+        ringWobble += 0.28 * safeDt;
+      }
+
+      mouseEuler.set(
+        (my || 0) * (0.144 * (1 - 0.1 * m)),
+        (mx || 0) * (0.216 * (1 - 0.05 * m)),
+        -(mx || 0) * 0.048,
+        "YXZ"
+      );
+      mouseQuat.setFromEuler(mouseEuler);
+      outQuat.multiplyQuaternions(mouseQuat, baseQuat).normalize();
+
+      return {
+        quaternion: outQuat,
+        omega: { x: wx, y: wy, z: wz },
+        ringDrift: { r1: ringPhase1, r2: ringPhase2, wobble: ringWobble }
+      };
+    }
+
+    return {
+      step,
+      setSeed,
+      nextSeed: () => setSeed(seedIndex + 1),
+      randomSeed: () => {
+        const next = (seedIndex + 1 + Math.floor(Math.random() * (CLAM_MOTION_SEEDS.length - 1))) % CLAM_MOTION_SEEDS.length;
+        setSeed(next);
+        return next;
+      },
+      get seedIndex() { return seedIndex; },
+      get seedHex() { return "0x" + CLAM_MOTION_SEEDS[seedIndex].toString(16).toUpperCase().padStart(8, "0"); },
+      get totalSeeds() { return CLAM_MOTION_SEEDS.length; }
+    };
+  }
+
+  // =========================================================================
+  // 1. FONDO DE AGUA (#bg-water, fuera de .blend-stage) + CONCHA 3D ACROMÁTICA A LA DERECHA (#bg-webgl, dentro de .blend-stage)
+  // =========================================================================
+  const waterCv = $("#bg-water"), bgCv = $("#bg-webgl");
+  if (bgCv && waterCv && window.THREE) {
+    // Renderer A: Fondo de cáusticas azules (separado para que las letras NUNCA se vean naranjas)
+    const wRenderer = new THREE.WebGLRenderer({ canvas: waterCv, alpha: false, antialias: false, powerPreference: "high-performance" });
+    wRenderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5));
+    wRenderer.setSize(innerWidth, innerHeight);
+    const wScene = new THREE.Scene();
+    const wCam = new THREE.Camera();
+
+    // Buffer ordenado de estela continua (cinta fina y larga sin ondas circulares) al pasar el cursor sobre el agua
+    const WAKE_LEN = 48;
+    const wakePts = Array.from({ length: WAKE_LEN }, () => new THREE.Vector4(-10, -10, -10, 0));
+    let lastWakeX = -10, lastWakeY = -10, curUvX = -10, curUvY = -10, curSpeed = 0;
+
+    const causticsMat = new THREE.ShaderMaterial({
+      depthWrite: false,
+      uniforms: {
+        uTime: { value: 0 },
+        uScroll: { value: 0 },
+        uDive: { value: 0 },
+        uMouse: { value: new THREE.Vector2(0, 0) },
+        uCursor: { value: new THREE.Vector3(-10, -10, 0) },
+        uWake: { value: wakePts },
+        uRes: { value: new THREE.Vector2(innerWidth, innerHeight) }
+      },
+      vertexShader: `
+        varying vec2 vUv;
+        void main() { vUv = uv; gl_Position = vec4(position.xy, 0.999, 1.0); }
+      `,
+      fragmentShader: `
+        precision highp float;
+        varying vec2 vUv;
+        uniform float uTime;
+        uniform float uScroll;
+        uniform float uDive;
+        uniform vec2 uMouse;
+        uniform vec3 uCursor;
+        uniform vec4 uWake[48];
+        uniform vec2 uRes;
+        float causticPattern(vec2 uv, float t) {
+          vec2 p = mod(uv * 6.2831853, 6.2831853) - 250.0;
+          vec2 i = vec2(p);
+          float c = 1.0, inten = 0.005;
+          for (int n = 0; n < 4; n++) {
+            float time = t * (1.0 - (3.2 / float(n + 1)));
+            i = p + vec2(cos(time - i.x) + sin(time + i.y), sin(time - i.y) + cos(time + i.x));
+            c += 1.0 / length(vec2(p.x / (sin(i.x + time) / inten), p.y / (cos(i.y + time) / inten)));
+          }
+          c /= 4.0;
+          c = 1.17 - pow(c, 1.4);
+          return pow(abs(c), 7.5);
+        }
+        void main() {
+          vec2 uv = vUv;
+          float aspect = uRes.x / max(uRes.y, 1.0);
+          vec2 aspectVec = vec2(aspect, 1.0);
+          vec2 p = (uv - 0.5) * aspectVec;
+          vec2 m = uMouse * 0.06;
+
+          // Estela continua, larga y fina sobre el agua (segmentos suaves que se difuminan detrás del cursor, sin ondas circulares)
+          vec2 uvA = uv * aspectVec;
+          vec2 wakeDisp = vec2(0.0);
+          float wakeRibbon = 0.0;
+          float wakeCore = 0.0;
+          float wakeMaxLife = 2.6;
+          for (int k = 0; k < 47; k++) {
+            vec4 w0 = uWake[k];
+            vec4 w1 = uWake[k + 1];
+            float age0 = uTime - w0.z;
+            float age1 = uTime - w1.z;
+            if (age0 >= 0.0 && age0 < wakeMaxLife && age1 >= 0.0 && age1 < wakeMaxLife && w0.w > 0.001 && w1.w > 0.001) {
+              vec2 a = w0.xy * aspectVec;
+              vec2 b = w1.xy * aspectVec;
+              vec2 ab = b - a;
+              float segLenSq = dot(ab, ab);
+              if (segLenSq > 0.000001 && segLenSq < 0.09) {
+                float tSeg = clamp(dot(uvA - a, ab) / segLenSq, 0.0, 1.0);
+                vec2 closest = a + ab * tSeg;
+                vec2 diff = uvA - closest;
+                float dist = length(diff);
+
+                float age = mix(age0, age1, tSeg);
+                float life = clamp(1.0 - age / wakeMaxLife, 0.0, 1.0);
+                float idxFade = 1.0 - (float(k) + tSeg) / 47.0;
+                float fade = pow(life, 1.45) * smoothstep(0.0, 0.25, idxFade) * mix(w0.w, w1.w, tSeg);
+
+                // Estela fina: núcleo estrecho junto al cursor que se abre muy sutilmente conforme envejece
+                float halfW = mix(0.0032, 0.0115, 1.0 - life);
+                float core = exp(-pow(dist / max(0.0022, halfW * 0.55), 2.0));
+                float halo = exp(-pow(dist / (halfW * 2.1), 2.0));
+
+                // Micro-refracción transversal a la trayectoria (corta el agua como una quilla fina)
+                vec2 perp = dist > 0.0001 ? diff / dist : vec2(0.0);
+                wakeDisp += perp * halo * 0.0026 * fade;
+                wakeRibbon = max(wakeRibbon, halo * fade);
+                wakeCore = max(wakeCore, core * fade);
+              }
+            }
+          }
+          wakeDisp = clamp(wakeDisp, vec2(-0.014), vec2(0.014));
+
+          // Línea de superficie del agua que sube al sumergirse (uDive: 0 -> 1)
+          float waveSurf = sin(p.x * 4.5 + uTime * 2.2) * 0.025 + cos(p.x * 9.0 - uTime * 1.6) * 0.012 + wakeDisp.y * 0.4;
+          float waterLine = -0.12 + uDive * 1.35 + waveSurf;
+          float underMask = smoothstep(waterLine + 0.08, waterLine - 0.08, uv.y);
+          float meniscus = exp(-pow((uv.y - waterLine) * 28.0, 2.0)) * smoothstep(0.02, 0.2, uDive) * smoothstep(0.99, 0.75, uDive);
+
+          // Escena subacuática de cenote con refracción de la estela del cursor
+          vec2 pRef = p + wakeDisp * 0.85;
+          float rays = (sin((pRef.x * 3.5 + pRef.y * 1.2) + uTime * 0.35) * 0.5 + 0.5) * (sin((pRef.x * 7.0 - pRef.y * 2.0) - uTime * 0.22) * 0.5 + 0.5) * smoothstep(-0.4, 0.65, uv.y);
+          vec2 cUv = p * 0.85 + wakeDisp * 1.45 + m + vec2(0.0, uScroll * 0.35 - (1.0 - uDive) * 0.45);
+          float c1 = causticPattern(cUv, uTime * 0.45);
+          float c2 = causticPattern(cUv + vec2(0.016, -0.012) + wakeDisp * 0.45, uTime * 0.45 + 0.4);
+          vec3 abyss = vec3(0.012, 0.034, 0.058);
+          vec3 cenoteTeal = vec3(0.032, 0.17, 0.24);
+          vec3 cyanCaustic = vec3(0.45, 0.85, 0.95);
+          vec3 pureWhite = vec3(1.0, 1.0, 1.0);
+          vec3 lightBlue = vec3(0.72, 0.93, 1.0);
+
+          vec3 underCol = mix(abyss, cenoteTeal, smoothstep(0.0, 1.0, uv.y * 0.85 + 0.15));
+          underCol += cyanCaustic * c1 * 0.22 * (0.4 + 0.6 * uv.y);
+          underCol += mix(lightBlue, pureWhite, uv.x) * c2 * 0.14;
+          underCol += mix(cyanCaustic, lightBlue, 0.45) * rays * 0.1;
+
+          // Atmósfera nocturna sobre la superficie antes de sumergirse
+          vec3 surfaceSky = mix(vec3(0.018, 0.048, 0.078), vec3(0.008, 0.018, 0.032), smoothstep(0.0, 1.0, uv.y));
+          vec3 col = mix(surfaceSky, underCol, underMask);
+          col += mix(lightBlue, pureWhite, 0.6) * meniscus * 0.65;
+
+          // Estela fina mezclada armónicamente con el color local del fondo de agua (tonos cenote + hilo cian suave)
+          vec3 waterTint = mix(col * 1.42 + vec3(0.015, 0.12, 0.19), mix(cenoteTeal * 1.55, cyanCaustic, 0.45), 0.55);
+          float wakeMix = clamp(wakeRibbon * (0.28 + 0.16 * underMask), 0.0, 0.42);
+          col = mix(col, waterTint, wakeMix);
+          col += mix(cenoteTeal, cyanCaustic, 0.72) * wakeCore * (0.14 + 0.10 * underMask);
+
+          float vig = smoothstep(1.35, 0.25, length(p * 0.85));
+          col *= (0.55 + 0.45 * vig);
+          gl_FragColor = vec4(col, 1.0);
+        }
+      `
+    });
+    wScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), causticsMat));
+
+    // Renderer B: Almeja 3D + Anillos + Burbujas en blanco puro acromático (R=G=B) con fondo transparente
+    const renderer = new THREE.WebGLRenderer({ canvas: bgCv, alpha: true, antialias: true, powerPreference: "high-performance" });
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.setClearColor(0x000000, 0);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.08;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 150);
+    camera.position.set(0, 0.5, 13);
+
+    // Iluminación HDRI acromática (R=G=B puro) para que la resta con letras blancas dé negro/gris puro sin tono naranja
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    const envScene = new THREE.Scene();
+    envScene.background = new THREE.Color(0x1a1a1a);
+    const addLightPanel = (col, x, y, z, s) => {
+      const m = new THREE.Mesh(new THREE.SphereGeometry(s, 16, 16), new THREE.MeshBasicMaterial({ color: col }));
+      m.position.set(x, y, z); envScene.add(m);
+    };
+    addLightPanel(0xffffff, 12, 14, 10, 6);
+    addLightPanel(0xf5f5f5, -14, 8, 8, 5);
+    addLightPanel(0xeaeaea, 0, -14, 6, 5);
+    addLightPanel(0xffffff, -8, 12, -12, 5);
+    const envMap = pmrem.fromScene(envScene, 0.04).texture;
+    scene.environment = envMap;
+
+    await advancePreload(30, "GENERANDO TEXTURAS 1024PX");
+
+    // Texturas procedurales de alta resolución (1024x1024): albedo/AO acromático, mapa de normales tangente y rugosidad nacarada
+    const clamTex = await createClamTextures(
+      renderer.capabilities.getMaxAnisotropy ? renderer.capabilities.getMaxAnisotropy() : 4,
+      frac => advancePreload(30 + Math.round(frac * 36), "GENERANDO TEXTURAS 1024PX")
+    );
+    await advancePreload(70, "ESCULPIENDO CONCHA 3D");
+
+    // Estado de transición desde la pantalla portal (appear: entrada suave tras preloader; move: 0 en el centro -> 1 a la derecha)
+    const introState = { appear: 0, move: 0, spin: 0, rings: 0.0001, dive: 0 };
+    window.__introState = introState;
+
+    const sculpGroup = new THREE.Group();
+    sculpGroup.position.set(0, 0.08, 1.35);
+    sculpGroup.scale.setScalar(0.001);
+    scene.add(sculpGroup);
+
+    // Concha Bivalva de Alta Resolución: dos valvas lisas, bombeadas y cerradas en comisura limpia (anillos de crecimiento concéntricos)
+    const nacreMat = new THREE.MeshPhysicalMaterial({
+      color: new THREE.Color(0xffffff),
+      map: clamTex.albedoMap,
+      normalMap: clamTex.normalMap,
+      normalScale: new THREE.Vector2(0.85, 0.85),
+      roughness: 1.0,
+      roughnessMap: clamTex.roughnessMap,
+      emissive: new THREE.Color(0xe6e6e6),
+      emissiveMap: clamTex.albedoMap,
+      emissiveIntensity: 0.16,
+      metalness: 0.08,
+      clearcoat: 0.55,
+      clearcoatRoughness: 0.18,
+      reflectivity: 0.9,
+      envMap: envMap,
+      envMapIntensity: 1.35
+    });
+
+    const nacreOrb = new THREE.Group();
+    const frontValve = new THREE.Mesh(
+      createBivalveValveGeometry({ radialSegs: 136, angularSegs: 180, signZ: 1, scale: 1.0, withMicroRings: true }),
+      nacreMat
+    );
+    const backValve = new THREE.Mesh(
+      createBivalveValveGeometry({ radialSegs: 136, angularSegs: 180, signZ: -1, scale: 1.0, withMicroRings: true }),
+      nacreMat
+    );
+    nacreOrb.add(frontValve, backValve);
+    sculpGroup.add(nacreOrb);
+
+    // Grupo de Anillos y Burbujas satelitales: se mantiene visible=true con escala 0.0001 para pre-compilar shaders en el preloader y evitar lagazos
+    const orbitExtras = new THREE.Group();
+    orbitExtras.scale.setScalar(0.0001);
+    orbitExtras.visible = true;
+    sculpGroup.add(orbitExtras);
+
+    const ringMat1 = new THREE.MeshPhysicalMaterial({
+      color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 0.85, metalness: 0.15, roughness: 0.1, clearcoat: 1.0, envMap: envMap
+    });
+    const ringMat2 = new THREE.MeshPhysicalMaterial({
+      color: 0xf2f2f2, emissive: 0xededed, emissiveIntensity: 0.78, metalness: 0.15, roughness: 0.12, clearcoat: 1.0, envMap: envMap
+    });
+    const ring1 = new THREE.Mesh(new THREE.TorusGeometry(3.4, 0.055, 20, 96), ringMat1);
+    ring1.rotation.set(Math.PI * 0.32, Math.PI * 0.15, 0);
+    const ring2 = new THREE.Mesh(new THREE.TorusGeometry(4.0, 0.045, 18, 96), ringMat2);
+    ring2.rotation.set(-Math.PI * 0.28, -Math.PI * 0.22, 0);
+    orbitExtras.add(ring1, ring2);
+
+    const dropGroup = new THREE.Group();
+    const dropGeo = new THREE.SphereGeometry(1, 20, 20);
+    const drops = [];
+    for (let i = 0; i < 16; i++) {
+      const m = new THREE.Mesh(dropGeo, i % 2 === 0 ? ringMat1 : ringMat2);
+      const rad = 3.8 + (i % 4) * 1.3;
+      const ang = (i / 16) * Math.PI * 2;
+      const sc = 0.11 + (i % 3) * 0.07;
+      m.scale.setScalar(sc);
+      drops.push({ mesh: m, rad, ang, yOff: (Math.random() - 0.5) * 4.4, spd: 0.3 + (i % 5) * 0.12 });
+      dropGroup.add(m);
+    }
+    orbitExtras.add(dropGroup);
+
+    // Iluminación direccional acromática (key rasante + fill suave + rim lateral) para esculpir las estrías concéntricas sin tinte
+    const light1 = new THREE.DirectionalLight(0xffffff, 2.25); light1.position.set(7, 10, 8);
+    const light2 = new THREE.PointLight(0xf0f0f0, 1.35, 45); light2.position.set(-9, -4, 7);
+    const rimLight = new THREE.DirectionalLight(0xffffff, 1.7); rimLight.position.set(-2, 7, -10);
+    const ambLight = new THREE.AmbientLight(0xffffff, 0.52);
+    scene.add(light1, light2, rimLight, ambLight);
+
+    // Pre-compilar todos los shaders de WebGL en GPU durante la pantalla de carga para 0 ms de lag al animar
+    renderer.compile(scene, camera);
+    wRenderer.compile(wScene, wCam);
+    await advancePreload(84, "COMPILANDO SHADERS 3D");
+
+    // Escala responsiva del portal para garantizar que la palabra "NÁCAR" quede completamente dentro de la almeja
+    let portalScale = 1.68;
+    const computePortalScale = () => {
+      const dist = camera.position.z - 1.35;
+      const viewH = 2 * dist * Math.tan((camera.fov * Math.PI) / 360);
+      const viewW = viewH * camera.aspect;
+      const worldPerPx = viewH / Math.max(innerHeight, 1);
+      let needW = 7.8;
+      if (introNacar) {
+        const titleW = introNacar.offsetWidth || introNacar.getBoundingClientRect().width;
+        if (titleW > 40) needW = titleW * worldPerPx * 1.54;
+      }
+      const maxByH = (viewH * 0.86) / 3.97;
+      const maxByW = (viewW * 0.90) / 4.96;
+      const fitCap = Math.min(2.15, maxByH, maxByW);
+      portalScale = Math.min(fitCap, Math.max(1.58, needW / 4.96));
+    };
+    computePortalScale();
+
+    let mx = 0, my = 0, tmx = 0, tmy = 0, sProg = 0, tsProg = 0, prevSProg = 0, spinClock = 0, clock = 0;
+    let lastNow = performance.now();
+    const clamMotion = createClamMotionController(pickInitialClamSeedIndex());
+    window.__clamMotion = clamMotion;
+    window.__setFaseRatio = r => { tsProg = r; };
+    // Inserta el nuevo punto al frente de la estela (índice 0 = más reciente) para trazar una cinta continua
+    const pushWakeNode = (ux, uy, strength) => {
+      for (let i = WAKE_LEN - 1; i > 0; i--) {
+        wakePts[i].copy(wakePts[i - 1]);
+      }
+      wakePts[0].set(ux, uy, clock, strength);
+    };
+    addEventListener("pointermove", e => {
+      const ux = e.clientX / Math.max(innerWidth, 1);
+      const uy = 1.0 - e.clientY / Math.max(innerHeight, 1);
+      tmx = (ux - 0.5) * 2;
+      tmy = (e.clientY / Math.max(innerHeight, 1) - 0.5) * 2;
+      curUvX = ux;
+      curUvY = uy;
+      if (calm) return;
+      const aspect = innerWidth / Math.max(innerHeight, 1);
+      if (lastWakeX < -1) {
+        lastWakeX = ux; lastWakeY = uy;
+        pushWakeNode(ux, uy, 0.5);
+        return;
+      }
+      const dx = (ux - lastWakeX) * aspect;
+      const dy = uy - lastWakeY;
+      const dist = Math.hypot(dx, dy);
+      if (dist >= 0.008) {
+        const steps = Math.min(4, Math.max(1, Math.floor(dist / 0.024)));
+        const strength = Math.min(1.0, 0.45 + dist * 6.5);
+        curSpeed = Math.min(1.0, Math.max(curSpeed, dist * 12.0));
+        for (let s = 1; s <= steps; s++) {
+          const f = s / steps;
+          pushWakeNode(lastWakeX + (ux - lastWakeX) * f, lastWakeY + (uy - lastWakeY) * f, strength);
+        }
+        lastWakeX = ux; lastWakeY = uy;
+      }
+    }, { passive: true });
+    addEventListener("pointerdown", e => {
+      if (calm) return;
+      const ux = e.clientX / Math.max(innerWidth, 1);
+      const uy = 1.0 - e.clientY / Math.max(innerHeight, 1);
+      curUvX = ux; curUvY = uy; curSpeed = 0.85;
+      pushWakeNode(ux, uy, 0.9);
+      lastWakeX = ux; lastWakeY = uy;
+    }, { passive: true });
+    addEventListener("resize", () => {
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+      wRenderer.setSize(innerWidth, innerHeight);
+      causticsMat.uniforms.uRes.value.set(innerWidth, innerHeight);
+      computePortalScale();
+    });
+
+    const render3D = () => {
+      const now = performance.now();
+      const dt = calm ? 0 : Math.max(0, Math.min(0.05, (now - lastNow) * 0.001));
+      lastNow = now;
+      clock += dt * 0.6;
+      spinClock += calm ? 0 : (dt * 0.84 * introState.spin);
+      if (window.__modoFases !== true) {
+        const maxS = Math.max(document.documentElement.scrollHeight - innerHeight, 1);
+        tsProg = scrollY / maxS;
+      }
+      prevSProg = sProg;
+      sProg += (tsProg - sProg) * 0.055;
+      const scrollDelta = sProg - prevSProg;
+      mx += (tmx - mx) * 0.045;
+      my += (tmy - my) * 0.045;
+
+      causticsMat.uniforms.uTime.value = clock;
+      causticsMat.uniforms.uScroll.value = sProg;
+      causticsMat.uniforms.uDive.value = introState.dive;
+      causticsMat.uniforms.uMouse.value.set(mx, -my);
+      curSpeed *= Math.pow(0.88, dt * 60);
+      causticsMat.uniforms.uCursor.value.set(curUvX, curUvY, curSpeed);
+
+      // En el portal inicial (move=0) la almeja está centrada y quieta en tamaño amplio para contener "NÁCAR"; al acceder viaja a la derecha a escala 1.0
+      // Movimiento por mouse al 60% del desplazamiento original
+      const targetX = 4.45 + Math.cos(sProg * Math.PI * 1.6) * 0.75 + mx * 0.42;
+      const targetY = 0.45 + Math.sin(sProg * Math.PI * 2.0) * 0.7 - my * 0.33;
+      const targetZ = -1.3 - Math.sin(sProg * Math.PI) * 1.4;
+
+      const m = introState.move;
+      const spinAmt = introState.spin || 0;
+      const diveDip = Math.sin(m * Math.PI) * -1.1;
+      const breath = 1.0 + Math.sin(clock * 1.8) * 0.018 * spinAmt;
+      const sizeScale = (1 - m) * portalScale + m * 1.0;
+      sculpGroup.scale.setScalar(Math.max(0.001, introState.appear * sizeScale * breath));
+      sculpGroup.position.x = m * targetX;
+      sculpGroup.position.y = (1 - m) * 0.08 + m * targetY + diveDip;
+      sculpGroup.position.z = (1 - m) * 1.35 + m * targetZ;
+
+      // Quieta en el portal (spinAmt = 0); solo comienza su rotación 3D constante al acceder a la página
+      const rotDt = spinAmt > 0.001 ? dt * spinAmt : 0;
+      const motionOut = clamMotion.step(rotDt, m, scrollDelta, mx * spinAmt, my * spinAmt);
+      nacreOrb.quaternion.copy(motionOut.quaternion);
+
+      orbitExtras.scale.setScalar(Math.max(0.0001, introState.rings));
+      if (introState.rings > 0.01) {
+        ring1.rotation.z = motionOut.ringDrift.r1 + sProg * 2.5;
+        ring1.rotation.x = Math.PI * 0.32 + Math.sin(motionOut.ringDrift.wobble) * 0.14;
+        ring2.rotation.y = motionOut.ringDrift.r2 - sProg * 2.0;
+        ring2.rotation.z = Math.cos(motionOut.ringDrift.wobble * 0.85) * 0.12;
+        drops.forEach(d => {
+          const a = d.ang + spinClock * d.spd + sProg * 2.2;
+          d.mesh.position.set(Math.cos(a) * d.rad, d.yOff + Math.sin(spinClock * 1.5 + d.ang) * 0.4, Math.sin(a) * d.rad);
+        });
+      }
+
+      wRenderer.render(wScene, wCam);
+      renderer.render(scene, camera);
+    };
+    render3D();
+    if (!calm) {
+      if (window.gsap) gsap.ticker.add(render3D);
+      else (function rLoop(){ render3D(); requestAnimationFrame(rLoop); })();
+    }
+  }
+
+  // =========================================================================
+  // 2. BLOQUE 3D DE AGUA Y SUELO KÁRSTICO (#tank-3d) CON SHADERS GLSL, TEXTURAS 512PX Y RESET MOD(2PI)
+  // =========================================================================
+  const tankCv = $("#tank-3d");
+  if (tankCv && window.THREE) {
+    const tRenderer = new THREE.WebGLRenderer({ canvas: tankCv, alpha: true, antialias: true, powerPreference: "high-performance" });
+    tRenderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+    tRenderer.toneMapping = THREE.ACESFilmicToneMapping;
+    tRenderer.toneMappingExposure = 1.18;
+
+    const tScene = new THREE.Scene();
+    const tCam = new THREE.PerspectiveCamera(37, 1, 0.1, 100);
+
+    const resizeTank = () => {
+      const r = tankCv.getBoundingClientRect();
+      const w = Math.max(r.width, 280), h = Math.max(r.height, 260);
+      tRenderer.setSize(w, h, false);
+      tCam.aspect = w / h;
+      tCam.updateProjectionMatrix();
+    };
+    resizeTank();
+    addEventListener("resize", resizeTank);
+
+    // Iluminación HDRI ambiental del diorama 3D
+    const tPmrem = new THREE.PMREMGenerator(tRenderer);
+    const tEnvSc = new THREE.Scene();
+    tEnvSc.background = new THREE.Color(0x091926);
+    const addTLight = (c, x, y, z, s) => {
+      const m = new THREE.Mesh(new THREE.SphereGeometry(s, 14, 14), new THREE.MeshBasicMaterial({ color: c }));
+      m.position.set(x, y, z); tEnvSc.add(m);
+    };
+    addTLight(0xffffff, 11, 15, 10, 5.5);
+    addTLight(0xb8ecff, -12, 11, -9, 4.8);
+    addTLight(0x56c8e0, 0, -11, 9, 4.2);
+    addTLight(0xfff6e5, 8, 12, -10, 4.0);
+    const tEnvMap = tPmrem.fromScene(tEnvSc, 0.035).texture;
+    tScene.environment = tEnvMap;
+
+    const dirL1 = new THREE.DirectionalLight(0xfffdf8, 2.5); dirL1.position.set(7, 12, 8);
+    const dirL2 = new THREE.DirectionalLight(0x9ee8ff, 1.55); dirL2.position.set(-8, 6, -7);
+    const rimL3 = new THREE.DirectionalLight(0x56c8e0, 1.1); rimL3.position.set(0, -7, -9);
+    const tAmb = new THREE.AmbientLight(0x92bed4, 1.05);
+    tScene.add(dirL1, dirL2, rimL3, tAmb);
+
+    // Texturas procedurales 512x512 para roca caliza kárstica estratificada + leptosol y geomembrana HDPE
+    const buildKarstTextures = maxAniso => {
+      const S = 512;
+      const hMap = new Float32Array(S * S);
+      const aCv = document.createElement("canvas"), nCv = document.createElement("canvas"), rCv = document.createElement("canvas");
+      aCv.width = aCv.height = nCv.width = nCv.height = rCv.width = rCv.height = S;
+      const aCx = aCv.getContext("2d"), nCx = nCv.getContext("2d"), rCx = rCv.getContext("2d");
+      const aIm = aCx.createImageData(S, S), nIm = nCx.createImageData(S, S), rIm = rCx.createImageData(S, S);
+      const aD = aIm.data, nD = nIm.data, rD = rIm.data;
+
+      // Ruido periódico multi-octava sin costuras en X/Y
+      const T = Math.PI * 2;
+      for (let y = 0; y < S; y++) {
+        const v = 1.0 - y / (S - 1); // v=1 arriba (leptosol), v=0 abajo (caliza profunda)
+        for (let x = 0; x < S; x++) {
+          const u = x / S;
+          const ax = u * T;
+          // Estratos sedimentarios ondulados de caliza kárstica + poros de disolución (vugs) + grano mineral
+          const strataWarp = v * 18.0 + 0.55 * Math.sin(ax * 2.0 + v * 7.0) + 0.25 * Math.cos(ax * 5.0 - v * 11.0);
+          const strata = Math.sin(strataWarp) * 0.45 + Math.sin(strataWarp * 2.4 + 0.8) * 0.22;
+          const poresRaw = Math.sin(ax * 11.0 + v * 34.0) * Math.cos(ax * 13.0 - v * 29.0)
+                         + 0.5 * Math.sin(ax * 23.0 - v * 52.0) * Math.cos(ax * 19.0 + v * 47.0);
+          const vugs = poresRaw < -0.52 ? -Math.pow((-poresRaw - 0.52) * 1.45, 1.5) : 0.08 * poresRaw;
+          const micro = 0.14 * Math.sin(ax * 37.0 + v * 95.0) * Math.cos(ax * 41.0 - v * 88.0);
+          const cracks = -0.55 * Math.exp(-Math.pow(Math.sin(ax * 3.0 + v * 4.2 + 0.4 * Math.sin(v * 15.0)) * 9.5, 2));
+          hMap[y * S + x] = strata + vugs + micro + cracks;
+        }
+      }
+
+      for (let y = 0; y < S; y++) {
+        const v = 1.0 - y / (S - 1);
+        const yU = Math.max(0, y - 1), yD = Math.min(S - 1, y + 1);
+        // Transición estratigráfica: leptosol orgánico oscuro arriba (v > 0.78) -> sascab/caliza kárstica abajo
+        const topSoilMask = smoothstep01((v - 0.74) / 0.10);
+        const deepKarstMask = smoothstep01((0.38 - v) / 0.25);
+
+        for (let x = 0; x < S; x++) {
+          const xL = (x - 1 + S) % S, xR = (x + 1) % S;
+          const idx = y * S + x, p = idx * 4;
+          const h = hMap[idx];
+          const dhdx = (hMap[y * S + xR] - hMap[y * S + xL]) * 0.5;
+          const dhdy = (hMap[yU * S + x] - hMap[yD * S + x]) * 0.5;
+
+          // Color base: caliza crema-travertino de Yucatán mezclada con leptosol húmico oscuro y cavidades
+          let r = 158 + h * 34 - deepKarstMask * 22;
+          let g = 146 + h * 31 - deepKarstMask * 20;
+          let b = 124 + h * 26 - deepKarstMask * 15;
+          // Leptosol superior (<25 cm)
+          r = r * (1 - topSoilMask) + (72 + h * 18) * topSoilMask;
+          g = g * (1 - topSoilMask) + (58 + h * 15) * topSoilMask;
+          b = b * (1 - topSoilMask) + (44 + h * 12) * topSoilMask;
+          // Oclusión oscura dentro de poros kársticos y fisuras
+          if (h < -0.35) {
+            const cav = Math.min(1, (-h - 0.35) * 1.4);
+            r *= (1 - cav * 0.52); g *= (1 - cav * 0.54); b *= (1 - cav * 0.50);
+          }
+
+          aD[p] = Math.max(24, Math.min(235, Math.round(r)));
+          aD[p + 1] = Math.max(22, Math.min(225, Math.round(g)));
+          aD[p + 2] = Math.max(18, Math.min(205, Math.round(b)));
+          aD[p + 3] = 255;
+
+          let nx = -dhdx * 3.2, ny = -dhdy * 3.4, nz = 1.0;
+          const nl = Math.hypot(nx, ny, nz) || 1;
+          nD[p] = Math.round(((nx / nl) * 0.5 + 0.5) * 255);
+          nD[p + 1] = Math.round(((ny / nl) * 0.5 + 0.5) * 255);
+          nD[p + 2] = Math.round(((nz / nl) * 0.5 + 0.5) * 255);
+          nD[p + 3] = 255;
+
+          const rVal = Math.max(95, Math.min(242, Math.round(188 - h * 42 + topSoilMask * 24)));
+          rD[p] = rD[p + 1] = rD[p + 2] = rVal;
+          rD[p + 3] = 255;
+        }
+      }
+      aCx.putImageData(aIm, 0, 0); nCx.putImageData(nIm, 0, 0); rCx.putImageData(rIm, 0, 0);
+      const wrap = cv => {
+        const t = new THREE.CanvasTexture(cv);
+        t.wrapS = THREE.RepeatWrapping;
+        t.wrapT = THREE.ClampToEdgeWrapping;
+        t.anisotropy = Math.min(8, maxAniso || 4);
+        return t;
+      };
+      return { albedo: wrap(aCv), normal: wrap(nCv), roughness: wrap(rCv) };
+    };
+
+    const karstTex = buildKarstTextures(tRenderer.capabilities.getMaxAnisotropy ? tRenderer.capabilities.getMaxAnisotropy() : 4);
+
+    const diorama = new THREE.Group();
+    diorama.position.y = -0.14;
+    tScene.add(diorama);
+
+    const W_SIZE = 4.6;
+    const WATER_BOT = -0.75;
+    const WATER_TOP_BASE = 1.05;
+    const GRID_SEG = 64;
+
+    // Función de altura de ola multi-armónica en tiempo real (superficie, paredes, cáusticas y nenúfares)
+    const waveHeight = (x, z, time) => {
+      return WATER_TOP_BASE
+        + Math.sin(x * 1.52 + time * 2.35) * Math.cos(z * 1.32 + time * 1.85) * 0.105
+        + Math.sin((x * 0.95 - z * 1.25) + time * 3.05) * 0.052
+        + Math.cos(x * 2.75 + z * 2.35 - time * 2.15) * 0.024
+        + Math.sin(x * 4.2 - z * 3.6 + time * 3.8) * 0.009;
+    };
+
+    // A. BLOQUE GEOLÓGICO KÁRSTICO DE ALTA RESOLUCIÓN (48x20x48 con estratos, cavidades y lecho cóncavo)
+    const soilGeo = new THREE.BoxGeometry(W_SIZE + 0.10, 1.42, W_SIZE + 0.10, 48, 20, 48);
+    const sPos = soilGeo.attributes.position.array;
+    const sUv = soilGeo.attributes.uv.array;
+    const halfSoilW = (W_SIZE + 0.10) * 0.5;
+    for (let i = 0, uIdx = 0; i < sPos.length; i += 3, uIdx += 2) {
+      let vx = sPos[i], vy = sPos[i + 1], vz = sPos[i + 2];
+      const hNorm = (vy + 0.71) / 1.42; // 0 en la base -> 1 en el contacto con el agua
+      const rDist = Math.hypot(vx, vz) / halfSoilW;
+
+      // Relieve orgánico del lecho superior y paredes kársticas fracturadas
+      const rockMacro = Math.sin(vx * 2.1 + 0.4) * Math.cos(vz * 2.1 - 0.3) * 0.055
+                      + Math.sin(vx * 4.8 + vz * 4.3) * 0.024;
+      if (hNorm > 0.96) {
+        // Cuenca ligeramente cóncava en el centro con borde natural
+        const basinDip = -0.06 * Math.max(0, 1.0 - rDist * rDist);
+        vy += rockMacro * 0.85 + basinDip;
+      } else if (hNorm > 0.04) {
+        const edge = Math.max(Math.abs(vx), Math.abs(vz));
+        if (edge > halfSoilW * 0.94) {
+          const strataLedge = Math.sin(vy * 13.5 + Math.sin(vx * 2.4) * 0.8) * 0.028;
+          const vug = Math.sin(vx * 4.2 + vy * 6.5) * Math.cos(vz * 4.2 - vy * 5.8);
+          const cavity = vug < -0.45 ? (vug + 0.45) * 0.11 : vug * 0.025;
+          const taper = 1.0 - (1.0 - hNorm) * 0.022;
+          if (Math.abs(vx) >= Math.abs(vz)) vx = Math.sign(vx) * ( Math.abs(vx) * taper + strataLedge + cavity );
+          else vz = Math.sign(vz) * ( Math.abs(vz) * taper + strataLedge + cavity );
+        }
+      }
+      sPos[i] = vx; sPos[i + 1] = vy; sPos[i + 2] = vz;
+
+      // Mapeo UV continuo por estratos para las paredes y el lecho
+      if (hNorm > 0.96) {
+        sUv[uIdx] = (vx / (W_SIZE + 0.10)) + 0.5;
+        sUv[uIdx + 1] = 0.86 + 0.12 * ((vz / (W_SIZE + 0.10)) + 0.5);
+      } else {
+        const perim = (Math.atan2(vz, vx) / (Math.PI * 2)) + 0.5;
+        sUv[uIdx] = perim * 2.0;
+        sUv[uIdx + 1] = Math.max(0.02, Math.min(0.98, hNorm));
+      }
+    }
+    soilGeo.attributes.position.needsUpdate = true;
+    soilGeo.attributes.uv.needsUpdate = true;
+    soilGeo.computeVertexNormals();
+
+    const soilMesh = new THREE.Mesh(soilGeo, new THREE.MeshPhysicalMaterial({
+      map: karstTex.albedo,
+      normalMap: karstTex.normal,
+      normalScale: new THREE.Vector2(1.15, 1.15),
+      roughness: 1.0,
+      roughnessMap: karstTex.roughness,
+      metalness: 0.04,
+      clearcoat: 0.14,
+      clearcoatRoughness: 0.65,
+      envMap: tEnvMap,
+      envMapIntensity: 0.65
+    }));
+    soilMesh.position.y = WATER_BOT - 0.71;
+    diorama.add(soilMesh);
+
+    // Marco perimetral sutil de corte arquitectónico en la base de roca
+    const baseFrameMat = new THREE.LineBasicMaterial({ color: 0x3b4e5c, transparent: true, opacity: 0.35 });
+    const baseFrame = new THREE.LineSegments(
+      new THREE.EdgesGeometry(new THREE.BoxGeometry(W_SIZE + 0.12, 0.04, W_SIZE + 0.12)),
+      baseFrameMat
+    );
+    baseFrame.position.y = WATER_BOT - 1.41;
+    diorama.add(baseFrame);
+
+    // B. ETAPA 1: Filtración activa de contaminantes por fisuras hacia el acuífero kárstico
+    const leaksGroup = new THREE.Group();
+    const leakDrops = [];
+    const leakMat = new THREE.MeshPhysicalMaterial({
+      color: 0xd98042, emissive: 0x9e4716, emissiveIntensity: 0.55, roughness: 0.25, transparent: true, opacity: 0.88
+    });
+    const leakPlumeMat = new THREE.LineBasicMaterial({ color: 0xc86d32, transparent: true, opacity: 0.45 });
+    const leakGeo = new THREE.SphereGeometry(0.055, 12, 12);
+    const plumePts = [];
+    for (let i = 0; i < 32; i++) {
+      const m = new THREE.Mesh(leakGeo, leakMat);
+      const lx = (Math.random() - 0.5) * (W_SIZE * 0.84);
+      const lz = (Math.random() - 0.5) * (W_SIZE * 0.84);
+      const driftX = (Math.random() - 0.5) * 0.28;
+      const driftZ = (Math.random() - 0.5) * 0.28;
+      m.scale.set(0.75, 2.4, 0.75);
+      leakDrops.push({ mesh: m, x: lx, z: lz, dx: driftX, dz: driftZ, phase: Math.random(), spd: 0.38 + (i % 5) * 0.07 });
+      leaksGroup.add(m);
+      if (i < 18) {
+        plumePts.push(new THREE.Vector3(lx, WATER_BOT - 0.04, lz));
+        plumePts.push(new THREE.Vector3(lx + driftX, WATER_BOT - 1.32, lz + driftZ));
+      }
+    }
+    const leakPlumes = new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(plumePts), leakPlumeMat);
+    leaksGroup.add(leakPlumes);
+    diorama.add(leaksGroup);
+
+    // C. ETAPA 2: Geomembrana HDPE de 1.5 mm con textura micro-estructurada y labio perimetral de sellado
+    const linerGroup = new THREE.Group();
+    const hdpeCv = document.createElement("canvas"); hdpeCv.width = hdpeCv.height = 256;
+    const hCx = hdpeCv.getContext("2d");
+    hCx.fillStyle = "#12202B"; hCx.fillRect(0, 0, 256, 256);
+    hCx.strokeStyle = "rgba(124,224,244,0.18)"; hCx.lineWidth = 1.5;
+    for (let g = 0; g < 256; g += 16) {
+      hCx.beginPath(); hCx.moveTo(g, 0); hCx.lineTo(g, 256); hCx.stroke();
+      hCx.beginPath(); hCx.moveTo(0, g); hCx.lineTo(256, g); hCx.stroke();
+    }
+    const hdpeTex = new THREE.CanvasTexture(hdpeCv);
+    hdpeTex.wrapS = hdpeTex.wrapT = THREE.RepeatWrapping;
+    hdpeTex.repeat.set(4, 4);
+
+    const linerMat = new THREE.MeshPhysicalMaterial({
+      color: 0x152634,
+      map: hdpeTex,
+      emissive: 0x102c3a,
+      emissiveIntensity: 0.4,
+      roughness: 0.28,
+      metalness: 0.45,
+      clearcoat: 0.88,
+      clearcoatRoughness: 0.18,
+      transparent: true,
+      opacity: 0
+    });
+    const linerBase = new THREE.Mesh(new THREE.BoxGeometry(W_SIZE + 0.14, 0.09, W_SIZE + 0.14, 24, 2, 24), linerMat);
+    linerBase.position.y = WATER_BOT;
+    const linerRimGeo = new THREE.EdgesGeometry(new THREE.BoxGeometry(W_SIZE + 0.16, 0.13, W_SIZE + 0.16));
+    const linerRimMat = new THREE.LineBasicMaterial({ color: 0x7ce0f4, transparent: true, opacity: 0 });
+    const linerRim = new THREE.LineSegments(linerRimGeo, linerRimMat);
+    linerRim.position.y = WATER_BOT + 0.025;
+    linerGroup.add(linerBase, linerRim);
+    diorama.add(linerGroup);
+
+    // D. ETAPA 3: Tres aliados vivos en 3D (Almejas con estrías reales + Nymphaea ampla multipétalo + Biopelícula CWM1)
+    const lifeGroup = new THREE.Group();
+    lifeGroup.scale.setScalar(0.001);
+    lifeGroup.visible = false;
+    diorama.add(lifeGroup);
+
+    // Lecho de grava calcárea limpia y módulos de almejas
+    const clamMat = new THREE.MeshPhysicalMaterial({
+      color: 0xffffff,
+      emissive: 0xb8ecff,
+      emissiveIntensity: 0.24,
+      roughness: 0.22,
+      metalness: 0.1,
+      clearcoat: 0.95,
+      envMap: tEnvMap
+    });
+    const miniTopGeo = createBivalveValveGeometry({ radialSegs: 36, angularSegs: 48, signZ: 1, scale: 0.13, withMicroRings: true });
+    const miniBotGeo = createBivalveValveGeometry({ radialSegs: 36, angularSegs: 48, signZ: -1, scale: 0.13, withMicroRings: true });
+    const miniHingeY = 1.92 * 0.13;
+    const clamPositions = [[-1.32, -1.08], [1.22, -1.18], [-0.42, 0.92], [1.36, 0.86], [-1.42, 0.32], [0.26, -0.46], [0.15, 1.32], [-0.85, -0.25]];
+    const clamShells = [];
+    const filterBubbles = [];
+    const bubbleGeo = new THREE.SphereGeometry(0.028, 10, 10);
+    const bubbleMat = new THREE.MeshPhysicalMaterial({
+      color: 0xffffff, emissive: 0x9ee8ff, emissiveIntensity: 0.65, roughness: 0.08, transmission: 0.6, transparent: true, opacity: 0.85
+    });
+
+    clamPositions.forEach((cp, idx) => {
+      const cg = new THREE.Group();
+      cg.position.set(cp[0], WATER_BOT + 0.18, cp[1]);
+      cg.rotation.y = idx * 1.15 + 0.3;
+      const flat = new THREE.Group();
+      flat.rotation.x = -Math.PI * 0.5;
+      const botHalf = new THREE.Mesh(miniBotGeo, clamMat);
+      const topPivot = new THREE.Group();
+      topPivot.position.set(0, miniHingeY, 0);
+      topPivot.rotation.x = -0.15;
+      const topHalf = new THREE.Mesh(miniTopGeo, clamMat);
+      topHalf.position.set(0, -miniHingeY, 0);
+      topPivot.add(topHalf);
+      flat.add(botHalf, topPivot);
+      cg.add(flat);
+      clamShells.push(topPivot);
+      lifeGroup.add(cg);
+
+      // Micro-burbujas ascendentes de biofiltración activa desde cada almeja
+      for (let b = 0; b < 2; b++) {
+        const bm = new THREE.Mesh(bubbleGeo, bubbleMat);
+        filterBubbles.push({ mesh: bm, x: cp[0], z: cp[1], phase: (idx * 0.17 + b * 0.5) % 1, spd: 0.32 + (idx % 3) * 0.08 });
+        lifeGroup.add(bm);
+      }
+    });
+
+    // Macrófitas (Nymphaea ampla): tallos orgánicos, hojas nervadas con hendidura y flores de loto multipétalo
+    const stemMat = new THREE.MeshStandardMaterial({ color: 0x267d56, roughness: 0.48 });
+    const padMat = new THREE.MeshPhysicalMaterial({
+      color: 0x39b87d, emissive: 0x0f3b26, emissiveIntensity: 0.25, roughness: 0.32, clearcoat: 0.65, side: THREE.DoubleSide
+    });
+    const petalMat = new THREE.MeshPhysicalMaterial({
+      color: 0xffffff, emissive: 0xd8f5ff, emissiveIntensity: 0.42, roughness: 0.18, clearcoat: 0.8, side: THREE.DoubleSide
+    });
+    const stamenMat = new THREE.MeshBasicMaterial({ color: 0xffd966 });
+    const biofilmMat = new THREE.MeshBasicMaterial({ color: 0x7ce0f4, transparent: true, opacity: 0.82 });
+
+    // Geometría esculpida de hoja de nenúfar con nervaduras radiales y borde ligeramente elevado
+    const buildLilyPadGeo = radius => {
+      const g = new THREE.CylinderGeometry(radius, radius * 0.96, 0.022, 36, 4, false, 0.22, Math.PI * 1.86);
+      const p = g.attributes.position.array;
+      for (let i = 0; i < p.length; i += 3) {
+        const px = p[i], py = p[i + 1], pz = p[i + 2];
+        const r = Math.hypot(px, pz) / radius;
+        const ang = Math.atan2(pz, px);
+        const veins = Math.cos(ang * 14.0) * 0.008 * r * (1.0 - r * 0.3);
+        const rimCup = Math.pow(r, 3.0) * 0.026;
+        p[i + 1] = py + veins + rimCup;
+      }
+      g.computeVertexNormals();
+      return g;
+    };
+    const lilyPadGeo = buildLilyPadGeo(0.46);
+    const petalGeo = new THREE.ConeGeometry(0.055, 0.19, 8);
+    petalGeo.translate(0, 0.08, 0);
+
+    const lilyPads = [];
+    const lilyCoords = [[-1.06, -0.56], [0.96, -0.76], [-0.56, 1.04], [1.04, 0.76], [0.05, 0.12]];
+    lilyCoords.forEach((lc, i) => {
+      const h = WATER_TOP_BASE - WATER_BOT;
+      const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.042, h, 12), stemMat);
+      stem.position.set(lc[0], WATER_BOT + h * 0.5, lc[1]);
+      lifeGroup.add(stem);
+
+      // Biopelícula nitrificante CWM1 (anillos y colonias luminosas alrededor del tallo y rizoma)
+      for (let b = 0; b < 7; b++) {
+        const bm = new THREE.Mesh(new THREE.SphereGeometry(0.048 + (b % 2) * 0.015, 10, 10), biofilmMat);
+        const by = WATER_BOT + 0.22 + b * 0.21;
+        bm.position.set(lc[0] + Math.cos(b * 1.9 + i) * 0.075, by, lc[1] + Math.sin(b * 1.9 + i) * 0.075);
+        lifeGroup.add(bm);
+      }
+
+      const padGroup = new THREE.Group();
+      padGroup.position.set(lc[0], WATER_TOP_BASE, lc[1]);
+      const pad = new THREE.Mesh(lilyPadGeo, padMat);
+      pad.rotation.y = i * 1.35;
+      padGroup.add(pad);
+
+      // Flor de Nymphaea ampla con corona doble de pétalos + centro dorado
+      if (i < 4) {
+        const flwGroup = new THREE.Group();
+        flwGroup.position.y = 0.018;
+        const outerCount = 8, innerCount = 6;
+        for (let k = 0; k < outerCount; k++) {
+          const pet = new THREE.Mesh(petalGeo, petalMat);
+          pet.rotation.y = (k / outerCount) * Math.PI * 2;
+          pet.rotation.z = 0.62;
+          flwGroup.add(pet);
+        }
+        for (let k = 0; k < innerCount; k++) {
+          const pet = new THREE.Mesh(petalGeo, petalMat);
+          pet.scale.setScalar(0.78);
+          pet.rotation.y = ((k + 0.5) / innerCount) * Math.PI * 2;
+          pet.rotation.z = 0.34;
+          flwGroup.add(pet);
+        }
+        const stamen = new THREE.Mesh(new THREE.SphereGeometry(0.045, 10, 10), stamenMat);
+        stamen.position.y = 0.03;
+        flwGroup.add(stamen);
+        padGroup.add(flwGroup);
+      }
+      lilyPads.push({ group: padGroup, stem, x: lc[0], z: lc[1] });
+      lifeGroup.add(padGroup);
+    });
+
+    // E. BLOQUE VOLUMÉTRICO DE AGUA EN 3D CON SHADERS GLSL (Fresnel, absorción Beer-Lambert, cáusticas y menisco brillante)
+    const waterState = {
+      r: 0.33, g: 0.26, b: 0.16,
+      deepR: 0.16, deepG: 0.12, deepB: 0.07,
+      opacity: 0.93,
+      clarity: 0.0,
+      murkOpacity: 0.92,
+      leaksOpacity: 0.9,
+      linerOpacity: 0,
+      lifeScale: 0,
+      hudOpacity: 0,
+      sparkOpacity: 0
+    };
+
+    const waterUniforms = {
+      uTime: { value: 0 },
+      uShallowCol: { value: new THREE.Color(waterState.r, waterState.g, waterState.b) },
+      uDeepCol: { value: new THREE.Color(waterState.deepR, waterState.deepG, waterState.deepB) },
+      uOpacity: { value: waterState.opacity },
+      uClarity: { value: waterState.clarity },
+      uWaterBot: { value: WATER_BOT },
+      uWaterTop: { value: WATER_TOP_BASE }
+    };
+
+    // Shader GLSL para la superficie superior del agua (ondas, cáusticas solares, Fresnel y espuma de menisco perimetral)
+    const topWaterMat = new THREE.ShaderMaterial({
+      uniforms: waterUniforms,
+      transparent: true,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+      vertexShader: `
+        varying vec2 vUv;
+        varying vec3 vWorldPos;
+        varying vec3 vNormal;
+        void main() {
+          vUv = uv;
+          vec4 wp = modelMatrix * vec4(position, 1.0);
+          vWorldPos = wp.xyz;
+          vNormal = normalize(normalMatrix * normal);
+          gl_Position = projectionMatrix * viewMatrix * wp;
+        }
+      `,
+      fragmentShader: `
+        precision highp float;
+        varying vec2 vUv;
+        varying vec3 vWorldPos;
+        varying vec3 vNormal;
+        uniform float uTime;
+        uniform vec3 uShallowCol;
+        uniform vec3 uDeepCol;
+        uniform float uOpacity;
+        uniform float uClarity;
+
+        float causticNet(vec2 p, float t) {
+          vec2 i = p;
+          float c = 1.0;
+          for (int n = 0; n < 3; n++) {
+            float tm = t * (1.0 - 2.2 / float(n + 1));
+            i = p + vec2(cos(tm - i.x) + sin(tm + i.y), sin(tm - i.y) + cos(tm + i.x));
+            c += 1.0 / max(0.08, length(vec2(p.x / max(0.015, sin(i.x + tm)), p.y / max(0.015, cos(i.y + tm)))) * 0.012);
+          }
+          c /= 3.0;
+          return pow(max(0.0, 1.15 - pow(c, 1.35)), 6.0);
+        }
+
+        void main() {
+          vec3 N = normalize(vNormal);
+          vec3 V = normalize(cameraPosition - vWorldPos);
+          // Micro-ondas normales de alta frecuencia sobre la superficie
+          vec2 p = vWorldPos.xz * 1.45;
+          float r1 = sin(p.x * 5.2 + uTime * 3.1) * cos(p.y * 4.8 - uTime * 2.7);
+          float r2 = cos((p.x - p.y) * 7.5 + uTime * 4.2);
+          N = normalize(N + vec3(r1 * 0.12 + r2 * 0.06, 0.0, r1 * 0.10 - r2 * 0.06));
+
+          float fresnel = pow(1.0 - max(0.0, dot(N, V)), 2.8);
+          vec3 L1 = normalize(vec3(0.55, 0.82, 0.62));
+          vec3 H1 = normalize(L1 + V);
+          float spec = pow(max(0.0, dot(N, H1)), mix(36.0, 140.0, uClarity)) * mix(0.35, 1.15, uClarity);
+
+          float c1 = causticNet(p * 1.85 + vec2(uTime * 0.18, -uTime * 0.14), uTime * 0.65);
+          float c2 = causticNet(p * 2.1 - vec2(uTime * 0.12, uTime * 0.16), uTime * 0.65 + 1.1);
+          float caustics = (c1 * 0.65 + c2 * 0.45) * (0.28 + 0.72 * uClarity);
+
+          // Nubes de turbidez orgánica cuando uClarity es bajo
+          float murkSwirl = (sin(p.x * 2.2 + uTime * 0.5) * cos(p.y * 2.4 - uTime * 0.4) * 0.5 + 0.5) * (1.0 - uClarity);
+
+          vec3 skyRef = mix(vec3(0.42, 0.62, 0.72), vec3(0.78, 0.96, 1.0), uClarity);
+          vec3 baseCol = mix(uDeepCol, uShallowCol, 0.58 + 0.25 * N.y);
+          baseCol = mix(baseCol, baseCol * 0.78 + vec3(0.28, 0.21, 0.12) * 0.22, murkSwirl * 0.55);
+          vec3 col = mix(baseCol, skyRef, fresnel * (0.32 + 0.38 * uClarity));
+          col += vec3(0.62, 0.94, 1.0) * caustics * 0.34;
+          col += vec3(1.0, 0.99, 0.95) * spec;
+
+          // Menisco luminoso en los 4 bordes del bloque de agua
+          float edgeDist = min(min(vUv.x, 1.0 - vUv.x), min(vUv.y, 1.0 - vUv.y));
+          float meniscus = smoothstep(0.045, 0.0, edgeDist);
+          col = mix(col, mix(vec3(0.75, 0.88, 0.92), vec3(0.92, 0.99, 1.0), uClarity), meniscus * 0.62);
+
+          float alpha = clamp(uOpacity + fresnel * 0.18 + meniscus * 0.22 + spec * 0.35, 0.28, 0.98);
+          gl_FragColor = vec4(col, alpha);
+        }
+      `
+    });
+
+    // Shader GLSL para las 4 paredes de corte del volumen de agua (gradiente vertical Beer-Lambert, rayos volumétricos y menisco superior)
+    const sideWaterMat = new THREE.ShaderMaterial({
+      uniforms: waterUniforms,
+      transparent: true,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+      vertexShader: `
+        varying vec2 vUv;
+        varying vec3 vWorldPos;
+        varying vec3 vNormal;
+        void main() {
+          vUv = uv;
+          vec4 wp = modelMatrix * vec4(position, 1.0);
+          vWorldPos = wp.xyz;
+          vNormal = normalize(normalMatrix * normal);
+          gl_Position = projectionMatrix * viewMatrix * wp;
+        }
+      `,
+      fragmentShader: `
+        precision highp float;
+        varying vec2 vUv;
+        varying vec3 vWorldPos;
+        varying vec3 vNormal;
+        uniform float uTime;
+        uniform vec3 uShallowCol;
+        uniform vec3 uDeepCol;
+        uniform float uOpacity;
+        uniform float uClarity;
+        uniform float uWaterBot;
+        uniform float uWaterTop;
+
+        void main() {
+          vec3 N = normalize(vNormal);
+          vec3 V = normalize(cameraPosition - vWorldPos);
+          float hFrac = clamp((vWorldPos.y - uWaterBot) / max(0.1, uWaterTop - uWaterBot), 0.0, 1.0);
+          float fresnel = pow(1.0 - max(0.0, abs(dot(N, V))), 2.4);
+
+          // Gradiente vertical Beer-Lambert desde el fondo hasta la ola superior
+          vec3 col = mix(uDeepCol, uShallowCol, pow(hFrac, 0.78));
+
+          // Rayos solares subacuáticos y cáusticas proyectadas en las paredes de corte
+          float coord = vWorldPos.x + vWorldPos.z;
+          float godRays = (sin(coord * 2.6 - vWorldPos.y * 1.4 + uTime * 0.9) * 0.5 + 0.5)
+                        * (cos(coord * 4.8 - vWorldPos.y * 2.1 - uTime * 1.3) * 0.5 + 0.5);
+          float causticBands = pow(max(0.0, sin(coord * 5.5 + uTime * 2.4) * cos(vWorldPos.y * 6.0 - uTime * 1.8)), 3.0);
+          col += vec3(0.55, 0.92, 1.0) * godRays * pow(hFrac, 1.3) * (0.08 + 0.26 * uClarity);
+          col += vec3(0.78, 0.97, 1.0) * causticBands * pow(hFrac, 1.8) * (0.06 + 0.24 * uClarity);
+
+          // Sedimento turbulento en etapas iniciales
+          float silt = (sin(coord * 3.2 + vWorldPos.y * 4.5 - uTime * 0.6) * 0.5 + 0.5) * (1.0 - uClarity) * (1.0 - hFrac * 0.5);
+          col = mix(col, vec3(0.24, 0.18, 0.11), silt * 0.38);
+
+          // Reflejo de vidrio en el corte transversal + línea de menisco brillante arriba y contacto con el lecho abajo
+          col += mix(vec3(0.45, 0.62, 0.70), vec3(0.76, 0.96, 1.0), uClarity) * fresnel * 0.28;
+          float topMeniscus = smoothstep(0.955, 1.0, vUv.y);
+          float botContact = smoothstep(0.04, 0.0, vUv.y);
+          float sideEdge = smoothstep(0.025, 0.0, min(vUv.x, 1.0 - vUv.x));
+          col = mix(col, mix(vec3(0.76, 0.88, 0.92), vec3(0.95, 1.0, 1.0), uClarity), topMeniscus * 0.78);
+          col = mix(col, col * 0.65, botContact * 0.45);
+          col += vec3(0.68, 0.92, 1.0) * sideEdge * (0.18 + 0.22 * uClarity);
+
+          float alpha = clamp(uOpacity * (1.06 - 0.16 * hFrac) + fresnel * 0.14 + topMeniscus * 0.25, 0.24, 0.96);
+          gl_FragColor = vec4(col, alpha);
+        }
+      `
+    });
+
+    // Malla superior del agua (64 x 64)
+    const topGeo = new THREE.PlaneGeometry(W_SIZE, W_SIZE, GRID_SEG, GRID_SEG);
+    topGeo.rotateX(-Math.PI / 2);
+    const topMesh = new THREE.Mesh(topGeo, topWaterMat);
+    diorama.add(topMesh);
+
+    // Paredes laterales dinámicas del cubo de agua (se ajustan en cada frame a la ola del borde)
+    const buildSideWall = () => {
+      const g = new THREE.PlaneGeometry(W_SIZE, 1, GRID_SEG, 1);
+      const m = new THREE.Mesh(g, sideWaterMat);
+      diorama.add(m);
+      return g;
+    };
+    const wallFront = buildSideWall();
+    const wallBack = buildSideWall();
+    const wallLeft = buildSideWall();
+    const wallRight = buildSideWall();
+
+    const syncWall = (geo, isZFixed, fixedVal, flipNorm, time) => {
+      const arr = geo.attributes.position.array;
+      const cols = GRID_SEG + 1;
+      for (let c = 0; c < cols; c++) {
+        const u = (c / GRID_SEG - 0.5) * W_SIZE * (flipNorm ? -1 : 1);
+        const wx = isZFixed ? u : fixedVal;
+        const wz = isZFixed ? fixedVal : u;
+        const wyTop = waveHeight(wx, wz, time);
+        arr[c * 3] = wx;
+        arr[c * 3 + 1] = wyTop;
+        arr[c * 3 + 2] = wz;
+        const bIdx = (cols + c) * 3;
+        arr[bIdx] = wx;
+        arr[bIdx + 1] = WATER_BOT;
+        arr[bIdx + 2] = wz;
+      }
+      geo.attributes.position.needsUpdate = true;
+      geo.computeVertexNormals();
+    };
+
+    // Partículas en suspensión dentro del bloque de agua 3D (sprite circular suave en lugar de cuadrados duros)
+    const dotCv = document.createElement("canvas"); dotCv.width = dotCv.height = 64;
+    const dCx = dotCv.getContext("2d");
+    const dGrd = dCx.createRadialGradient(32, 32, 2, 32, 32, 30);
+    dGrd.addColorStop(0, "rgba(255,255,255,1)");
+    dGrd.addColorStop(0.45, "rgba(235,248,255,0.65)");
+    dGrd.addColorStop(1, "rgba(255,255,255,0)");
+    dCx.fillStyle = dGrd; dCx.fillRect(0, 0, 64, 64);
+    const dotTex = new THREE.CanvasTexture(dotCv);
+
+    const mCount = 320, mGeo = new THREE.BufferGeometry();
+    const mPos = new Float32Array(mCount * 3);
+    for (let i = 0; i < mCount; i++) {
+      mPos[i * 3] = (Math.random() - 0.5) * (W_SIZE * 0.92);
+      mPos[i * 3 + 1] = WATER_BOT + 0.10 + Math.random() * (WATER_TOP_BASE - WATER_BOT - 0.22);
+      mPos[i * 3 + 2] = (Math.random() - 0.5) * (W_SIZE * 0.92);
+    }
+    mGeo.setAttribute("position", new THREE.BufferAttribute(mPos, 3));
+    const murkMat = new THREE.PointsMaterial({
+      color: 0xa68b5b, map: dotTex, size: 0.13, transparent: true, opacity: 0.9, depthWrite: false
+    });
+    const murkPts = new THREE.Points(mGeo, murkMat);
+    diorama.add(murkPts);
+
+    // F. ETAPA 4: Holograma 3D del Digital Twin con shader de escaneo por telemetría + boyas IoT con haces láser
+    const hudGroup = new THREE.Group();
+    const hudBoxMat = new THREE.LineBasicMaterial({ color: 0x7ce0f4, transparent: true, opacity: 0 });
+    const hudCage = new THREE.LineSegments(
+      new THREE.EdgesGeometry(new THREE.BoxGeometry(W_SIZE + 0.08, WATER_TOP_BASE - WATER_BOT + 0.12, W_SIZE + 0.08)),
+      hudBoxMat
+    );
+    hudCage.position.y = (WATER_TOP_BASE + WATER_BOT) * 0.5;
+
+    const scanUniforms = { uTime: { value: 0 }, uOpacity: { value: 0 } };
+    const scanPlaneMat = new THREE.ShaderMaterial({
+      uniforms: scanUniforms,
+      transparent: true,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+      vertexShader: `
+        varying vec2 vUv;
+        void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }
+      `,
+      fragmentShader: `
+        precision highp float;
+        varying vec2 vUv;
+        uniform float uTime;
+        uniform float uOpacity;
+        void main() {
+          vec2 p = vUv - 0.5;
+          vec2 g = abs(fract(vUv * 14.0 - 0.5) - 0.5) / 0.06;
+          float grid = 1.0 - min(min(g.x, g.y), 1.0);
+          float dist = length(p) * 2.0;
+          float sonar = pow(max(0.0, sin(dist * 10.0 - uTime * 3.8)), 6.0) * smoothstep(1.1, 0.1, dist);
+          float border = smoothstep(0.46, 0.5, max(abs(p.x), abs(p.y)));
+          vec3 col = mix(vec3(0.48, 0.88, 0.96), vec3(1.0, 1.0, 1.0), sonar + border * 0.5);
+          float a = (grid * 0.38 + sonar * 0.48 + border * 0.65 + 0.08) * uOpacity;
+          gl_FragColor = vec4(col, clamp(a, 0.0, 0.95));
+        }
+      `
+    });
+    const scanPlane = new THREE.Mesh(new THREE.PlaneGeometry(W_SIZE + 0.04, W_SIZE + 0.04, 1, 1), scanPlaneMat);
+    scanPlane.rotation.x = -Math.PI / 2;
+
+    const sensorMat = new THREE.MeshPhysicalMaterial({
+      color: 0xffffff, emissive: 0x7ce0f4, emissiveIntensity: 0.85, roughness: 0.15, transparent: true, opacity: 0
+    });
+    const sensorBeamMat = new THREE.LineBasicMaterial({ color: 0x7ce0f4, transparent: true, opacity: 0 });
+    const halfW = W_SIZE * 0.48;
+    const beamPts = [];
+    [[-halfW, -halfW], [halfW, -halfW], [-halfW, halfW], [halfW, halfW]].forEach(sc => {
+      const sNode = new THREE.Mesh(new THREE.SphereGeometry(0.095, 16, 16), sensorMat);
+      sNode.position.set(sc[0], WATER_TOP_BASE + 0.14, sc[1]);
+      const sHalo = new THREE.Mesh(new THREE.TorusGeometry(0.16, 0.015, 10, 28), sensorMat);
+      sHalo.rotation.x = Math.PI * 0.5;
+      sHalo.position.set(sc[0], WATER_TOP_BASE + 0.14, sc[1]);
+      hudGroup.add(sNode, sHalo);
+      beamPts.push(new THREE.Vector3(sc[0], WATER_TOP_BASE + 0.14, sc[1]), new THREE.Vector3(sc[0], WATER_BOT, sc[1]));
+    });
+    const sensorBeams = new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(beamPts), sensorBeamMat);
+    hudGroup.add(hudCage, scanPlane, sensorBeams);
+    diorama.add(hudGroup);
+
+    // G. ETAPA 5: Haces solares volumétricos (God-Rays GLSL con atenuación suave) + cáusticas de agua cristalina
+    const sparkUniforms = { uTime: { value: 0 }, uOpacity: { value: 0 } };
+    const sparkMat = new THREE.ShaderMaterial({
+      uniforms: sparkUniforms,
+      transparent: true,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+      blending: THREE.AdditiveBlending,
+      vertexShader: `
+        varying vec2 vUv;
+        varying vec3 vNormal;
+        varying vec3 vViewPos;
+        void main() {
+          vUv = uv;
+          vNormal = normalize(normalMatrix * normal);
+          vec4 mv = modelViewMatrix * vec4(position, 1.0);
+          vViewPos = -mv.xyz;
+          gl_Position = projectionMatrix * mv;
+        }
+      `,
+      fragmentShader: `
+        precision highp float;
+        varying vec2 vUv;
+        varying vec3 vNormal;
+        varying vec3 vViewPos;
+        uniform float uTime;
+        uniform float uOpacity;
+        void main() {
+          vec3 N = normalize(vNormal);
+          vec3 V = normalize(vViewPos);
+          float edgeSoft = pow(abs(dot(N, V)), 1.35);
+          float vFade = smoothstep(0.0, 0.22, vUv.y) * smoothstep(1.0, 0.72, vUv.y);
+          float shimmer = 0.75 + 0.25 * sin(vUv.x * 18.85 + uTime * 2.2 - vUv.y * 4.0);
+          vec3 col = mix(vec3(0.52, 0.92, 1.0), vec3(1.0, 0.99, 0.92), vUv.y);
+          gl_FragColor = vec4(col, edgeSoft * vFade * shimmer * uOpacity);
+        }
+      `
+    });
+    const sparkGroup = new THREE.Group();
+    [[-1.15, -0.38, 0.22, 0.62], [0.05, 0.35, 0.26, 0.72], [1.18, -0.25, 0.20, 0.56], [-0.45, 0.55, 0.16, 0.46]].forEach((cfg, i) => {
+      const ray = new THREE.Mesh(
+        new THREE.CylinderGeometry(cfg[2], cfg[3], WATER_TOP_BASE - WATER_BOT, 24, 1, true),
+        sparkMat
+      );
+      ray.position.set(cfg[0], (WATER_TOP_BASE + WATER_BOT) * 0.5, cfg[1]);
+      ray.rotation.z = -0.16 + i * 0.02;
+      ray.rotation.x = 0.08;
+      sparkGroup.add(ray);
+    });
+    diorama.add(sparkGroup);
+
+    // Controles interactivos: Click + Drag para rotar 360°, Rueda/Botones para Zoom y Reset por camino más corto MOD(2*PI)
+    const INIT_ROT_Y = -0.62, INIT_ROT_X = 0.42, INIT_ZOOM = 9.6, TAU = Math.PI * 2;
+    let rotY = INIT_ROT_Y, rotX = INIT_ROT_X, tRotY = INIT_ROT_Y, tRotX = INIT_ROT_X;
+    let zoom = INIT_ZOOM, tZoom = INIT_ZOOM;
+    let dragging = false, prevX = 0, prevY = 0, pinchDist = 0;
+
+    tankCv.addEventListener("pointerdown", e => {
+      dragging = true;
+      prevX = e.clientX;
+      prevY = e.clientY;
+      tankCv.setPointerCapture(e.pointerId);
+    });
+    tankCv.addEventListener("pointermove", e => {
+      if (!dragging) return;
+      const dx = e.clientX - prevX, dy = e.clientY - prevY;
+      prevX = e.clientX; prevY = e.clientY;
+      // Controles directos (no invertidos): arrastrar a la derecha rota el bloque hacia la derecha y arrastrar hacia abajo inclina el frente hacia abajo
+      tRotY -= dx * 0.009;
+      tRotX = Math.max(-0.08, Math.min(1.18, tRotX + dy * 0.008));
+    });
+    const stopDrag = () => { dragging = false; };
+    tankCv.addEventListener("pointerup", stopDrag);
+    tankCv.addEventListener("pointercancel", stopDrag);
+
+    // Zoom con la rueda del mouse sobre el visor 3D (sin cambiar la fase de la página)
+    const tankBoxEl = $("#tankbox");
+    tankBoxEl.addEventListener("wheel", e => {
+      e.preventDefault();
+      e.stopPropagation();
+      tZoom = Math.max(5.4, Math.min(14.5, tZoom + (e.deltaY > 0 ? 0.75 : -0.75)));
+    }, { passive: false });
+
+    // Pinch-to-zoom en pantallas táctiles
+    tankCv.addEventListener("touchstart", e => {
+      if (e.touches.length === 2) {
+        pinchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      }
+    }, { passive: true });
+    tankCv.addEventListener("touchmove", e => {
+      if (e.touches.length === 2 && pinchDist > 0) {
+        const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+        tZoom = Math.max(5.4, Math.min(14.5, tZoom - (d - pinchDist) * 0.025));
+        pinchDist = d;
+      }
+    }, { passive: true });
+
+    // Botones +, - y Reiniciar vista (reduce k*PI a k*PI MOD 2*PI para volver por el arco mínimo sin deshacer giros previos)
+    const btnIn = $("#z-in"), btnOut = $("#z-out"), btnRst = $("#z-rst");
+    if (btnIn) btnIn.addEventListener("click", () => { tZoom = Math.max(5.4, tZoom - 1.1); });
+    if (btnOut) btnOut.addEventListener("click", () => { tZoom = Math.min(14.5, tZoom + 1.1); });
+    if (btnRst) btnRst.addEventListener("click", () => {
+      const shortestDeltaY = ((INIT_ROT_Y - rotY) % TAU + TAU + Math.PI) % TAU - Math.PI;
+      rotY = INIT_ROT_Y - shortestDeltaY;
+      tRotY = INIT_ROT_Y;
+      tRotX = INIT_ROT_X;
+      tZoom = INIT_ZOOM;
+    });
+
+    // Transición del bloque 3D según la etapa seleccionada (0 a 4)
+    const presetsEtapa = [
+      // 1/5: Agua turbia marrón + filtración activa al suelo kárstico
+      { r: 0.34, g: 0.26, b: 0.16, deepR: 0.16, deepG: 0.11, deepB: 0.06, opacity: 0.93, clarity: 0.05, murkOpacity: 0.92, leaksOpacity: 0.9, linerOpacity: 0, lifeScale: 0.001, hudOpacity: 0, sparkOpacity: 0 },
+      // 2/5: Geomembrana HDPE sella el fondo + cesan filtraciones + agua empieza a asentarse
+      { r: 0.21, g: 0.38, b: 0.34, deepR: 0.08, deepG: 0.18, deepB: 0.17, opacity: 0.84, clarity: 0.32, murkOpacity: 0.52, leaksOpacity: 0, linerOpacity: 1, lifeScale: 0.001, hudOpacity: 0, sparkOpacity: 0 },
+      // 3/5: Brotan almejas, macrófitas y biopelícula + agua turquesa de cenote en filtración activa
+      { r: 0.15, g: 0.55, b: 0.62, deepR: 0.05, deepG: 0.24, deepB: 0.32, opacity: 0.72, clarity: 0.64, murkOpacity: 0.24, leaksOpacity: 0, linerOpacity: 1, lifeScale: 1, hudOpacity: 0, sparkOpacity: 0.06 },
+      // 4/5: Digital Twin activo (sensores IoT + escaneo holográfico) + agua casi cristalina
+      { r: 0.20, g: 0.70, b: 0.84, deepR: 0.06, deepG: 0.32, deepB: 0.45, opacity: 0.58, clarity: 0.86, murkOpacity: 0.08, leaksOpacity: 0, linerOpacity: 1, lifeScale: 1, hudOpacity: 0.92, sparkOpacity: 0.15 },
+      // 5/5: Agua 100% cristalina y luminosa en 4 días
+      { r: 0.38, g: 0.86, b: 0.98, deepR: 0.09, deepG: 0.42, deepB: 0.58, opacity: 0.44, clarity: 1.0, murkOpacity: 0.0, leaksOpacity: 0, linerOpacity: 1, lifeScale: 1, hudOpacity: 0.22, sparkOpacity: 0.34 }
+    ];
+
+    window.__setTankStage = (idx, inmediato) => {
+      const p = presetsEtapa[idx] || presetsEtapa[0];
+      const dur = inmediato ? 0 : 0.65;
+      if (p.lifeScale > 0.01) lifeGroup.visible = true;
+      if (window.gsap && !inmediato) {
+        gsap.to(waterState, {
+          r: p.r, g: p.g, b: p.b,
+          deepR: p.deepR, deepG: p.deepG, deepB: p.deepB,
+          opacity: p.opacity, clarity: p.clarity,
+          murkOpacity: p.murkOpacity, leaksOpacity: p.leaksOpacity,
+          linerOpacity: p.linerOpacity, lifeScale: p.lifeScale,
+          hudOpacity: p.hudOpacity, sparkOpacity: p.sparkOpacity,
+          duration: dur, ease: "power3.out", overwrite: "auto",
+          onComplete: () => { if (p.lifeScale <= 0.01) lifeGroup.visible = false; }
+        });
+      } else {
+        Object.assign(waterState, p);
+        lifeGroup.visible = p.lifeScale > 0.01;
+      }
+    };
+    window.__setTankStage(0, true);
+
+    let tClock = 0;
+    const renderTank = () => {
+      tClock += calm ? 0 : 0.016;
+
+      // Suavizado de cámara orbital (rotación y zoom)
+      if (!dragging && !calm) tRotY += 0.0015;
+      rotY += (tRotY - rotY) * 0.1;
+      rotX += (tRotX - rotX) * 0.1;
+      zoom += (tZoom - zoom) * 0.1;
+
+      tCam.position.x = Math.sin(rotY) * Math.cos(rotX) * zoom;
+      tCam.position.y = Math.sin(rotX) * zoom;
+      tCam.position.z = Math.cos(rotY) * Math.cos(rotX) * zoom;
+      tCam.lookAt(0, -0.05, 0);
+
+      // Actualizar uniforms de shaders GLSL y materiales por etapa
+      waterUniforms.uTime.value = tClock;
+      waterUniforms.uShallowCol.value.setRGB(waterState.r, waterState.g, waterState.b);
+      waterUniforms.uDeepCol.value.setRGB(waterState.deepR, waterState.deepG, waterState.deepB);
+      waterUniforms.uOpacity.value = waterState.opacity;
+      waterUniforms.uClarity.value = waterState.clarity;
+
+      murkMat.opacity = waterState.murkOpacity;
+      murkMat.color.setRGB(
+        0.64 * (1 - waterState.clarity) + 0.55 * waterState.clarity,
+        0.53 * (1 - waterState.clarity) + 0.90 * waterState.clarity,
+        0.34 * (1 - waterState.clarity) + 0.98 * waterState.clarity
+      );
+      leakMat.opacity = waterState.leaksOpacity;
+      leakPlumeMat.opacity = waterState.leaksOpacity * 0.5;
+      linerMat.opacity = waterState.linerOpacity;
+      linerRimMat.opacity = waterState.linerOpacity * 0.82;
+      lifeGroup.scale.setScalar(Math.max(0.001, waterState.lifeScale));
+
+      hudBoxMat.opacity = waterState.hudOpacity;
+      scanUniforms.uTime.value = tClock;
+      scanUniforms.uOpacity.value = waterState.hudOpacity;
+      sensorMat.opacity = waterState.hudOpacity;
+      sensorBeamMat.opacity = waterState.hudOpacity * 0.45;
+      sparkUniforms.uTime.value = tClock;
+      sparkUniforms.uOpacity.value = waterState.sparkOpacity;
+
+      // 1. Oleaje constante en la superficie superior del cubo de agua (64x64)
+      const tArr = topGeo.attributes.position.array;
+      for (let i = 0; i < tArr.length; i += 3) {
+        tArr[i + 1] = waveHeight(tArr[i], tArr[i + 2], tClock);
+      }
+      topGeo.attributes.position.needsUpdate = true;
+      topGeo.computeVertexNormals();
+
+      // 2. Sincronizar las 4 paredes del bloque de agua con los bordes de la ola
+      const half = W_SIZE * 0.5;
+      syncWall(wallFront, true, half, false, tClock);
+      syncWall(wallBack, true, -half, true, tClock);
+      syncWall(wallRight, false, half, true, tClock);
+      syncWall(wallLeft, false, -half, false, tClock);
+
+      // 3. Nenúfares inclinándose con la pendiente de la ola + almejas filtrando + micro-burbujas
+      lilyPads.forEach((lp, idx) => {
+        const wy = waveHeight(lp.x, lp.z, tClock);
+        const wxPlus = waveHeight(lp.x + 0.15, lp.z, tClock);
+        const wzPlus = waveHeight(lp.x, lp.z + 0.15, tClock);
+        lp.group.position.y = wy;
+        lp.group.rotation.z = -(wxPlus - wy) * 1.8;
+        lp.group.rotation.x = (wzPlus - wy) * 1.8;
+        lp.stem.scale.y = (wy - WATER_BOT) / (WATER_TOP_BASE - WATER_BOT);
+        lp.stem.position.y = WATER_BOT + (wy - WATER_BOT) * 0.5;
+      });
+      clamShells.forEach((cs, k) => {
+        cs.rotation.x = -(0.14 + Math.sin(tClock * 2.0 + k) * 0.08);
+      });
+      if (waterState.lifeScale > 0.05) {
+        filterBubbles.forEach(fb => {
+          const p = (fb.phase + tClock * fb.spd) % 1;
+          const by = WATER_BOT + 0.22 + p * (WATER_TOP_BASE - WATER_BOT - 0.28);
+          fb.mesh.position.set(fb.x + Math.sin(tClock * 3.0 + fb.phase * 12.0) * 0.06, by, fb.z + Math.cos(tClock * 2.6 + fb.phase * 9.0) * 0.06);
+        });
+      }
+
+      // 4. Movimiento de gotas de filtración (Etapa 1) y plano de escaneo Digital Twin (Etapa 4)
+      if (waterState.leaksOpacity > 0.01) {
+        leakDrops.forEach(ld => {
+          const p = (ld.phase + tClock * ld.spd) % 1;
+          ld.mesh.position.set(ld.x + ld.dx * p, WATER_BOT - 0.05 - p * 1.28, ld.z + ld.dz * p);
+        });
+      }
+      if (waterState.hudOpacity > 0.01) {
+        scanPlane.position.y = WATER_BOT + 0.08 + ((Math.sin(tClock * 1.7) * 0.5 + 0.5) * (WATER_TOP_BASE - WATER_BOT - 0.16));
+      }
+
+      // 5. Deriva tridimensional de partículas en suspensión
+      const mp = mGeo.attributes.position.array;
+      for (let i = 0; i < mp.length; i += 3) {
+        mp[i] += Math.cos(tClock * 1.1 + i * 0.37) * 0.0008;
+        mp[i + 1] += Math.sin(tClock * 1.5 + i) * 0.0014;
+      }
+      mGeo.attributes.position.needsUpdate = true;
+
+      tRenderer.render(tScene, tCam);
+    };
+    if (tRenderer.compile) tRenderer.compile(tScene, tCam);
+    renderTank(); // 1 frame inicial para precalentar GPU
+    let tankVis = false;
+    new IntersectionObserver(es => { tankVis = es[0].isIntersecting; }, { rootMargin: "250px" }).observe(tankCv);
+    if (!calm) {
+      const tickTank = () => { if (tankVis) renderTank(); };
+      if (window.gsap) gsap.ticker.add(tickTank);
+      else (function tLoop(){ tickTank(); requestAnimationFrame(tLoop); })();
+    }
+  }
+
+  // datos medidos (con etiquetas "Antes" y "Después" visibles en móvil)
+  const box = $("#datos");
+  const fmt = (v, u) => v === null ? '<span class="val pend">Pendiente</span>' : '<span class="val">' + v + " " + u + "</span>";
+  MEDICIONES.filas.forEach(f => {
+    const max = Math.max(f.antes || 0, f.despues || 0) || 1;
+    const bar = (v, lbl) => '<div><span class="cell-lbl">' + lbl + '</span><div class="bt"><div class="bf" data-w="' + (v === null ? 0 : Math.round(v / max * 100)) + '"></div></div>' + fmt(v, f.unidad) + "</div>";
+    const r = document.createElement("div"); r.className = "row";
+    r.innerHTML = "<strong>" + f.nombre + "</strong>" + bar(f.antes, "Antes") + bar(f.despues, "Después");
+    box.appendChild(r);
+  });
+  $("#upd").textContent = "Última actualización: " + MEDICIONES.actualizado;
+
+  // contadores y barras
+  const count = el => {
+    const end = +el.dataset.n, dec = +(el.dataset.d || 0), p = el.dataset.p || "", s = el.dataset.s || "";
+    if (calm) { el.textContent = p + end.toFixed(dec) + s; return; }
+    const t0 = performance.now();
+    (function tick(t){ const k = Math.min((t - t0) / 1800, 1); el.textContent = p + (end * (1 - Math.pow(1 - k, 3))).toFixed(dec) + s; if (k < 1) requestAnimationFrame(tick); })(t0);
+  };
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.querySelectorAll("[data-n]").forEach(count);
+    e.target.querySelectorAll(".bf").forEach(b => b.style.width = b.dataset.w + "%");
+    io.unobserve(e.target);
+  }), { threshold: .25 });
+  $$(".facts,#datos").forEach(el => io.observe(el));
+
+  await advancePreload(94, "PREPARANDO INTERFAZ");
+
+  if (!window.gsap || !window.ScrollTrigger) {
+    await finishPreloadSmooth();
+    if (preloader) preloader.classList.add("done");
+    if (window.__introState) window.__introState.appear = 1;
+    return;
+  }
+  gsap.registerPlugin(ScrollTrigger);
+
+  let lenis = null;
+  if (!calm && window.Lenis) {
+    lenis = new Lenis({ lerp: 0.08, smoothWheel: false });
+    lenis.on("scroll", ScrollTrigger.update);
+    gsap.ticker.add(time => lenis.raf(time * 1000));
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  const mm = gsap.matchMedia();
+
+  // =========================================================================
+  // 3. PRELOADER DE ARRANQUE + PANTALLA PORTAL "NÁCAR" + INMERSIÓN 60FPS SIN LAG
+  // =========================================================================
+  let introAbierto = true;
+
+  // Completar barra suavemente hasta 100% y revelar la almeja quieta con "NÁCAR" adentro
+  if (preloader) {
+    const st3D = window.__introState;
+    if (calm) {
+      preloader.classList.add("done");
+      if (st3D) st3D.appear = 1;
+    } else {
+      await finishPreloadSmooth();
+      preloader.classList.add("done");
+      if (st3D) gsap.to(st3D, { appear: 1, duration: 1.15, ease: "expo.out" });
+      gsap.to(introNacar, { opacity: 1, scale: 1, duration: 1.1, ease: "expo.out", clearProps: "transform" });
+      gsap.to("#intro-cta,#clam-trigger", { opacity: 1, y: 0, duration: 0.9, stagger: 0.08, delay: 0.15, ease: "power3.out", clearProps: "transform" });
+    }
+  }
+
+  const ejecutarInmersion = () => {
+    if (!introAbierto) return;
+    introAbierto = false;
+    window.scrollTo(0, 0);
+
+    const st3D = window.__introState;
+    if (!window.gsap || calm) {
+      document.body.classList.remove("intro-lock");
+      if (introPortal) introPortal.classList.add("done");
+      if (st3D) { st3D.appear = 1; st3D.move = 1; st3D.spin = 1; st3D.rings = 1; st3D.dive = 1; }
+      return;
+    }
+
+    // Calcular vector exacto desde el título gigante "NÁCAR" hacia su lugar en el panel superior de opciones (#brand-nav)
+    const rFrom = introNacar.getBoundingClientRect();
+    const rTo = brandNav.getBoundingClientRect();
+    const dx = (rTo.left + rTo.width * 0.5) - (rFrom.left + rFrom.width * 0.5);
+    const dy = (rTo.top + rTo.height * 0.5) - (rFrom.top + rFrom.height * 0.5);
+    const sc = Math.max(0.11, rTo.height / Math.max(rFrom.height, 1));
+
+    // Preparar entrada del Hero para cuando termine de sumergirse
+    gsap.set("#h1 .w>span", { yPercent: 115 });
+    gsap.set(".hero .lead,.hero .btns", { y: 28, opacity: 0 });
+
+    const tl = gsap.timeline({
+      onComplete: () => {
+        if (introPortal) introPortal.classList.add("done");
+      }
+    });
+
+    // 1. Ocultar textos auxiliares del portal usando solo transform/opacity (100% acelerado por GPU, sin filter blur)
+    tl.to("#intro-cta,#clam-trigger", {
+      opacity: 0, y: -10, duration: 0.38, ease: "power2.in", pointerEvents: "none"
+    }, 0);
+
+    // 2. La palabra gigante "NÁCAR" viaja y escala directo a su lugar en el panel superior (manteniendo el filtro mix-blend-mode: difference activo en todo momento)
+    tl.to(introNacar, {
+      x: dx, y: dy, scale: sc, duration: 1.15, ease: "expo.inOut"
+    }, 0.04)
+    .to(introNacar, {
+      opacity: 0, duration: 0.35, ease: "power2.out"
+    }, 0.95);
+
+    // 3. Velo óptico de inmersión (solo opacidad de gradiente radial acuático, 0% recálculo de backdrop-filter)
+    if (diveVeil) {
+      tl.to(diveVeil, { opacity: 1, duration: 0.55, ease: "power2.inOut" }, 0.08)
+        .to(diveVeil, { opacity: 0, duration: 0.95, ease: "power3.out" }, 0.65);
+    }
+
+    // 4. Transición 3D: El agua sube (uDive), la almeja viaja a la derecha (move) y al llegar brotan sus anillos y burbujas (rings + spin)
+    if (st3D) {
+      st3D.appear = 1;
+      tl.to(st3D, { dive: 1, duration: 1.55, ease: "power3.inOut" }, 0)
+        .to(st3D, { move: 1, duration: 1.55, ease: "expo.inOut" }, 0.04)
+        .to(st3D, { spin: 1, duration: 1.25, ease: "power2.out" }, 0.45)
+        .to(st3D, { rings: 1, duration: 1.25, ease: "back.out(1.4)" }, 0.72);
+    }
+
+    // 5. Desbloquear y revelar el panel superior de opciones y el Hero
+    tl.call(() => {
+      document.body.classList.remove("intro-lock");
+    }, null, 0.68);
+
+    tl.to("#h1 .w>span", {
+      yPercent: 0, duration: 1.2, ease: "expo.out", stagger: 0.07, clearProps: "transform",
+      onComplete: () => $$("#h1 .w").forEach(w => w.classList.add("done"))
+    }, 0.82)
+    .to(".hero .lead,.hero .btns", {
+      y: 0, opacity: 1, duration: 1.05, ease: "expo.out", stagger: 0.12, clearProps: "transform,opacity"
+    }, 1.1);
+  };
+
+  if (clamBtn) clamBtn.addEventListener("click", ejecutarInmersion);
+  if (introPortal) {
+    introPortal.addEventListener("click", e => {
+      if (e.target === introPortal) ejecutarInmersion();
+    });
+  }
+
+  // animaciones de entrada de cada sección (limpiando transforms al terminar para mantener mix-blend-mode:difference puro)
+  mm.add("(prefers-reduced-motion: no-preference)", () => {
+    $$("h2.sp").forEach(h => gsap.from(h.querySelectorAll(".w>span"), { yPercent: 115, duration: 1.2, ease: "expo.out", stagger: .05, clearProps: "transform", scrollTrigger: { trigger: h, start: "top 86%", toggleActions: "play none none reverse" } }));
+    $$(".rule").forEach(r => gsap.from(r, { scaleX: 0, duration: 1.1, ease: "expo.out", scrollTrigger: { trigger: r, start: "top 88%", toggleActions: "play none none reverse" } }));
+    $$("section:not(.hero):not(.journey) p:not(.note)").forEach(p => gsap.from(p, { y: 24, opacity: 0, duration: 1.1, ease: "expo.out", clearProps: "transform,opacity", scrollTrigger: { trigger: p, start: "top 88%", toggleActions: "play none none reverse" } }));
+    $$(".fact").forEach((f, i) => gsap.from(f, { y: 30, opacity: 0, duration: 1.2, delay: (i % 4) * .08, ease: "expo.out", scrollTrigger: { trigger: f, start: "top 88%", toggleActions: "play none none reverse" } }));
+    $$(".ph").forEach(p => gsap.from(p, { clipPath: "inset(0 0 100% 0)", y: 20, duration: 1.2, ease: "expo.inOut", scrollTrigger: { trigger: p, start: "top 85%", toggleActions: "play none none reverse" } }));
+    $$(".step,.help>div,.panel,.row:not(.head),.chips span").forEach(c => gsap.from(c, { y: 26, opacity: 0, duration: 1.1, ease: "expo.out", scrollTrigger: { trigger: c, start: "top 90%", toggleActions: "play none none reverse" } }));
+  });
+
+  // Navegación por fases con UN SOLO SCROLL (escritorio) + transiciones ágiles del bloque 3D de agua
+  mm.add("(min-width: 900px) and (prefers-reduced-motion: no-preference)", () => {
+    window.__modoFases = true;
+    const st = $$(".st");
+    const dots = $$(".dots span");
+    const navLinks = $$("nav a");
+
+    const irAEstacion = (idx, inmediato) => {
+      st.forEach((el, k) => el.classList.toggle("on", k === idx));
+      dots.forEach((el, k) => el.classList.toggle("on", k === idx));
+      if (window.__setTankStage) window.__setTankStage(idx, inmediato);
+    };
+    irAEstacion(0, true);
+
+    // Secuencia completa de fases de la página (cada gesto de scroll avanza 1 fase)
+    const fases = [
+      { sel: ".hero", st: null },
+      { sel: "#problema", st: null },
+      { sel: "#viaje", st: 0 },
+      { sel: "#viaje", st: 1 },
+      { sel: "#viaje", st: 2 },
+      { sel: "#viaje", st: 3 },
+      { sel: "#viaje", st: 4 },
+      { sel: "#nosotros", st: null },
+      { sel: "#impacto", st: null },
+      { sel: "#gemelo", st: null },
+      { sel: "#ruta", st: null },
+      { sel: "#apoyo", st: null }
+    ];
+
+    let faseActual = 0, bloqueadoHasta = 0, ultTiempoWheel = 0, ultDelta = 0;
+    const actualizarNavActivo = (sel, idx) => {
+      navLinks.forEach(a => a.classList.toggle("active", a.getAttribute("href") === sel));
+      if (hudStep) hudStep.textContent = "FASE " + String((idx || 0) + 1).padStart(2, "0") + " / " + String(fases.length).padStart(2, "0");
+    };
+
+    fases.forEach((f, i) => {
+      const el = $(f.sel);
+      if (el && (f.st === null || f.st === 0) && Math.abs(scrollY - el.offsetTop) < innerHeight * 0.45) faseActual = i;
+    });
+    actualizarNavActivo(fases[faseActual].sel, faseActual);
+
+    const moverScroll = (y, dur) => {
+      if (lenis) {
+        lenis.scrollTo(y, { duration: dur, easing: t => 1 - Math.pow(1 - t, 4), force: true, lock: true });
+      } else {
+        window.scrollTo({ top: y, behavior: "smooth" });
+      }
+    };
+
+    const irAFase = (nuevoIdx, rapido) => {
+      const idx = Math.max(0, Math.min(fases.length - 1, nuevoIdx));
+      const prev = fases[faseActual];
+      const sig = fases[idx];
+      faseActual = idx;
+      const ratio = idx / (fases.length - 1);
+      if (window.__setFaseRatio) window.__setFaseRatio(ratio);
+      if (window.__syncThumbRatio) window.__syncThumbRatio(ratio);
+      actualizarNavActivo(sig.sel, idx);
+
+      if (sig.st !== null) irAEstacion(sig.st, false);
+
+      const el = $(sig.sel);
+      if (!el) return;
+      const mismaSeccion = prev && prev.sel === sig.sel && Math.abs(el.getBoundingClientRect().top) < 80;
+      if (mismaSeccion) {
+        bloqueadoHasta = performance.now() + (rapido ? 180 : 580);
+      } else {
+        const y = Math.max(0, el.offsetTop);
+        moverScroll(y, rapido ? 0.45 : 0.95);
+        bloqueadoHasta = performance.now() + (rapido ? 220 : 920);
+      }
+    };
+    window.__irAFasePorRatio = r => {
+      const targetIdx = Math.round(Math.max(0, Math.min(1, r)) * (fases.length - 1));
+      if (targetIdx !== faseActual) irAFase(targetIdx, true);
+    };
+    if (window.__syncThumbRatio) window.__syncThumbRatio(faseActual / (fases.length - 1));
+
+    // Clic en los indicadores (dots) de las 5 estaciones
+    dots.forEach((d, k) => {
+      d.addEventListener("click", () => {
+        const idx = fases.findIndex(f => f.sel === "#viaje" && f.st === k);
+        if (idx !== -1) irAFase(idx);
+      });
+    });
+
+    // Un solo gesto de rueda/trackpad avanza o retrocede exactamente 1 fase (excepto cuando se hace zoom sobre #tankbox o en el portal intro)
+    const onWheel = e => {
+      if (e.ctrlKey) return;
+      if (introAbierto) { e.preventDefault(); return; }
+      if (e.target && e.target.closest && e.target.closest("#tankbox")) return;
+      e.preventDefault();
+      const ahora = performance.now();
+      const absD = Math.abs(e.deltaY);
+      const dt = ahora - ultTiempoWheel;
+      ultTiempoWheel = ahora;
+
+      // Ignorar la inercia residual del mismo gesto de trackpad
+      const PicoNuevo = absD > ultDelta * 1.35 && absD > 18;
+      ultDelta = absD;
+      if (ahora < bloqueadoHasta && !(dt > 140 && PicoNuevo)) return;
+      if (absD < 4) return;
+
+      const dir = e.deltaY > 0 ? 1 : -1;
+      const secActual = $(fases[faseActual].sel);
+      if (secActual && fases[faseActual].st === null) {
+        const r = secActual.getBoundingClientRect();
+        if (dir > 0 && r.bottom > innerHeight + 48) {
+          moverScroll(scrollY + Math.min(r.bottom - innerHeight + 24, innerHeight * 0.7), 0.75);
+          bloqueadoHasta = ahora + 750;
+          return;
+        }
+        if (dir < 0 && r.top < -48) {
+          moverScroll(Math.max(0, secActual.offsetTop), 0.75);
+          bloqueadoHasta = ahora + 750;
+          return;
+        }
+      }
+
+      irAFase(faseActual + dir);
+    };
+    addEventListener("wheel", onWheel, { passive: false });
+
+    // Soporte para teclado (Flechas, RePág/AvPág, Espacio)
+    const onKey = e => {
+      if (["INPUT", "TEXTAREA", "SELECT"].includes((e.target && e.target.tagName) || "")) return;
+      if (introAbierto) {
+        if (["Enter", " ", "ArrowDown"].includes(e.key)) { e.preventDefault(); ejecutarInmersion(); }
+        return;
+      }
+      if (performance.now() < bloqueadoHasta) return;
+      if (["ArrowDown", "PageDown", " "].includes(e.key)) {
+        e.preventDefault(); irAFase(faseActual + 1);
+      } else if (["ArrowUp", "PageUp"].includes(e.key)) {
+        e.preventDefault(); irAFase(faseActual - 1);
+      } else if (e.key === "Home") {
+        e.preventDefault(); irAFase(0);
+      } else if (e.key === "End") {
+        e.preventDefault(); irAFase(fases.length - 1);
+      }
+    };
+    addEventListener("keydown", onKey);
+
+    // Enlaces del menú y botones sincronizados con las fases
+    $$('a[href^="#"]').forEach(a => {
+      a.addEventListener("click", e => {
+        const href = a.getAttribute("href");
+        const targetSel = href === "#inicio" ? ".hero" : href;
+        const idx = fases.findIndex(f => f.sel === targetSel);
+        if (idx !== -1) {
+          e.preventDefault();
+          irAFase(idx);
+        }
+      });
+    });
+
+    return () => {
+      window.__modoFases = false;
+      removeEventListener("wheel", onWheel);
+      removeEventListener("keydown", onKey);
+    };
+  });
+
+  // celular o movimiento reducido: estado final, sin fijar la sección
+  mm.add("(max-width: 899px), (prefers-reduced-motion: reduce)", () => {
+    window.__modoFases = false;
+    gsap.set(".st", { opacity: 1, clearProps: "transform" });
+    if (window.__setTankStage) window.__setTankStage(4, true);
+  });
+
+  // Botón flotante de desplazamiento (#c-thumb): integrado dentro de la página sin barra lateral que robe espacio
+  const cScroll = $("#c-scroll"), cThumb = $("#c-thumb");
+  if (cScroll && cThumb) {
+    let tRatio = 0, curRatio = 0, thumbDrag = false, grabY = 0;
+
+    const pintarThumb = r => {
+      const maxY = Math.max(0, cScroll.clientHeight - cThumb.offsetHeight);
+      cThumb.style.transform = "translate3d(0," + (r * maxY).toFixed(1) + "px,0)";
+    };
+
+    window.__syncThumbRatio = r => {
+      if (!thumbDrag) tRatio = Math.max(0, Math.min(1, r));
+    };
+
+    addEventListener("scroll", () => {
+      if (!window.__modoFases && !thumbDrag) {
+        const maxS = Math.max(1, document.documentElement.scrollHeight - innerHeight);
+        tRatio = Math.max(0, Math.min(1, scrollY / maxS));
+      }
+    }, { passive: true });
+
+    const tickThumb = () => {
+      if (!thumbDrag) {
+        curRatio += (tRatio - curRatio) * 0.14;
+        pintarThumb(curRatio);
+      }
+    };
+    if (window.gsap) gsap.ticker.add(tickThumb);
+    else (function thLoop(){ tickThumb(); requestAnimationFrame(thLoop); })();
+
+    cThumb.addEventListener("pointerdown", e => {
+      e.preventDefault();
+      e.stopPropagation();
+      thumbDrag = true;
+      cThumb.classList.add("dragging");
+      grabY = e.clientY - cThumb.getBoundingClientRect().top;
+      cThumb.setPointerCapture(e.pointerId);
+    });
+
+    cThumb.addEventListener("pointermove", e => {
+      if (!thumbDrag) return;
+      const tr = cScroll.getBoundingClientRect();
+      const maxY = Math.max(1, tr.height - cThumb.offsetHeight);
+      const r = Math.max(0, Math.min(1, (e.clientY - tr.top - grabY) / maxY));
+      tRatio = curRatio = r;
+      pintarThumb(r);
+      if (window.__modoFases && window.__irAFasePorRatio) {
+        window.__irAFasePorRatio(r);
+      } else {
+        const maxS = Math.max(1, document.documentElement.scrollHeight - innerHeight);
+        if (lenis) lenis.scrollTo(r * maxS, { immediate: true, force: true });
+        else window.scrollTo(0, r * maxS);
+      }
+    });
+
+    const finThumb = () => {
+      if (!thumbDrag) return;
+      thumbDrag = false;
+      cThumb.classList.remove("dragging");
+    };
+    cThumb.addEventListener("pointerup", finThumb);
+    cThumb.addEventListener("pointercancel", finThumb);
+  }
+})();
+</script>
+</body>
+</html>

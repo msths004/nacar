@@ -1,0 +1,116 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[spanish,es-nodecimaldot,es-tabla]{babel}
+\usepackage[margin=2.0cm,top=2.1cm,bottom=2.1cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{array,tabularx}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+\definecolor{nacardark}{HTML}{061A28}
+\definecolor{nacarblue}{HTML}{0E4D6C}
+\definecolor{nacarcyan}{HTML}{1B8CA6}
+\definecolor{nacarlight}{HTML}{EAF6FC}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=nacarblue,
+    urlcolor=nacarcyan,
+    pdftitle={Resumen Ejecutivo - Gemelo Digital Proyecto NACAR},
+    pdfauthor={Proyecto NACAR}
+}
+
+\setlength{\parskip}{0.45em}
+\setlength{\parindent}{0pt}
+\emergencystretch=1.5em
+
+\newtcolorbox{resumenbox}[1][]{
+    colback=nacarlight,
+    colframe=nacarblue,
+    fonttitle=\bfseries,
+    coltitle=white,
+    colbacktitle=nacardark,
+    boxrule=0.8pt,
+    arc=3pt,
+    left=8pt,right=8pt,top=6pt,bottom=6pt,
+    title={#1}
+}
+
+\begin{document}
+
+\begin{center}
+    {\scshape\large Proyecto NÁCAR $\cdot$ Documento Ejecutivo Consolidado \par}
+    \vspace{0.2cm}
+    {\LARGE\bfseries\color{nacardark} Resumen Técnico y Matemático del Gemelo Digital (\textit{Digital Twin}) para Biofiltración en el Karst Yucateco \par}
+    \vspace{0.2cm}
+    \rule{\textwidth}{1.2pt}
+\end{center}
+
+\section*{1. Meta del Gemelo Digital (Versión Offline y Arquitectura Online)}
+El objetivo principal de construir un gemelo digital (\textit{Digital Twin}) para el Proyecto NÁCAR es transitar de un esquema de diseño y monitoreo empírico basado en el método de ``prueba y error'' hacia una plataforma predictiva, adaptativa y automatizada. La meta es simular computacionalmente la interacción simultánea de los fluidos, las reacciones químicas carbonatadas y la dinámica biológica del ecosistema kárstico (módulos suspendidos de bivalvos + macrófitas + biopelícula bacteriana) para:
+\begin{enumerate}[leftmargin=1.5em,noitemsep]
+    \item \textbf{En su Versión Offline (Motor Numérico en Python):} Dimensionar exactamente cuántos bivalvos ($n$, alojados en columnas suspendidas de bandejas circulares apiladas tipo linterna) y cuántos kilogramos o metros cuadrados de raíces de macrófitas ($m^*$ o $A_{\text{mac}}^*$) se requieren para neutralizar tanto la carga contaminante externa como las propias secreciones químicas de las almejas, prediciendo en cuántas horas ($t_{\text{meta}}$) se abate la contaminación bacteriana (\textit{E. coli} / coliformes) y de turbidez ($TSS$).
+    \item \textbf{En su Versión Online (Sincronizada con IoT):} Asimilar datos de campo en tiempo real mediante sensores IoT y Filtrado de Kalman (EKF/EnKF) para predecir picos de contaminación, estrés térmico o fallas por colmatación antes de que ocurran en el sistema físico.
+    \item \textbf{Alcance actual y visión global:} La Fase 1 se desarrolla \textbf{solo para el karst de Yucatán} y la especie focal \textbf{\textit{Anodontites trapesialis}} (nombre también referido como \textit{A.\ ciconia}; sinonimia y estatus nativo en la cuenca receptora por verificar), con el fin de tener un modelo presentable. El proyecto mantiene como visión permanente el \textbf{escalamiento mundial}: ninguna constante regional o biológica se fija en las ecuaciones, sino en perfiles intercambiables de región y de especie. \textbf{Los parámetros de todas las especies (incluida la focal) y la caracterización de otras regiones del mundo están pendientes de investigación}; los valores numéricos actuales son semillas provisionales.
+\end{enumerate}
+
+\section*{2. Métodos Matemáticos y Computacionales Integrados}
+El sistema emplea una arquitectura jerárquica de fidelidad múltiple implementada enteramente en \textbf{Python} (\texttt{SciPy solve\_ivp} con integradores implícitos \texttt{Radau}/\texttt{BDF}, \texttt{NumPy}, \texttt{Numba}, \texttt{FilterPy} y \texttt{FastAPI}):
+
+\begin{itemize}[leftmargin=1.5em]
+    \item \textbf{Geometría Modular de Bandejas Tipo Linterna ($\eta_{\text{mod}}$):} Modela $M_{\text{mod}}$ columnas suspendidas de $K_{\text{pisos}}$ bandejas circulares de diámetro $D_b$ separadas verticalmente por $h_{\text{piso}}$, con $n_b$ almejas por piso a distancia $d_{\text{almejas}} \approx 0.952\,D_b/\sqrt{n_b}$. Cuantifica la eficiencia espacial libre de re-filtración horizontal y vertical:
+    \[
+        \eta_{\text{mod}} = \left[1 - \alpha_h \exp\!\left(-\frac{d_{\text{almejas}}}{\ell_{\text{sifón}}(L)}\right)\right] \cdot \left[1 - \alpha_v \left(1 - \frac{1}{K_{\text{pisos}}}\right)\exp\!\left(-\frac{h_{\text{piso}}(1 + v_x/v_{\text{jet}})}{L_{\text{jet}}(L)}\right)\right]
+    \]
+    \item \textbf{Modelos Bioenergéticos de Bivalvos Nativos (\textit{Unionidae} -- DEB/SFG Tropical):} Calcula la tasa de aclaramiento efectiva individual $CR_{\text{ef}} = CR_{\max}(L)\cdot f_T(T)\cdot f_{TSS}(TSS)\cdot f_{DO}(S_O)\cdot \eta_{\text{mod}}$, la producción de pseudoheces ($PsR$) y heces ($ER$), el consumo de oxígeno ($OCR$) y la secreción total de amonio ($E_{N,\text{tot}} = AER + \alpha_{\text{hidr},N} f_{\text{org}}(PsR+ER)$).
+    \item \textbf{Acoplamiento Rizosférico Macrófitas--Bacterias (Marco CWM1):} Combina la absorción radicular directa de alta afinidad de \textit{Typha domingensis} y \textit{Pontederia cordata} ($k_{SG,N} = 0.18\text{ mg/L}$) con la nitrificación/desnitrificación de la biopelícula bacteriana CWM1 ($k_{SC,N} = 3.0\text{ mg/L}$, hasta $30$ veces más rápida en pulsos altos), amplificada por los exudados radiculares de carbono ($\Phi_{\text{rizosfera}}(m)$).
+    \item \textbf{Geoquímica Kárstica y Colmatación (Kozeny-Carman):} Calcula el Índice de Saturación de Calcita ($SI_c$), la coprecipitación abiótica de fósforo ($Y = 10.9\,S_{PO4}$, que inmoviliza hasta el $93\%$ del ortofosfato en aguas duras de Yucatán) y la caída de conductividad hidráulica $K(t)/K_0 = (\phi(t)/\phi_0)^3((1-\phi_0)/(1-\phi(t)))^2$.
+\end{itemize}
+
+\begin{resumenbox}[3. Ecuación de Balance de Masa para Dimensionar la Biomasa Crítica de Macrófitas ($m^*$)]
+Para evitar que la secreción continua de compuestos químicos de los $n$ bivalvos ($n \cdot E$) acumule amonio o fosfatos en el cuerpo de agua, el balance de tasas exige igualar las fuentes con los tres sumideros del ecosistema en la concentración limpia objetivo ($S_{\text{meta}}$):
+\[
+\begin{aligned}
+    \text{Carga\_Externa} + (n \cdot E) &= \Big[\text{Biomasa}_{\text{Plantas}}\cdot \text{Monod}_{\text{Plantas}}(S_{\text{meta}})\Big] \\
+    &\quad + \Big[\text{Biomasa}_{\text{Bacterias}}\cdot \text{Monod}_{\text{Bacterias}}(S_{\text{meta}})\Big] + \text{Precipitación}_{\text{Calcio}}(S_{\text{meta}})
+\end{aligned}
+\]
+Dado que el calcio precipita el fósforo pero \textbf{no precipita el amonio}, el despeje de los kilogramos mínimos de raíces de macrófitas ($m^*$) queda gobernado por el nitrógeno amoniacal evaluado en el umbral limpio $S_{NH,\text{meta}}$ (donde el Monod bacteriano cae al $\sim 7.7\%$ y las raíces sostienen el $\sim 58.1\%$ de su capacidad):
+\[
+    m^* = \frac{\text{Carga\_Externa}_{NH} + n \cdot E_{N,\text{tot}}(L, T, TSS) - V \, \mu_{\max,A}(T)\,X_A\,\Phi_{\text{riz}}\!\left(\dfrac{S_{NH,\text{meta}}}{S_{NH,\text{meta}} + 3.0}\right)\!\left(\dfrac{S_O}{S_O + 0.5}\right)}{10^3 \cdot \mu_{SG,N}\cdot f_{\text{luz}}(I_{\text{PAR}})\cdot \theta_{\text{mac}}(T)\!\left(\dfrac{S_{NH,\text{meta}}}{S_{NH,\text{meta}} + 0.18}\right)}
+\]
+\end{resumenbox}
+
+\section*{4. Clasificación de Variables y Topología de Acoplamiento}
+\begin{itemize}[leftmargin=1.5em,noitemsep]
+    \item \textbf{Variables ``Sacables a Vista'' (Entradas de Diseño):} Volumen de agua ($V$), área del humedal ($A_{\text{hum}}$), número de módulos tipo linterna ($M_{\text{mod}}$), pisos por módulo ($K_{\text{pisos}}$), diámetro de bandeja ($D_b$), altura entre pisos ($h_{\text{piso}}$), almejas por piso ($n_b$), distancia entre almejas ($d_{\text{almejas}}$), longitud de concha ($L$) y área plantada ($A_{\text{mac}} = m/\rho_{\text{raiz}}$).
+    \item \textbf{Variables de Sensores IoT / Iniciales:} Temperatura ($T$), $\text{pH}$, Oxígeno Disuelto ($S_O$), Turbidez ($TSS$), Coliformes fecales / \textit{E. coli} ($X_{\text{pat}}$), Amonio ($S_{NH}$), Nitratos ($S_{NO}$), Ortofosfatos ($S_{PO4}$), Dureza cálcica ($S_{\text{Ca}}$) y Alcalinidad ($S_{\text{HCO3}}$).
+    \item \textbf{Funciones Acopladas vs.\ Resultados Terminales Independientes:} Las tasas $CR_{\text{ef}}(t)$, $PsR$, $ER$, $OCR$, $E_{N,\text{tot}}$, $R_{\text{mac}}$ y $R_{\text{bact}}$ se retroalimentan mutuamente en cada paso $\Delta t$ a través de $TSS(t)$, $S_{NH}(t)$ y $S_O(t)$. En contraste, la curva de bacterias patógenas $X_{\text{pat}}(t)$ y su tiempo de limpieza $t_{\text{meta,bact}} = \frac{1}{\overline{k}_{\text{total,bact}}}\ln(X_{\text{pat}}(0)/X_{\text{pat,meta}})$, así como la biomasa crítica de diseño $m^*$ y el indicador de colmatación de bandejas $K(t)/K_0$, constituyen \textbf{salidas terminales independientes} (consumen argumentos del núcleo, pero no alteran recursivamente la cinética bioquímica).
+\end{itemize}
+
+\section*{5. Factibilidad de Reproducción por Especie ($\mathcal{F}_{\text{rep}}\%$), Porcentajes en Tiempo Real y Slot de Control}
+El Gemelo Digital permite ingresar la \textbf{especie nativa de bivalvo} ($\text{sp}$: \textit{Anodontites trapesialis}, \textit{A.\ tortolis}, \textit{Psoronaias semigranosa} o \textit{Cyrtonaias tampicoensis}) y el \textbf{mes / época anual en Yucatán} ($\tau_{\text{mes}}$), acoplando la regla-$\kappa$ del presupuesto energético DEB ($\dot{p}_R = (1-\kappa_{\text{sp}})\dot{p}_A - \frac{1-\kappa_{\text{sp}}}{\kappa_{\text{sp}}}\dot{p}_M - c_{\text{limpieza}}PsR$) para entregar al Frontend el \textbf{Índice de Factibilidad de Reproducción ($\mathcal{F}_{\text{rep}} \in 0\text{--}100\%$)}:
+\[
+    \mathcal{F}_{\text{rep}}(t) = 100\% \times \Big(f_{\text{talla}}(L, L_{p,\text{sp}})\cdot f_{\text{época}}(\tau_{\text{mes}})\cdot f_{T,\text{rep}}(T)\cdot f_{\text{DEB,rep}}(t)\cdot f_{\text{quim,rep}}(S_O, S_{NH})\cdot f_{\text{fert}}(d_{\text{almejas}}, v_x)\Big)^{0.45}
+\]
+identificando automáticamente qué factores facilitan el desove/fecundación en la bandeja y cuál es el factor limitante ($k_{\text{lim}} = \arg\min_k f_k$) para tomar acción. Asimismo, traduce en tiempo real las lecturas de sensores IoT y del modelo a \textbf{porcentajes interpretables ($0\text{--}100\%$)} de todo el cuerpo de agua:
+\begin{itemize}[leftmargin=1.5em,noitemsep]
+    \item \textbf{Salud Global del Cuerpo de Agua ($I_{\text{agua}} \in 0\text{--}100\%$):} Índice ponderado de desinfección bacteriana ($P_{\text{bact}}\%$), claridad por remoción de turbidez ($P_{\text{clar}}\%$), saturación de oxígeno ($S_O/S_{O,\text{sat}}\%$) y seguridad de amonio.
+    \item \textbf{Rendimiento de Bombeo ($P_{\text{bombeo}} = CR_{\text{ef}}/CR_{\max}\%$), Equilibrio Simbiótico Planta--Almeja ($P_{\text{simb}} = m/m^*\%$) y Saturación de Bandejas ($P_{\text{colm}} = (1 - K/K_0)\%$):} Indicadores operativos directos.
+    \item \textbf{Slot Modular para Controlador Electrónico Futuro (\texttt{ActuatorControllerSlot}, vector $\mathbf{u}_{\text{ctrl}}$):} Calcula las consignas en $\%$ PWM para aireación ($u_{\text{aire}}$), bomba de flujo ($u_{\text{flujo}}$), control térmico ($u_{\text{term}}$) y dosificación nutricional gonadal ($u_{\text{alim}}$), listo para integrarse en lazo cerrado con hardware electrónico.
+\end{itemize}
+
+\section*{6. Síntesis del Escenario de Referencia Validado}
+Para una celda de $V = 12,000\text{ L}$ a $T = 27.5\,^\circ\text{C}$ en Abril ($\tau_{\text{mes}} = 4$) con $M_{\text{mod}} = 2$ módulos tipo linterna de $K_{\text{pisos}} = 6$ bandejas ($D_b = 50\text{ cm}$, $h_{\text{piso}} = 18\text{ cm}$, $n_b = 20\text{ ind/piso} \implies \mathbf{n = 240\text{ bivalvos}}$ \textit{A.\ trapesialis} de $L = 65\text{ mm}$, $d_{\text{almejas}} = 10.64\text{ cm}$) y $A_{\text{mac}} = 4.5\text{ m}^2$ ($\mathbf{m = 3.60\text{ kg MS}}$ de raíces de \textit{Typha domingensis}):
+\begin{enumerate}[leftmargin=1.5em,noitemsep]
+    \item La eficiencia hidrodinámica del módulo es $\eta_{\text{mod}} = \mathbf{95.4\%}$, logrando un bombeo efectivo de $442.8\text{ a }636.0\text{ L h}^{-1}$.
+    \item La secreción total de amonio de las $240$ almejas ($11.52\text{ mg N h}^{-1}$) requiere un mínimo crítico de $\mathbf{m^* = 3.13\text{ kg MS}}$ ($3.91\text{ m}^2$); con los $3.60\text{ kg MS}$ instalados existe un superávit depurador del $\mathbf{P_{\text{simb}} = 115\%}$ ($+15\%$).
+    \item Los coliformes fecales caen de $2,400$ a $200\text{ UFC}/100\text{ mL}$ ($\mathbf{P_{\text{bact}} = 100\%}$) en exactamente $\mathbf{t_{\text{meta,bact}} = 37.8\text{ horas}}$ ($60\%$ más rápido que sin bivalvos), la turbidez cae de $18.0$ a $2.15\text{ mg L}^{-1}$ ($\mathbf{I_{\text{agua}} = 94.8\%}$) y la factibilidad reproductiva en bandeja sube de $\mathbf{64.3\%}$ (limitada al inicio por turbidez/amonio) a $\mathbf{89.2\%}$ (alta viabilidad de desove y fertilización).
+\end{enumerate}
+
+\end{document}

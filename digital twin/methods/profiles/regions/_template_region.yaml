@@ -1,0 +1,57 @@
+region_id: "_template_region"
+display_name: "Plantilla de Escalabilidad Regional (Fase 3)"
+status: "pending_research"
+latitude_deg: null
+longitude_deg: null
+hydrogeochemistry_type: "pending_classification"
+notes: >
+  Plantilla vacía para incorporar nuevas cuencas del mundo en la Fase 3.
+  Si la región objetivo corresponde a aguas blandas o neutras con SI_c <= 0
+  (baja concentración de Ca2+ y alcalinidad HCO3-), la ecuación kárstica
+  se apaga automáticamente (R_calcita_P = 0) y todo el fósforo es asumido
+  por macrófitas y bacterias CWM1. Todos los parámetros aquí marcados como
+  'pending' deben investigarse antes de un despliegue real.
+
+water_baseline:
+  temp_c: {value: 20.0, unit: "degC", evidence_level: "D", status: "pending"}
+  ph: {value: 7.0, unit: "pH", evidence_level: "D", status: "pending"}
+  calcium_mg_L: {value: 25.0, unit: "mg Ca/L", evidence_level: "D", status: "pending"}
+  bicarbonate_mg_L: {value: 60.0, unit: "mg HCO3-/L", evidence_level: "D", status: "pending"}
+  par_light_umol_m2_s: {value: 150.0, unit: "umol/m2/s", evidence_level: "D", status: "pending"}
+  ntu_to_tss_factor: {value: 1.4, unit: "(mg/L)/NTU", evidence_level: "D", status: "pending"}
+  kLa_reaeration_h: {value: 0.08, unit: "1/h", evidence_level: "D", status: "pending"}
+
+karst_calcita:
+  k_calc_precip: {value: 0.00018, unit: "g Ca/(L*h)", evidence_level: "D", status: "pending"}
+  y_p_per_ca_coeff: {value: 10.9, unit: "mg P / (g Ca * (mg P/L))", evidence_level: "D", status: "pending"}
+
+macrophytes:
+  dominant_species: "Especie macrófita nativa de la cuenca receptora (por definir)"
+  rho_root_kg_m2: {value: 0.80, unit: "kg MS/m2", evidence_level: "D", status: "pending"}
+  mu_SG_N_mg_g_h: {value: 0.00171, unit: "mg N/(g MS*h)", evidence_level: "D", status: "pending"}
+  mu_SG_P_mg_g_h: {value: 0.00024, unit: "mg P/(g MS*h)", evidence_level: "D", status: "pending"}
+  k_SG_N_mg_L: {value: 0.18, unit: "mg N/L", evidence_level: "D", status: "pending"}
+  k_SG_P_mg_L: {value: 0.04, unit: "mg P/L", evidence_level: "D", status: "pending"}
+  k_light_half_sat: {value: 100.0, unit: "umol/m2/s", evidence_level: "D", status: "pending"}
+  r_O2_root_mg_kg_h: {value: 18.0, unit: "mg O2/(kg MS*h)", evidence_level: "D", status: "pending"}
+  k_riz_pat_L_kg_h: {value: 20.0, unit: "L/(kg MS*h)", evidence_level: "D", status: "pending"}
+
+cwm1_bacteria:
+  mu_max_A_25C_h: {value: 0.032, unit: "1/h", evidence_level: "D", status: "pending"}
+  f_XA_active: {value: 0.012, unit: "adimensional", evidence_level: "D", status: "pending"}
+  k_SC_N_mg_L: {value: 3.0, unit: "mg N/L", evidence_level: "D", status: "pending"}
+  K_O_A_mg_L: {value: 0.50, unit: "mg O2/L", evidence_level: "D", status: "pending"}
+  nu_N_exudate: {value: 1.85, unit: "adimensional", evidence_level: "D", status: "pending"}
+  rho_ex_mg_kg: {value: 12.0, unit: "mg DQO/kg MS", evidence_level: "D", status: "pending"}
+  k_GN_mg_L: {value: 0.002, unit: "mg DQO/L", evidence_level: "D", status: "pending"}
+  k_uv_par_coeff: {value: 0.0000667, unit: "(m2*s)/(umol*h)", evidence_level: "D", status: "pending"}
+  k_d_nat_25C_h: {value: 0.0068, unit: "1/h", evidence_level: "D", status: "pending"}
+
+hydraulics_and_clogging:
+  v_sed_m_h: {value: 0.0045, unit: "m/h", evidence_level: "D", status: "pending"}
+  phi_0_bed: {value: 0.85, unit: "adimensional", evidence_level: "D", status: "pending"}
+  beta_ret_tray: {value: 0.35, unit: "adimensional", evidence_level: "D", status: "pending"}
+  k_hidr_dep_h: {value: 0.012, unit: "1/h", evidence_level: "D", status: "pending"}
+  rho_dep_mg_L: {value: 145000.0, unit: "mg MS/L", evidence_level: "D", status: "pending"}
+  V_poroso_L: {value: 250.0, unit: "L", evidence_level: "D", status: "pending"}
+  biofilm_clog_rate_h: {value: 0.00008, unit: "1/h", evidence_level: "D", status: "pending"}
